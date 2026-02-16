@@ -1,0 +1,105 @@
+# Azure OpenAI Service Pricing
+Azure OpenAI Service delivers enterprise-ready generative AI featuring powerful models from OpenAI, enabling organizations to innovate with text, audio, and vision capabilities.
+
+## Pricing Overview
+To help customers in their journey, Azure OpenAI Service offers pricing and cost management solutions to meet their needs, including:
+* Standard (On-Demand): Pay-as-you-go for input and output tokens.
+* Provisioned (PTUs): Allocate throughput with predictable costs, with monthly and annual reservations available to reduce overall spend.
+* Batch API: Language models are also now available in the Batch API for global deployments and three regions, that returns completions within 24 hours for a 50% discount on Global Standard Pricing.
+
+## Deployment Types
+Azure OpenAI Service offers the following deployment types for Standard and Provisioned, which enable greater flexibility and control of pricing and performance:
+* Global Deployment – Global SKU
+* Data Zone Deployment – Geographic based (EU or US)
+* Regional Deployment – Local Region (up to 27 regions)
+
+## Models and Pricing
+The following models are available with their respective pricing:
+### GPT-5.1 Series
+| Model | Pricing (1M Tokens) |
+| --- | --- |
+| GPT-5.1 Global | Input: $-, Cached Input: $-, Output: $- |
+| GPT-5.1 Data Zone | Input: $-, Cached Input: $-, Output: $- |
+| GPT-5.1-chat Global | Input: $-, Cached Input: $-, Output: $- |
+| GPT-5.1-codex Global | Input: $-, Cached Input: $-, Output: $- |
+| GPT-5.1-codex-mini Global | Input: $-, Cached Input: $-, Output: $- |
+
+### GPT-5 Series
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| GPT-5 2025-08-07 Global | Input: $-, Cached Input: $-, Output: $- | Input: $-, Cached Input: $-, Output: $- |
+| GPT-5 Data Zone | Input: $-, Cached Input: $-, Output: $- | Input: $-, Cached Input: $-, Output: $- |
+| GPT-5 Pro Global | Input: $-, Output: $- | N/A |
+| GPT-5 Codex Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+| GPT-5-mini Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+| GPT-5-mini Data Zone | Input: $-, Cached Input: $-, Output: $- | N/A |
+| GPT-5-nano Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+| GPT-5-nano Data Zone | Input: $-, Cached Input: $-, Output: $- | N/A |
+| GPT-5 chat Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+
+### Deep Research
+| Model | Pricing |
+| --- | --- |
+| o3-deep research Global | Input: $-, Cached Input: $-, Output: $- |
+
+### o3
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| o3 2025-04-16 Global | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| o3 2025-04-16 Data Zone | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| o3 2025-04-16 Regional | Input: $-, Cached Input: $-, Output: $- | N/A |
+
+### o4-mini
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| o4-mini 2025-04-16 Global | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| o4-mini 2025-04-16 Data Zone | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| o4-mini 2025-04-16 Regional | Input: $-, Cached Input: $-, Output: $- | N/A |
+
+### GPT-4.1 Series
+| Model | Standard Pricing (1M Tokens) | Priority Processing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- | --- |
+| GPT-4.1-2025-04-14 Global | Input: $-, Cached Input: $-, Output: $- | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| GPT-4.1-2025-04-14 Data Zone | Input: $-, Cached Input: $-, Output: $- | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| GPT-4.1-2025-04-14 Regional | Input: $-, Cached Input: $-, Output: $- | N/A | N/A |
+| GPT-4.1-mini-2025-04-14 Global | Input: $-, Cached Input: $-, Output: $- | N/A | Input: $-, Output: $- |
+| GPT-4.1-mini-2025-04-14 Data Zone | Input: $-, Cached Input: $-, Output: $- | N/A | Input: $-, Output: $- |
+| GPT-4.1-mini-2025-04-14 Regional | Input: $-, Cached Input: $-, Output: $- | N/A | N/A |
+| GPT-4.1-nano-2025-04-14 Global | Input: $-, Cached Input: $-, Output: $- | N/A | Input: $-, Output: $- |
+| GPT-4.1-nano-2025-04-14 Data Zone | Input: $-, Cached Input: $-, Output: $- | N/A | Input: $-, Output: $- |
+| GPT-4.1-nano-2025-04-14 Regional | Input: $-, Cached Input: $-, Output: $- | N/A | N/A |
+
+### Sora in Azure OpenAI
+| Model | Size: Output Resolution | Price per second |
+| --- | --- | --- |
+| Sora 2 Global | Portrait: 720x1280, Landscape: 1280x720 | $- |
+
+### GPT-Image-1
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| GPT-Image-1-mini Global | Input Text: $-, Cached Input Text: $-, Input Image: $-, Cached Input Image: $-, Output Image: $- | N/A |
+| GPT-Image-1 Global | Input Text: $-, Input Image: $-, Output Image: $-, Cached Output Image: $- | N/A |
+| GPT-Image-1 Regional | Input Text: $-, Input Image: $-, Output Image: $-, Cached Output Image: $- | N/A |
+| GPT-Image-1 Data Zone | Input Text: $-, Input Image: $-, Output Image: $-, Cached Output Image: $- | N/A |
+
+### GPT-4.5
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| GPT-4.5-Preview-2025-02-27 Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+
+### o1
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| o1 2024-12-17 Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+| o1 2024-12-17 US/EU – Data Zones | Input: $-, Cached Input: $-, Output: $- | N/A |
+| o1 2024-12-17 Regional | Input: $-, Cached Input: $-, Output: $- | N/A |
+| o1 preview 2024-09-12 Global | Input: $-, Cached Input: $-, Output: $- | N/A |
+| o1 preview 2024-09-12 US/EU – Data Zones | Input: $-, Cached Input: $-, Output: $- | N/A |
+| o1 preview 2024-09-12 Regional | Input: $-, Cached Input: $-, Output: $- | N/A |
+
+### o3 Mini
+| Model | Pricing (1M Tokens) | Pricing with Batch API (1M Tokens) |
+| --- | --- | --- |
+| o3 mini 2025-01-31 Global | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| o3 mini 2025-01-31-US/EU – Data Zones | Input: $-, Cached Input: $-, Output: $- | Input: $-, Output: $- |
+| o3 mini 2025-01-31 Regional | Input: $-, Cached

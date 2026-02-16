@@ -1,0 +1,48 @@
+# Support Ticket Triage and Routing AI Agent for Zendesk
+## Overview
+The support ticket triage and routing agent automatically reviews every incoming Zendesk ticket, assigns the right priority and category, and routes urgent issues directly to the right team via Slack, PagerDuty, or email.
+
+## Tools Used
+* **Zendesk**: Detects ticket creation, reads content, applies tags, and tracks status updates
+* **PagerDuty**: Lists services, creates incidents, and assigns based on mapped tags
+* **Slack**: Sends notifications to relevant support or engineering teams
+
+## How the Agent Works
+When a new ticket is created in Zendesk, the agent automatically:
+1. Reads the ticket content to assess urgency and categorize the issue.
+2. Applies or updates tags based on content analysis or predefined criteria.
+3. Triggers escalation workflows:
+	* For high-priority or urgent tickets, it automatically creates a PagerDuty incident and routes it to the correct team (for example, IAM, Platform).
+	* For standard issues, it sends the ticket summary to the appropriate Slack channel or email alias.
+4. Links the ticket to internal systems alongside relevant ticket details, streamlining triage and response.
+
+## Getting Started
+To use this template, follow these steps:
+1. Clone the agent template from the Flows workspace.
+2. Get your Zendesk credentials and save them in Postman:
+	* Zendesk API Key: `zendesk_api_key`
+	* Zendesk Ticket URL: `zendesk_ticket_url`
+	* Zendesk Username: `zendesk_username`
+	* Zendesk URL: `zendesk_url`
+3. Set up PagerDuty:
+	* Get your PagerDuty API key and save it as `pagerduty_api_key`.
+	* Create services (for example, `billing_service`, `iam_service`).
+	* Configure Escalation Policies for each service.
+4. Deploy the action to the Postman cloud and copy the `action_url` from the deployment output.
+5. In Zendesk, set up a webhook and add the `action_url` to it. Configure it to send newly created ticket events to the deployed action URL.
+6. Create a new Zendesk ticket and confirm that:
+	* Tags are applied automatically
+	* Escalations are triggered via PagerDuty (if applicable)
+
+## Popular Templates
+* **Plan trips and generate itineraries**: Builds Notion-based travel plans with activities, weather, and packing lists.
+* **Summarize and analyze industry news**: Pulls and analyzes news articles from APIs, then sends a daily summary straight to Slack.
+* **Score GitHub issues by urgency**: Analyzes comments and sentiment to summarize GitHub issues and flag those needing triage.
+* **Prepare for customer meetings**: Gathers support, deal, and calendar data to deliver a daily Slack brief before calls.
+
+## Resources
+* [Postman Docs](https://www.postman.com/docs/)
+* [Postman Academy](https://www.postman.com/academy/)
+* [Postman Community](https://www.postman.com/community/)
+* [Postman Templates](https://www.postman.com/templates/)
+* [2025 State of the API Report](https://www.postman.com/state-of-api/)

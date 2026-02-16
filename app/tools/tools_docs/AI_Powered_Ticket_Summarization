@@ -1,0 +1,44 @@
+# AI-Powered Ticket Summarization
+## SuperOps Help Center
+Copyright (c) 2023, Intercom, Inc. (legal@intercom.io) with Reserved Font Name "Poppins".
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+
+## Table of Contents
+* [Introduction](#introduction)
+* [Activating AI Summarization](#activating-ai-summarization)
+* [Summarizing a Ticket](#summarizing-a-ticket)
+* [Adding Notes with AI](#adding-notes-with-ai)
+* [Composing Side Conversations with AI](#composing-side-conversations-with-ai)
+* [Related Articles](#related-articles)
+
+## Introduction
+SuperOps now introduces an AI-driven summarization feature aimed at revolutionizing the process of engaging with stakeholders, both internally and externally. This helps you resolve client issues with concise and accurate summaries of ticket histories. By significantly reducing the time spent on communications and enhancing the accuracy of information shared, SuperOps empowers businesses to operate with greater efficiency and effectiveness.
+
+## Activating AI Summarization
+To enable AI summarization in your ticketing module, follow these simple steps:
+1. Navigate to Settings > My MSP > MonicaAI.
+2. Enable toggle switches for composing side conversation threads and ticket summaries.
+📝 Note: SuperOps utilizes OpenAI for this feature, so occasional inaccuracies in results may occur. OpenAI does not utilize your data to train its models or enhance its services.
+
+## Summarizing a Ticket
+With AI summarization, obtaining a comprehensive overview of previous ticket conversations is now effortless. 
+1. Click the MonicaAI icon at the bottom of the page and choose Summarize Ticket.
+2. You’ll get a concise summary of the conversation history, eliminating the need to sift through lengthy exchanges. 
+This summary can be viewed in either paragraph form or bullet points, facilitating quick comprehension of the scenario at hand.
+
+## Adding Notes with AI
+Save time and effort by incorporating AI-generated summaries directly into ticket conversations as notes. 
+By clicking the Wand Icon within the notes section, you can easily insert the summarization for future reference.
+
+## Composing Side Conversations with AI
+Extend the benefits of AI summarization and rephrase to side conversations, enabling smoother interactions with external stakeholders. 
+By generating ticket conversation summaries and integrating them into email threads, you can provide external stakeholders with valuable context and insights.
+📝 Note: This feature is exclusive to customers who have subscribed to the Super Plan.
+
+## Related Articles
+* Using side conversations in SuperOps
+* Automating ticket creation with email parsing
+* AI-Powered Worklog Automation
+* AI-Powered Prompt Builder in SuperOps
+* AI-powered Efficiency Report Summarization
+Did this answer your question? 😞😐😃

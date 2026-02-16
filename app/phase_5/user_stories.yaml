@@ -1,0 +1,551 @@
+user_stories:
+  - user_story_id: USER_STORY-0001
+    title: Secure patient portal login
+    as_a: Patient
+    i_want: A secure, password‑less login experience that authenticates me before accessing my appointment data
+    so_that: I can access my personal health schedule without risk of unauthorized access
+    business_value: Protects patient privacy, builds trust, and satisfies HIPAA compliance requirements
+    success_metrics:
+      - 99% of login attempts succeed without error
+      - 95% of patients report confidence in the login process
+    dependencies:
+      - None
+    assumptions:
+      - Patients have a registered email or phone number
+      - The authentication service supports OAuth 2.0 and multi‑factor authentication
+
+  - user_story_id: USER_STORY-0002
+    title: View real‑time provider availability
+    as_a: Patient
+    i_want: To see up‑to‑date appointment slots for my preferred provider and specialty
+    so_that: I can choose a convenient time that is truly available
+    business_value: Reduces scheduling conflicts and no‑show rates, increasing clinic efficiency
+    success_metrics:
+      - 100% of displayed slots match actual provider availability (verified against scheduling engine)
+      - 90% of patients find a suitable slot within the first page of results
+    dependencies:
+      - USER_STORY-0001
+    assumptions:
+      - The scheduling engine exposes an API that provides real‑time slot data
+      - Provider calendars are updated in near real‑time
+
+  - user_story_id: USER_STORY-0003
+    title: Book an appointment through the portal
+    as_a: Patient
+    i_want: To select a provider, date, and time and confirm an appointment in one flow
+    so_that: I can schedule care quickly without calling the office
+    business_value: Drives the 60% portal booking target, freeing front‑desk staff time
+    success_metrics:
+      - 90% of booking attempts succeed within 5 seconds
+      - 60% of all clinic appointments are booked via the portal
+    dependencies:
+      - USER_STORY-0002
+    assumptions:
+      - Payment information is optional or handled separately
+      - The appointment data is persisted in the EHR system
+
+  - user_story_id: USER_STORY-0004
+    title: Reschedule an existing appointment
+    as_a: Patient
+    i_want: To change the date or time of a scheduled appointment without contacting staff
+    so_that: I can adapt my schedule when unforeseen events arise
+    business_value: Improves patient satisfaction and reduces administrative burden
+    success_metrics:
+      - 90% of reschedule requests succeed without manual intervention
+      - 85% of patients who reschedule report satisfaction with the process
+    dependencies:
+      - USER_STORY-0003
+    assumptions:
+      - The system can lock a reschedule window (e.g., 24 hours before appointment)
+      - Updated slot availability is reflected immediately
+
+  - user_story_id: USER_STORY-0005
+    title: Receive automated appointment reminders
+    as_a: Patient
+    i_want: To receive reminders via my chosen channel (email, SMS, app push) before my appointment
+    so_that: I am less likely to forget or miss my visit
+    business_value: Reduces no‑show rates, improving clinic throughput
+    success_metrics:
+      - 95% of reminders are delivered within the scheduled window
+      - 85% patient satisfaction score on reminder experience
+    dependencies:
+      - USER_STORY-0003
+    assumptions:
+      - Communication channels are pre‑verified and compliant with HIPAA
+      - Patients have opted into the preferred channel
+
+  - user_story_id: USER_STORY-0006
+    title: Set communication preferences
+    as_a: Patient
+    i_want: To specify my preferred reminder channel and frequency
+    so_that: I receive notifications in the way that best suits me
+    business_value: Enhances user experience and engagement
+    success_metrics:
+      - 80% of patients set at least one preference
+      - 90% of reminders respect the patient's chosen channel
+    dependencies:
+      - USER_STORY-0001
+    assumptions:
+      - The portal supports at least email, SMS, and push notifications
+      - Patients can update preferences anytime
+
+  - user_story_id: USER_STORY-0007
+    title: View appointment details and status
+    as_a: Patient
+    i_want: To see the date, time, provider, and status of all my upcoming and past appointments
+    so_that: I can keep track of my health care schedule
+    business_value: Provides transparency and reduces phone inquiries
+    success_metrics:
+      - 95% of patients can view appointment details within 3 clicks
+      - 90% of patients report satisfaction with the information presented
+    dependencies:
+      - USER_STORY-0003
+    assumptions:
+      - Appointment data is synchronized between portal and EHR in real time
+
+  - user_story_id: USER_STORY-0008
+    title: Cancel an appointment
+    as_a: Patient
+    i_want: To cancel an appointment through the portal with minimal friction
+    so_that: I can free up a slot for others when I no longer need the visit
+    business_value: Improves schedule flexibility and patient satisfaction
+    success_metrics:
+      - 90% of cancellations processed within 2 seconds
+      - 80% of patients who cancel report satisfaction with the process
+    dependencies:
+      - USER_STORY-0003
+    assumptions:
+      - Cancellation policies are enforced by the system (e.g., 24‑hour notice)
+
+  - user_story_id: USER_STORY-0009
+    title: Ensure HIPAA and data‑privacy compliance
+    as_a: System administrator
+    i_want: To guarantee that all patient data handled by the portal meets HIPAA and local regulations
+    so_that: The clinic avoids legal penalties and maintains patient trust
+    business_value: Mitigates risk, protects brand reputation, and satisfies regulatory audits
+    success_metrics:
+      - Zero security incidents related to patient data over a 12‑month period
+      - 100% of data transmissions are encrypted (TLS 1.2+)
+    dependencies:
+      - None
+    assumptions:
+      - All third‑party services used are HIPAA compliant
+      - Regular security audits are scheduled
+
+  - user_story_id: USER_STORY-0010
+    title: Optimize portal performance
+    as_a: Patient
+    i_want: The portal to load pages quickly so I can complete my booking without frustration
+    so_that: I remain engaged and less likely to abandon the process
+    business_value: Reduces abandonment rate and improves conversion to portal bookings
+    success_metrics:
+      - 90% of page loads complete within 2 seconds
+      - 95% of patients report satisfaction with portal speed
+    dependencies:
+      - None
+    assumptions:
+      - The infrastructure uses CDN and efficient caching strategies
+
+
+  - user_story_id: USER_STORY-0011
+    title: Patient Slot Selection with Crowd & Length Check
+    as_a: Patient
+    i_want: a backend service that evaluates the crowd level and expected session length for my chosen slot
+    so_that: I receive instant feedback on whether the slot is likely to be crowded or too long, allowing me to make an informed choice
+    business_value: Reduces booking friction and improves patient satisfaction by presenting realistic scheduling options
+    success_metrics:
+      - 95% of slot selections return crowd and length data within 2 seconds
+      - 90% of patients receive a recommendation or confirmation within 5 seconds
+    dependencies:
+      - None
+    assumptions:
+      - Doctor calendars are continuously synchronized
+      - Historical usage data is available for crowd estimation
+      - The patient's device can make a REST call to the service
+
+  - user_story_id: USER_STORY-0012
+    title: Patient Acceptance or Override of Suggested Slot
+    as_a: Patient
+    i_want: the ability to accept a suggested alternative or keep my original slot
+    so_that: I can finalize my booking quickly without unnecessary delays
+    business_value: Increases booking completion rate by giving patients control over slot choice
+    success_metrics:
+      - 90% of patients accept a suggestion within 5 seconds
+      - 99% of final selections are recorded in the system without error
+    dependencies:
+      - USER_STORY-0011
+    assumptions:
+      - The UI can display suggested slots returned by the backend
+      - The patient's choice is transmitted back to the backend within 3 seconds
+
+  - user_story_id: USER_STORY-0013
+    title: Real‑Time Conflict Detection Before Finalizing Booking
+    as_a: System
+    i_want: to compare the pending reservation against live doctor calendars and other appointments
+    so_that: any overlap is identified immediately before the appointment is confirmed
+    business_value: Prevents double‑booking and improves resource utilization
+    success_metrics:
+      - 99.5% of booking attempts pass the conflict check within 1 second
+      - 0.5% of bookings are flagged for conflict detection
+    dependencies:
+      - USER_STORY-0011
+    assumptions:
+      - Doctor calendars are updated in real time
+      - The conflict check algorithm runs in a single transaction
+
+  - user_story_id: USER_STORY-0014
+    title: Automated Conflict Resolution Engine
+    as_a: System
+    i_want: to generate the next best slot that satisfies crowd, length, and admin‑defined rules
+    so_that: conflicts are resolved automatically within 30 seconds
+    business_value: Meets the core goal of instant conflict handling, reducing manual intervention
+    success_metrics:
+      - 95% of conflicts resolved automatically within 30 seconds
+      - <1% of appointments result in double‑booking after resolution
+    dependencies:
+      - USER_STORY-0013
+    assumptions:
+      - Conflict resolution rules are pre‑defined and stored in the system
+      - The engine can access live availability data and historical patterns
+
+  - user_story_id: USER_STORY-0015
+    title: Appointment Cancellation by Patient or Doctor
+    as_a: Patient / Doctor
+    i_want: to cancel an appointment and immediately free the slot
+    so_that: the slot becomes available for others and metrics are updated
+    business_value: Maintains accurate schedule and resource planning
+    success_metrics:
+      - Cancellation processed within 5 seconds
+      - Crowdedness metrics updated within 2 seconds post‑cancellation
+    dependencies:
+      - None
+    assumptions:
+      - Cancellation requests are sent to the backend via a secure API
+      - The system can atomically remove the appointment record
+
+  - user_story_id: USER_STORY-0016
+    title: No‑Show Detection and Auto‑Rescheduling
+    as_a: System
+    i_want: to detect when a patient misses an appointment and propose a new slot
+    so_that: the patient's care continuity is maintained without manual follow‑up
+    business_value: Improves clinic throughput and patient engagement
+    success_metrics:
+      - 90% of no‑shows trigger an auto‑reschedule suggestion within 10 minutes
+      - 80% of suggested reschedules are accepted by patients
+    dependencies:
+      - USER_STORY-0015
+    assumptions:
+      - Appointment start times are tracked accurately
+      - The system can identify missed appointments after a configurable grace period
+
+  - user_story_id: USER_STORY-0017
+    title: Admin Configuration of Conflict Resolution Rules
+    as_a: Clinic Administrator
+    i_want: to set thresholds for crowd level, session length, and alternative doctor preferences
+    so_that: the system's resolution engine behaves according to clinic policy
+    business_value: Enables customization and alignment with clinic workflow
+    success_metrics:
+      - Rule updates applied with zero downtime
+      - 100% of rule changes reflected in subsequent conflict resolution decisions
+    dependencies:
+      - None
+    assumptions:
+      - Admins have secure access to a rule‑management interface
+      - The system validates rule syntax before activation
+
+  - user_story_id: USER_STORY-0018
+    title: Conflict Event Logging for Audit
+    as_a: System
+    i_want: to record every conflict detection and resolution event with timestamps
+    so_that: administrators can review and audit the process
+    business_value: Provides traceability and compliance evidence
+    success_metrics:
+      - 100% of conflict events logged with accurate timestamps
+      - Audit logs retained for at least 5 years
+    dependencies:
+      - USER_STORY-0013
+      - USER_STORY-0014
+    assumptions:
+      - Persistent storage is available for audit logs
+      - Logs are encrypted at rest
+
+  - user_story_id: USER_STORY-0019
+    title: Time‑Zone Normalization for Remote Patients
+    as_a: System
+    i_want: to convert patient‑selected times to the clinic's local time zone
+    so_that: appointments are scheduled correctly regardless of patient location
+    business_value: Prevents scheduling errors and improves patient trust
+    success_metrics:
+      - 100% of time conversions are correct as verified by unit tests
+      - No scheduling errors reported due to time‑zone issues
+    dependencies:
+      - None
+    assumptions:
+      - Patient provides time‑zone information or it can be inferred
+      - The system supports IANA time‑zone identifiers
+
+  - user_story_id: USER_STORY-0020
+    title: Offline Change Queueing and Replay
+    as_a: System
+    i_want: to queue scheduling changes when connectivity to doctor calendars is lost
+    so_that: the system can replay them once connectivity is restored
+    business_value: Ensures reliability and continuity of service
+    success_metrics:
+      - 99% of queued changes replayed within 5 minutes after reconnection
+      - No data loss or duplicate appointments
+    dependencies:
+      - None
+    assumptions:
+      - The system can detect connectivity loss and store changes locally
+      - A retry mechanism is in place for replay
+
+  - user_story_id: USER_STORY-0021
+    title: Real‑Time Notification of Slot Changes
+    as_a: System
+    i_want: to send push, email, or SMS notifications when a slot is confirmed, changed, or resolved
+    so_that: patients and doctors are immediately informed
+    business_value: Improves communication and reduces no‑show rates
+    success_metrics:
+      - 99% of notifications delivered within 10 seconds
+      - 95% of patients acknowledge receipt of notifications
+    dependencies:
+      - USER_STORY-0014
+      - USER_STORY-0015
+    assumptions:
+      - Notification services (SMS, email, push) are available and authenticated
+      - User contact details are verified
+
+  - user_story_id: USER_STORY-0022
+    title: Real‑Time Crowdedness Metric Update
+    as_a: System
+    i_want: to refresh crowd level data after each booking or cancellation
+    so_that: subsequent slot selections reflect current availability
+    business_value: Keeps the crowd assessment accurate and trustworthy
+    success_metrics:
+      - 95% of metric updates occur within 2 seconds
+      - 100% of subsequent slot checks use the latest metric
+    dependencies:
+      - USER_STORY-0011
+      - USER_STORY-0015
+    assumptions:
+      - The metric calculation is lightweight enough for real‑time execution
+      - The system can broadcast metric updates to relevant services
+
+  - user_story_id: USER_STORY-0023
+    title: Analytics Dashboard for Conflict Resolution
+    as_a: Clinic Staff
+    i_want: to view live and historical conflict resolution statistics
+    so_that: I can monitor system performance and identify bottlenecks
+    business_value: Enables data‑driven improvements and demonstrates ROI
+    success_metrics:
+      - Dashboard refreshes every minute
+      - 99% of metrics displayed accurately
+    dependencies:
+      - USER_STORY-0013
+      - USER_STORY-0014
+      - USER_STORY-0018
+    assumptions:
+      - Aggregated data is stored in a reporting database
+      - Staff have secure access to the dashboard
+
+  - user_story_id: USER_STORY-0024
+    title: HIPAA‑Compliant Data Storage and Encryption
+    as_a: System
+    i_want: to encrypt all patient and appointment data at rest and in transit
+    so that: regulatory compliance is maintained
+    business_value: Protects patient privacy and avoids legal penalties
+    success_metrics:
+      - 100% of data encrypted with AES‑256 or equivalent
+      - 100% of data in transit protected by TLS 1.2+
+    dependencies:
+      - None
+    assumptions:
+      - Encryption keys are managed securely (e.g., KMS)
+      - All external integrations also use secure channels
+
+
+  - user_story_id: USER_STORY-0025
+    title: View Schedule Overview Calendar
+    as_a: Clinic Scheduler
+    i_want: view all upcoming appointments in a calendar view
+    so_that: I can spot conflicts and plan resources efficiently
+    business_value: Enables proactive scheduling, reduces last‑minute changes, and improves staff productivity
+    success_metrics:
+      - 80% of schedulers open the calendar at least once per week
+      - 95% of conflict detections within 5 minutes of opening the view
+    dependencies:
+      - None
+    assumptions:
+      - Calendar UI loads within 2 seconds
+      - Appointment data is available via the scheduling API
+
+  - user_story_id: USER_STORY-0026
+    title: Filter Schedule by Provider and Date
+    as_a: Clinic Scheduler
+    i_want: filter appointments by provider and date range
+    so_that: I can focus on a specific provider's load
+    business_value: Improves targeting of staffing and reduces scheduling errors
+    success_metrics:
+      - 90% of view sessions include a filter action
+      - Filter response time < 2 seconds
+    dependencies:
+      - USER_STORY-0025
+    assumptions:
+      - Provider and date data are indexed in the backend
+
+  - user_story_id: USER_STORY-0027
+    title: Drag & Drop Reschedule
+    as_a: Clinic Scheduler
+    i_want: drag an appointment to a new slot
+    so_that: I can rebook quickly without leaving the calendar
+    business_value: Cuts rescheduling time, increases staff satisfaction, and reduces no‑shows
+    success_metrics:
+      - 95% of drag‑and‑drop actions result in a successful reschedule
+      - Average reschedule time < 30 seconds
+    dependencies:
+      - USER_STORY-0025
+    assumptions:
+      - Drag‑and‑drop events are supported by the front‑end framework
+
+  - user_story_id: USER_STORY-0028
+    title: Manual Override – Cancel Appointment
+    as_a: Clinic Scheduler
+    i_want: cancel an appointment manually with a reason
+    so_that: I can maintain an accurate schedule and record justification
+    business_value: Ensures auditability and compliance while allowing flexibility
+    success_metrics:
+      - 100% of cancellations logged with reason and timestamp
+      - Cancellation error rate < 0.5%
+    dependencies:
+      - USER_STORY-0025
+    assumptions:
+      - Cancellation reason field is mandatory in the UI
+
+  - user_story_id: USER_STORY-0029
+    title: Force Schedule Appointment
+    as_a: Clinic Scheduler
+    i_want: force schedule a new appointment even if AI suggests otherwise
+    so_that: I can handle urgent or exceptional cases
+    business_value: Provides manual control for edge‑case scenarios without compromising AI efficiency
+    success_metrics:
+      - Forced schedule usage < 5% of total appointments
+      - Audit trail completeness 100%
+    dependencies:
+      - USER_STORY-0025
+    assumptions:
+      - System allows override only after confirmation
+
+  - user_story_id: USER_STORY-0030
+    title: View Provider Availability Dashboard
+    as_a: Clinic Scheduler
+    i_want: see provider open slots with historical usage bars
+    so_that: I can assess load and plan staffing
+    business_value: Improves resource allocation and reduces over‑ or under‑staffing
+    success_metrics:
+      - Dashboard loads < 2 seconds
+      - Availability accuracy ≥ 98%
+    dependencies:
+      - USER_STORY-0025
+    assumptions:
+      - Provider availability data is refreshed every 15 minutes
+
+  - user_story_id: USER_STORY-0031
+    title: Generate Performance Reports
+    as_a: Clinic Manager
+    i_want: generate reports on no‑show rates, wait times, and utilization
+    so_that: I can evaluate clinic performance and identify improvement areas
+    business_value: Drives data‑driven decision making and operational excellence
+    success_metrics:
+      - Report generation time < 1 minute
+      - Report accuracy 100%
+      - Report usage ≥ 80% of managers
+    dependencies:
+      - USER_STORY-0036
+    assumptions:
+      - Historical data is available in the analytics data store
+
+  - user_story_id: USER_STORY-0032
+    title: Export Reports
+    as_a: Clinic Manager
+    i_want: export reports to CSV or PDF
+    so_that: I can share findings with stakeholders
+    business_value: Facilitates external reporting and audit processes
+    success_metrics:
+      - Export success rate 99%
+      - Exported file size < 5 MB
+    dependencies:
+      - USER_STORY-0031
+    assumptions:
+      - Export formats are supported by the reporting engine
+
+  - user_story_id: USER_STORY-0033
+    title: Alert & Notification Center
+    as_a: Clinic Scheduler
+    i_want: receive real‑time alerts for schedule conflicts
+    so_that: I can proactively resolve issues
+    business_value: Reduces last‑minute schedule changes and improves patient satisfaction
+    success_metrics:
+      - Alert response time < 5 minutes
+      - Alert resolution rate ≥ 90%
+    dependencies:
+      - USER_STORY-0025
+    assumptions:
+      - Notification service is available and reliable
+
+  - user_story_id: USER_STORY-0034
+    title: Audit Trail Logging
+    as_a: Compliance Officer
+    i_want: audit trail of all manual changes
+    so_that: I can ensure regulatory compliance
+    business_value: Enables traceability and mitigates risk of unauthorized changes
+    success_metrics:
+      - Audit trail completeness 100%
+      - Audit log retrieval time < 2 seconds
+    dependencies:
+      - USER_STORY-0028
+      - USER_STORY-0029
+    assumptions:
+      - System logs include user, action, timestamp, and reason
+
+  - user_story_id: USER_STORY-0035
+    title: Integration with EHR and Billing
+    as_a: IT Administrator
+    i_want: sync schedules with EHR and billing systems
+    so_that: I can avoid duplicate data entry and ensure consistency
+    business_value: Reduces administrative burden and improves data integrity
+    success_metrics:
+      - Sync latency < 5 minutes
+      - Data consistency 100%
+      - Error rate < 0.1%
+    dependencies:
+      - None
+    assumptions:
+      - EHR and billing APIs are available and documented
+
+  - user_story_id: USER_STORY-0036
+    title: Role‑Based Permissions
+    as_a: System Administrator
+    i_want: assign permissions to staff
+    so_that: I can restrict access to sensitive scheduling functions
+    business_value: Enhances security and compliance
+    success_metrics:
+      - Permission changes applied within 1 hour
+      - Unauthorized attempts < 1%
+    dependencies:
+      - USER_STORY-0035
+    assumptions:
+      - Role definitions are defined in the policy engine
+
+  - user_story_id: USER_STORY-0037
+    title: Dashboard Training Module
+    as_a: New Staff Member
+    i_want: complete a dashboard training module
+    so_that: I can use the dashboard effectively from day one
+    business_value: Accelerates onboarding and reduces support tickets
+    success_metrics:
+      - Training completion rate 100%
+      - Post‑training test pass rate ≥ 90%
+    dependencies:
+      - None
+    assumptions:
+      - Training content is available in LMS format

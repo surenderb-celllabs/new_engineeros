@@ -1,0 +1,7 @@
+.venv
+__pycache__
+app/tools/tools_doc
+app/tools/save_docs
+app/tools/2026-01-07-tool_docs_careflow
+app/tools/2026-01-07-tool_docs
+.env

@@ -1,0 +1,66 @@
+problem_statement: |
+  In many outpatient clinics, administrative teams rely on spreadsheets and phone calls to coordinate appointment slots. This manual process forces staff to spend 5–8 hours each week reconciling schedules, while conflicts arise 3–4 times weekly, leading to double bookings and patient confusion. The workaround—manual updates and ad‑hoc phone calls—fails because it is error‑prone, time‑consuming, and does not provide real‑time visibility into doctor availability or patient preferences. The result is wasted staff time, diminished patient satisfaction, and lost revenue opportunities as appointments are missed or rescheduled.
+
+  The core of the issue is the lack of an automated, intelligent system that can ingest doctor calendars, patient preferences, and clinic constraints to generate conflict‑free schedules. Without such a system, administrative staff must continuously juggle conflicting entries, and patients are left with unreliable booking information, further eroding trust in the clinic’s service.
+
+  Addressing this root problem would streamline clinic operations, free up staff for higher‑value tasks, and improve the overall patient experience by ensuring appointments are scheduled accurately and transparently.
+
+solutions: |
+  The SmartMed Scheduler will deploy an AI‑driven scheduling engine that ingests doctor availability, clinic rules, and patient preferences to automatically assign appointment slots in real time. Patients will use a self‑service portal to view open slots and book appointments, while administrators will access a dashboard for oversight and manual overrides. The system will continuously monitor calendars for conflicts, trigger instant resolution workflows, and send automated reminders to both patients and staff. By replacing spreadsheets and phone calls with a unified, intelligent platform, the solution eliminates manual coordination, reduces scheduling conflicts, and frees administrative staff to focus on patient care.
+
+goals:
+  - goal_id: GOAL-001
+    statement: Build an AI‑driven scheduling engine that automatically assigns appointment slots based on doctor availability and patient preferences, eliminating the need for manual spreadsheet updates.
+    success_metrics:
+      - 70% reduction in manual scheduling hours per week for administrative staff
+      - 90% of appointments scheduled without human intervention
+    non_goals:
+      - Manual spreadsheet management
+      - Phone‑based appointment coordination
+    assumptions_constraints:
+      - Availability data will be provided in a standard calendar format (iCal, Google Calendar, etc.)
+      - Clinic policies and constraints can be encoded into the scheduling algorithm
+  - goal_id: GOAL-002
+    statement: Provide real‑time conflict detection and automated resolution, ensuring that scheduling conflicts are identified and addressed instantly for both staff and patients.
+    success_metrics:
+      - 95% of scheduling conflicts resolved automatically within 2 minutes
+      - <1% of appointments resulting in double bookings
+    non_goals:
+      - Manual conflict resolution outside the system
+      - Post‑hoc audit of conflicts
+    assumptions_constraints:
+      - System has continuous connectivity to doctor calendars
+      - Conflict resolution rules are pre‑defined and customizable by clinic administrators
+  - goal_id: GOAL-003
+    statement: Deliver a patient‑facing self‑service portal that allows patients to view real‑time availability, book, reschedule, and receive automated reminders for their appointments.
+    success_metrics:
+      - 60% of all appointments booked through the portal
+      - 85% patient satisfaction score on booking experience
+    non_goals:
+      - In‑person booking kiosks
+      - SMS‑only booking without a web interface
+    assumptions_constraints:
+      - Patients have internet access and a basic level of digital literacy
+      - Portal must comply with HIPAA and local data protection regulations
+  - goal_id: GOAL-004
+    statement: Provide an administrative dashboard that gives clinic staff oversight, reporting, and manual override capabilities to manage schedules and monitor performance.
+    success_metrics:
+      - 80% of staff actively use the dashboard at least weekly
+      - Dashboard usage leads to a 30% reduction in last‑minute schedule changes
+    non_goals:
+      - Full automation of all administrative tasks (dashboard still allows manual intervention)
+      - Real‑time patient chat support within the dashboard
+    assumptions_constraints:
+      - Dashboard must integrate with existing EHR and billing systems
+      - Staff will receive basic training on dashboard usage
+  - goal_id: GOAL-005
+    statement: Create an integration layer that syncs appointment data with existing EHR and calendar systems, ensuring data consistency and eliminating duplicate entries.
+    success_metrics:
+      - 99% sync success rate between SmartMed Scheduler and EHR/calendar systems
+      - <1 minute data latency for new or updated appointments
+    non_goals:
+      - Custom API development for every vendor (only support for major EHRs)
+      - Manual data entry into the EHR
+    assumptions_constraints:
+      - EHR vendors provide APIs or data export/import capabilities
+      - Data security and compliance requirements are met for all integrated systems

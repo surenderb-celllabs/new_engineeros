@@ -1,0 +1,105 @@
+# White Screen on Windows After Building React + Electron App (Works Fine on Ubuntu)
+## Issue Description
+The app installs successfully on Windows, but opens to a blank white screen. No UI elements are visible, and the tray icon does not appear.
+
+### Tech Stack
+* Frontend: React.js
+* Backend: Electron (main process)
+* Bundler: Webpack
+* Packaging: electron-builder
+* OS: Ubuntu 22.04 (working), Windows 10/11 (not working)
+
+### Issue Details
+* App installs successfully on Windows, but opens to a blank white screen
+* No UI elements are visible
+* Tray icon does not appear
+* No errors during the build process
+* Works perfectly in development environment
+
+### What I've Tried
+* Verified that main.js and preload.js are included in the build
+* Confirmed that index.html is being bundled correctly by Webpack
+* Enabled DevTools via webPreferences: { devTools: true } — but nothing renders
+* Ran the .exe as administrator
+* Checked for missing assets or build resources
+* Compared Linux and Windows builds for discrepancies
+
+### Code Snippets
+#### preload.js
+```javascript
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("ipcRenderer", {
+  send: (channel, data) => ipcRenderer.send(channel, data),
+  on: (channel, callback) =>
+    ipcRenderer.on(channel, (event, ...args) => callback(...args)),
+});
+```
+
+#### package.json
+```json
+{
+  "name": "plus-desk",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "webpack && electron .",
+    "pack": "webpack && electron-builder --dir",
+    "dist": "webpack && electron-builder"
+  },
+  "build": {
+    "appId": "com.hello.world",
+    "productName": "PulseDesk",
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PulseDesk"
+    },
+    "directories": {
+      "buildResources": "public"
+    },
+    "linux": {
+      "target": "deb",
+      "icon": "public/speedometer-256x256.png",
+      "category": "Utility",
+      "description": "PulseDesk is a real-time communication and productivity tool for teams."
+    }
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
+    "babel-loader": "^10.0.0",
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12",
+    "html-webpack-plugin": "^5.6.3",
+    "path-browserify": "^1.0.1",
+    "webpack": "^5.101.0",
+    "webpack-cli": "^6.0.1"
+  }
+}
+```
+
+## Solution
+The problem was in the `package.json` under the build section, where the necessary files for the production build were not being included. The `dist` folder, which contains the Webpack output, was not being bundled, causing the `.exe` to launch but fail to display anything, resulting in a blank Electron window.
+
+### Fix
+Updated the `files` array in the build config to explicitly include the required assets:
+```json
+"files": [
+  "main.js",
+  "dist/**/*",
+  "public/**/*"
+]
+```

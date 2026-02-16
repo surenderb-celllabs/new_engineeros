@@ -1,0 +1,68 @@
+# OpenAI API Pricing Calculator | LLM Cost Estimator
+## Introduction
+Begin with a clear financial plan using our LLM API Cost Calculator. Designed to tackle the complexities of pricing for major APIs like OpenAI, Azure, and Anthropic Claude, our OpenAI API pricing calculator delivers precise cost estimates for GPT and ChatGPT APIs. Updated to reflect the latest rates as of Jan 2026. Get your accurate cost estimate now and step confidently into building your innovative AI product.
+
+## Streamlined Pricing for OpenAI API Services
+OpenAI API pricing primarily hinges on: tokens and context length. Tokens, generally three-quarters of a word, form the cost basis, as reflected in the OpenAI token calculator. Longer context lengths enable more complex tasks but increase the OpenAI API cost. This concept directly influences GPT API pricing, including ChatGPT API pricing. The blend of token count and context length majorly determines the overall OpenAI API pricing.
+
+### Model Choice and Usage
+LLM APIs pricing is based on model choice and usage.
+* OpenAI GPT-4: A leading-edge model, GPT-4 boasts extensive general knowledge and specialized expertise. Ideal for complex instructions and problem-solving, it offers precise outputs but at a higher cost. GPT-4 Turbo, it’s faster and more affordable variant, supports a substantial 128K context limit, enhancing its range of applications.
+* OpenAI GPT-3.5 Turbo: Optimized for dialogue and conversational interfaces, GPT-3.5 Turbo is the go-to model for chatbot technology. It stands out for its speed and cost-effectiveness in text generation, making it a popular choice for real-time, interactive applications.
+* Anthropic Claude 2: Known for its impressive 100K context length, Claude 2 excels in summarizing large documents and handling detailed Q&A sessions. While its extensive context capacity is a significant advantage, it comes at the cost of speed and affordability.
+* Llama 2: Developed by Meta, this open-source model is akin to GPT-3.5 Turbo in performance. Notably cost-effective, it specializes in English text summarization and question answering. Although it’s limited to English, its affordability and versatility make it a strong contender in the AI landscape.
+* Gemini Series by Google: This series includes Gemini Ultra, Pro, and Nano. Gemini Ultra rivals OpenAI’s GPT-4 in capabilities, while Gemini Pro aligns more with GPT-3.5 in performance. This range offers versatile, multimodal functionalities, catering to diverse AI needs.
+* PaLM 2 by Google: PaLM 2 is distinguished by its advanced multilingual capabilities and reasoning prowess. Trained on a vast, diverse dataset, it excels in tasks requiring complex language understanding and translation, including coding, making it ideal for academic and technical applications.
+* Mistral AI Models: Mistral AI offers accessible, open-source models like Mistral 7B and Mixtral, which provide rapid and cost-efficient solutions. These models compete with larger models like GPT-3.5 Turbo in performance, offering a viable alternative for budget-conscious AI applications.
+
+## Pricing Table
+### Chat/Completion Models
+| Provider | Model Name | Context | Input/1M | Output/1M | Per Call | Total | Last Updated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OpenAI | o1 | 200K/100K | $15 | $60 | $0 | $0 | Dec 2024 |
+| OpenAI | o1-mini | 128K/65K | $3 | $12 | $0 | $0 | Sep 2024 |
+| OpenAI | GPT-4o | 128K/16K | $2.5 | $10 | $0 | $0 | Aug 2024 |
+| OpenAI | GPT-4o mini | 128K/16K | $0.15 | $0.6 | $0 | $0 | Jul 2024 |
+| OpenAI | GPT-4o Realtime (Text) | 128K/16K | $5 | $20 | $0 | $0 | Oct 2024 |
+| OpenAI | GPT-4o Audio (Text) | 128K/16K | $2.5 | $10 | $0 | $0 | Oct 2024 |
+| OpenAI | GPT-4 Turbo | 128K/4K | $10 | $30 | $0 | $0 | Apr 2024 |
+| Anthropic | Claude Sonnet 4.5 | 200K/8K | $3.00 | $15.00 | $0 | $0 | Jan 2025 |
+| Anthropic | Claude Haiku 4.5 | 200K/8K | $1.00 | $5.00 | $0 | $0 | Jan 2025 |
+| Anthropic | Claude Opus 4 | 200K/8K | $15.00 | $75.00 | $0 | $0 | Nov 2024 |
+| Anthropic | Claude Sonnet 3.5 | 200K/8K | $3.00 | $15.00 | $0 | $0 | Oct 2024 |
+| Google | Gemini 2.0 Flash | 1M | $0.10 | $0.40 | $0 | $0 | Dec 2024 |
+| Google | Gemini 1.5 Pro | 2M | $1.25 | $5.00 | $0 | $0 | Sep 2024 |
+| Google | Gemini 1.5 Flash | 1M | $0.075 | $0.30 | $0 | $0 | Sep 2024 |
+| Google | Gemini 1.5 Flash-8B | 1M | $0.0375 | $0.15 | $0 | $0 | Oct 2024 |
+| Meta | Llama 3.3 70B | 128K | $0.23 | $0.40 | $0 | $0 | Dec 2024 |
+| Meta | Llama 3.1 405B | 128K | $1.79 | $1.79 | $0 | $0 | Jul 2024 |
+| Meta | Llama 3.2 90B Vision | 128K | $0.35 | $0.40 | $0 | $0 | Sep 2024 |
+| Amazon | Nova Pro | 300K | $0.8 | $3.2 | $0 | $0 | Dec 2024 |
+| Amazon | Nova Lite | 300K | $0.06 | $0.24 | $0 | $0 | Dec 2024 |
+| Amazon | Nova Micro | 128K | $0.035 | $0.14 | $0 | $0 | Dec 2024 |
+| DeepSeek | DeepSeek-V3 | 128K | $0.14 | $0.28 | $0 | $0 | Dec 2024 |
+| Mistral AI | Mistral Large 2 | 128K | $2 | $6 | $0 | $0 | Jul 2024 |
+| Cohere | Command R+ | 128K | $3 | $15 | $0 | $0 | Aug 2024 |
+| Cohere | Command R | 128K | $0.5 | $1.5 | $0 | $0 | Aug 2024 |
+
+### Fine-tuning Models
+| Provider | Model Name | Context | Input/1M | Output/1M | Per Call | Total | Last Updated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OpenAI | GPT-4o (Fine-tuned) | 128K/16K | $3.75 | $15 | $0 | $0 | Aug 2024 |
+| OpenAI | GPT-4o Mini (Fine-tuned) | 128K/16K | $0.30 | $1.20 | $0 | $0 | Jul 2024 |
+
+### Embedding Models
+| Provider | Model Name | Context | Input/1M | Output/1M | Per Call | Total | Last Updated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| OpenAI | text-embedding-3-large | 8K | $0.13 | - | $0 | $0 | Jan 2024 |
+| OpenAI | text-embedding-3-small | 8K | $0.02 | - | $0 | $0 | Jan 2024 |
+| Google | text-embedding-004 | 2K | $0.10 | - | $0 | $0 | Sep 2024 |
+| Cohere | Embed v3.0 | 512 | $0.10 | - | $0 | $0 | Nov 2023 |
+
+## Expert LLM and OpenAI API Integration by Markovate
+Specializing in AI and LLM API integration, Markovate develops precision-engineered AI products. Our team of over 50 AI experts, with a portfolio of hundreds of successful AI projects, ensures seamless and efficient integration of advanced LLM models. Let’s leverage these LLM models to build smarter products.
+
+## FAQ’s
+### About OpenAI API Pricing Calculator
+* What Determines ChatGPT API Pricing? ChatGPT API pricing is based on the number of tokens processed. Costs are incurred for both input and output tokens, with the total price reflecting the total tokens used in a session.
+* What is the Function of the OpenAI Pricing Calculator? The OpenAI pricing calculator estimates costs

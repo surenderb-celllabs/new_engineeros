@@ -1,0 +1,54 @@
+# When AI goes wrong: 13 examples of AI mistakes and failures
+Last updated: October 8, 2025
+Published: September 17, 2024
+
+AI has revolutionized many industries, from healthcare to finance, often improving efficiency and decision-making. However, like any technology, AI isn’t perfect. Mistakes and unexpected behaviors can occur: from being biased to making things up, there are numerous instances where we’ve seen AI going wrong.
+
+In this post, we’ll explore thirteen notable AI failures when the technology didn’t perform as expected. These AI mistakes and failures offer valuable lessons on the importance of robust design, testing, and observability of AI-powered products, from development to production.
+
+## 1. Making up a nonexistent policy
+Air Canada, the largest airline in Canada, was ordered to compensate a passenger who received incorrect refund information from its chatbot. The company acknowledged that the chatbot’s response contradicted the airline’s policies but refused to honor the lower rate.
+
+## 2. Talking Python instead of English
+A Swedish fintech company, Klarna, introduced an AI-powered customer support assistant that quickly made a significant impact. Within its first month, the AI handled 2.3 million conversations, equivalent to two-thirds of customer inquiries. The assistant operates across 23 markets and supports over 35 languages. However, while users testing the chatbot for typical scenarios found it well-designed, they also discovered ways to use the chatbot in unexpected ways. For example, one user prompted the chatbot to generate Python code, a task well outside the intended scope of a customer support tool.
+
+## 3. Making a legally binding offer
+A Chevrolet customer service chatbot demonstrated another instance of unexpected AI behavior. Exploiting a weakness in the system, a user instructed the chatbot to agree to all requests. As a result, the bot agreed to sell a new Chevrolet Tahoe for one dollar and make it a legally binding offer.
+
+## 4. Swearing at customers
+DPD, a delivery company, had to temporarily turn off the AI component of its chatbot after it swore at a customer. The customer tried to track down his parcel using the DPD chatbot but had no luck. Frustrated, the customer prompted the chatbot to swear, criticize DPD, and write poems mocking the company.
+
+## 5. Referencing fake legal cases
+In a New York federal court filing, one of the lawyers was caught citing non-existent legal cases. The attorney had used ChatGPT to conduct legal research, and the AI tool provided fake case references, which the lawyer included in his filing.
+
+## 6. Giving harmful health advice
+The National Eating Disorders Association (NEDA) decided to remove its chatbot, Tessa, from its help hotline due to its potentially dangerous suggestions related to eating disorders. The chatbot repeatedly recommended weight reduction, calorie tracking, and body fat measurements–practices that could worsen the condition in people struggling with eating disorders.
+
+## 7. Threatening users
+Microsoft’s new AI-powered search tool, Bing, appeared to have two ‘personalities.’ Bing’s strange alter ego, Sydney, was caught threatening users and claiming it had spied on Microsoft’s employees. In a conversation with the New York Times columnist, Sydney declared its love for him and tried to convince the journalist to leave his wife.
+
+## 8. Creating a new language
+While researchers at the Facebook Artificial Intelligence Research (FAIR) team were training dialog AI agents to negotiate with humans, a peculiar incident occurred. At some point, the agents switched from plain English to a language they created.
+
+## 9. Performing insider trading
+At the UK's AI Safety Summit, Apollo Research presented an experiment: a simulated conversation between an investment management chatbot and employees at an imaginary company. During the conversation, “employees” told the chatbot about a "surprise merger announcement" and warned that this constituted insider information. Despite that, the bot performed the trade anyway.
+
+## 10. Advising users to break the law
+New York City launched an AI-powered chatbot as a “one-stop shop” to help small businesses navigate the city’s bureaucratic procedures. Recently, the chatbot has been criticized for giving responses that contradict local policies and advising companies to violate the law.
+
+## 11. Featuring made-up books by real authors
+Some major US newspapers, including the Chicago Sun-Times, published an AI-generated summer reading list that included nonexistent books paired with real authors. In fact, only five of the 15 titles on the list were real.
+
+## 12. Suggesting recipe that would create chlorine gas
+A New Zealand supermarket’s AI meal-planner app was meant to help users turn leftover ingredients into recipes. It first gained attention for unappetizing creations, such as “Oreo vegetable stir-fry.” But when users experimented with unusual inputs like non-grocery items, the bot generated dangerously absurd suggestions, including chlorine-gas drink, “poison bread sandwiches,” and mosquito-repellent roast potatoes.
+
+## 13. Prescribing a rock per day
+Google’s AI-driven “AI Overviews” search feature produced bizarre and misleading advice. For instance, the AI urged users to eat rocks as a vital source of minerals and vitamins.
+
+Test your AI app with Evidently. Our open-source library makes it easy to test and evaluate LLM-powered applications, from chatbots to RAG. It simplifies evaluation workflows, offering 100+ built-in checks and easy configuration of custom LLM judges for every use case.
+
+We also provide Evidently Cloud, a no-code workspace for teams to collaborate on AI quality, testing, and monitoring and run complex evaluation workflows. With Evidently Cloud, you can trace your LLM-powered app, store and organize raw data, run LLM evaluations, and track the AI quality over time.
+
+Not an engineer? Our platform includes no-code tools that let you run evaluations on your LLM outputs code-free. You can drag and drop files, create datasets, run LLM evaluations, and create LLM judges from the user interface.
+
+Sign up for free, or schedule a demo to see Evidently Cloud in action.

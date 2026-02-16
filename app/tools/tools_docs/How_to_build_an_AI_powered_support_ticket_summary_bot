@@ -1,0 +1,40 @@
+# How to Build an AI-Powered Support Ticket Summary Bot
+## Introduction
+Handling escalated support tickets can be a challenging task, with critical information scattered across various tools like Zendesk, Jira, and Slack. This fragmentation can slow response times, frustrate stakeholders, and waste valuable hours. At Celigo, we recognized the need for a better solution and built an AI-powered support ticket summary bot to automate the entire support ticket workflow.
+
+## The Problem: Why We Built This Bot
+When tickets escalate, clarity is crucial but often in short supply. The significant hurdles include:
+* Information silos: Data is spread across multiple tools, making it hard to track.
+* Manual processes: Summaries require time-intensive digging through systems, creating room for error.
+* Leadership delays: Decision-makers often lack timely insights to act.
+
+## The Solution: AI Support Ticket Summary Bot
+The bot uses Celigo's iPaaS platform and OpenAI to automate the entire support ticket workflow. Here's how it works:
+1. **Trigger**: A user posts a Zendesk ticket link in a Slack channel, indicating escalation.
+2. **Data Retrieval**: The bot pulls data from:
+	* Zendesk: Ticket metadata, communication logs, and customer feedback.
+	* Jira: Linked issues, engineering updates, and action items.
+3. **AI-Powered Processing**: OpenAI generates a structured summary, including:
+	* The original issue.
+	* Suggested solutions and customer responses.
+	* A timeline of communications (emails, meetings, chats).
+	* Current status and next steps.
+	* Jira updates tied to the ticket.
+4. **Slack Delivery**: The AI-generated summary is posted in Slack, ensuring everyone stays aligned without leaving their primary workspace.
+
+## Building the Bot
+To build the bot, follow these steps:
+1. **Setting Up the Flow**: Use a webhook to detect Slack messages with Zendesk ticket links and trigger the bot. Integrate Slack, Zendesk, Jira, and OpenAI connectors in Celigo's platform.
+2. **Aggregating Data**: Pull metadata and comments from Zendesk and Jira. Organize data into structured datasets for processing.
+3. **Creating AI-Driven Summaries**: Define OpenAI prompts to extract the required details and create a readable summary. Specify mappings to ensure the AI processes the correct datasets.
+4. **Integrating with Slack**: Configure the bot to send the summary back to Slack in an actionable format.
+
+## The Results: Business Value Delivered
+The AI Support Ticket Summary Bot delivers real business value by:
+* Providing summaries in under 30 seconds.
+* Ensuring unified updates to keep teams informed and aligned.
+* Freeing agents and managers to resolve issues instead of creating reports.
+* Combining data from multiple tools into one actionable update.
+
+## Conclusion
+The AI Support Ticket Summary Bot is a breakthrough in escalation management, eliminating inefficiencies, keeping teams aligned, and accelerating decision-making. By automating the support ticket workflow, teams can focus on what matters most: seamless customer experiences and higher team productivity.

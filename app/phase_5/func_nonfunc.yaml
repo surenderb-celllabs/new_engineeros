@@ -1,0 +1,416 @@
+functional_requirements:
+  - id: FR-0000
+    description: |
+      The system shall provide a password‑less authentication flow that
+      delivers a one‑time magic link via email or SMS, or a biometric
+      prompt on supported devices, allowing the patient to log in with a
+      single click or biometric confirmation.
+    priority: Critical
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given a registered patient email or phone number, when the patient requests login, then the system must send a magic link or biometric prompt within 30 seconds.
+      - Given the magic link is clicked, when the link is within its validity period, then the patient must be authenticated and redirected to the appointment dashboard.
+      - Given the magic link is expired or invalid, when the patient attempts to use it, then the system must display a clear error message and offer to resend the link.
+    edge_cases:
+      - The patient clicks the magic link after the 15‑minute expiry window.
+      - The patient receives multiple simultaneous magic links due to repeated requests.
+      - The patient attempts to use the link from a different device or browser.
+    dependencies:
+      - FR-0008
+
+  - id: FR-0001
+    description: |
+      The system shall enforce multi‑factor authentication (MFA) by sending a one‑time code via SMS or email, which the patient must enter within 5 minutes to complete login.
+    priority: High
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given the patient has completed the magic link step, when MFA is required, then the system must send a 6‑digit code within 30 seconds.
+      - Given the patient enters the correct MFA code, when the code is verified, then the patient is fully authenticated and redirected to the dashboard.
+      - Given the patient enters an incorrect MFA code three times, when the third attempt fails, then the system must lock the account for 15 minutes and display an error message.
+    edge_cases:
+      - The patient receives the MFA code but loses network connectivity before entering it.
+      - The patient enters the MFA code after the 5‑minute expiry window.
+      - The patient receives multiple MFA codes due to repeated requests.
+    dependencies:
+      - FR-0000
+
+  - id: FR-0002
+    description: |
+      The system shall integrate with the existing OAuth 2.0 provider to obtain an access token, store it securely, and establish a user session upon successful authentication.
+    priority: High
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given the patient has authenticated via magic link or biometric, when the system requests an OAuth 2.0 token, then the provider must return a short‑lived access token within 1 second.
+      - Given the access token is received, when the system validates it, then a secure session cookie must be issued with a 30‑minute idle timeout.
+    edge_cases:
+      - The OAuth provider responds with an error (e.g., invalid_grant).
+      - The token is expired or revoked before the session is established.
+      - The network between the portal and OAuth provider is intermittent.
+    dependencies:
+      - FR-0000
+
+  - id: FR-0003
+    description: |
+      The system shall grant the patient immediate access to their appointment data after successful authentication, without requiring additional navigation steps.
+    priority: Medium
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given the patient is authenticated, when the system redirects to the dashboard, then the appointment list must be rendered and fully interactive within 1 second.
+    edge_cases:
+      - The appointment data service is temporarily unavailable.
+      - The patient has no scheduled appointments; the system must display an appropriate message.
+    dependencies:
+      - FR-0000
+      - FR-0002
+
+  - id: FR-0004
+    description: |
+      The system shall maintain an immutable audit log for all login attempts, magic link generation, MFA steps, and subsequent data access events, retaining logs for 24 months.
+    priority: High
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given any login event, when it occurs, then an audit record containing timestamp, user ID, event type, IP address, and outcome must be written to the audit store within 2 seconds.
+      - Given the audit store, when queried for a specific user’s login history, then the system must return all events in chronological order within 5 seconds.
+    edge_cases:
+      - The audit store experiences a write failure; the system must retry and flag the incident.
+      - An attacker attempts to tamper with log entries; the system must detect and prevent tampering.
+    dependencies:
+      - FR-0000
+      - FR-0001
+      - FR-0002
+
+  - id: FR-0005
+    description: |
+      The system shall provide clear, user‑friendly error messages for all failure scenarios encountered during login, including expired links, invalid credentials, MFA failures, and service outages.
+    priority: Medium
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given any error during the login flow, when the error occurs, then the system must display a concise message that indicates the issue and suggests next steps.
+    edge_cases:
+      - The error message contains sensitive information (e.g., IP address).
+      - The error message is displayed in a language not supported by the user’s locale.
+    dependencies:
+      - FR-0000
+      - FR-0001
+
+  - id: FR-0006
+    description: |
+      The system shall enforce rate limiting on login attempts, allowing a maximum of 5 failed attempts per user per 15‑minute window, after which the account is locked for 15 minutes.
+    priority: High
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given a user makes 5 consecutive failed login attempts, when the sixth attempt occurs, then the system must lock the account and return an error indicating lockout duration.
+      - Given the lockout period expires, when the user attempts to log in again, then the system must allow a new attempt.
+    edge_cases:
+      - An attacker uses multiple IP addresses to bypass the limit.
+      - The user’s legitimate login attempt is mistakenly counted due to a transient failure.
+    dependencies:
+      - FR-0000
+
+  - id: FR-0007
+    description: |
+      The system shall enforce a session idle timeout of 30 minutes, after which the user must re‑authenticate to continue accessing appointment data.
+    priority: Critical
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given a user is idle for 30 minutes, when the next request is made, then the system must redirect to the login page.
+      - Given a user logs out explicitly, when the session cookie is deleted, then subsequent requests must require re‑authentication.
+    edge_cases:
+      - The user’s device time is set incorrectly, causing premature session expiration.
+      - The user’s session is hijacked; the system must detect and invalidate it.
+    dependencies:
+      - FR-0000
+      - FR-0002
+
+  - id: FR-0008
+    description: |
+      The system shall integrate with a compliant email and SMS gateway to deliver magic links and MFA codes, ensuring delivery within 30 seconds.
+    priority: High
+    related_usecase:
+      - USE_CASE-0001
+    acceptance_criteria:
+      - Given the system requests delivery of a magic link or MFA code, when the gateway responds, then the message must be delivered to the patient’s email or phone within 30 seconds.
+      - Given the gateway reports a delivery failure, when the system receives the failure notification, then it must retry once and inform the user of the delay.
+    edge_cases:
+      - The patient’s email address is in a temporary mailbox that rejects messages.
+      - The patient’s phone number is unreachable due to network outages.
+    dependencies: []
+
+
+  - id: FR-0009
+    description: The system must display real‑time appointment slots for a selected provider and specialty, filtered by date and time window.
+    priority: Critical
+    related_usecase:
+      - USE_CASE-0002
+    acceptance_criteria:
+      - Given a patient selects a provider, specialty, date, and time window, when the availability screen loads, then the system displays all slots that are currently available and match the filtering criteria.
+      - Given the scheduling API returns a 200 response, when the client renders the slots, then the UI shows the slot list within 2 seconds of receiving the data.
+    edge_cases:
+      - The scheduling API returns no available slots – the UI must display a “No slots available” message.
+      - The scheduling API returns an error (5xx) – the UI must show an error banner and retry every 30 seconds.
+      - The provider ID is invalid – the UI must display “Provider not found” and prompt the user to select another provider.
+    dependencies: []
+
+  - id: FR-0010
+    description: For each slot displayed, the system must show the provider’s profile, credentials, and office location.
+    priority: High
+    related_usecase:
+      - USE_CASE-0002
+    acceptance_criteria:
+      - Given a slot is displayed, when the user hovers or taps the slot, then the provider’s profile picture, name, specialty, and office address are visible.
+    edge_cases:
+      - Provider profile image fails to load – a default avatar is shown.
+      - Provider credentials are missing – the system displays “Credentials not available”.
+    dependencies:
+      - FR-0009
+
+  - id: FR-0011
+    description: The system must allow a patient to select an available slot to initiate a booking or appointment request.
+    priority: Critical
+    related_usecase:
+      - USE_CASE-0002
+    acceptance_criteria:
+      - Given a patient selects a slot, when the “Book” action is triggered, then the system navigates to a confirmation screen with the selected slot details.
+    edge_cases:
+      - The slot is double‑booked between selection and confirmation – the system must detect the conflict, notify the patient, and refresh the slot list.
+      - The patient attempts to book a slot that has just expired – the system must reject the request and prompt to select another slot.
+    dependencies:
+      - FR-0009
+
+  - id: FR-0012
+    description: The system must present a confirmation view that displays the selected slot details and includes a secure “Book” button to finalize the appointment.
+    priority: High
+    related_usecase:
+      - USE_CASE-0002
+    acceptance_criteria:
+      - Given the patient has selected a slot, when the confirmation screen loads, then the slot date, time, provider, and location are shown and a “Book” button is enabled.
+      - When the patient taps the “Book” button, the system submits a booking request to the scheduling engine and displays a success or failure message.
+    edge_cases:
+      - The booking request fails due to network timeout – the UI shows a retry option.
+      - The booking request is rejected by the scheduling engine (e.g., slot already taken) – the system displays an error and offers alternative slots.
+    dependencies:
+      - FR-0011
+
+  - id: FR-0013
+    description: The system must auto‑refresh slot data every 5 seconds or provide a pull‑to‑refresh gesture to fetch the latest availability.
+    priority: High
+    related_usecase:
+      - USE_CASE-0002
+    acceptance_criteria:
+      - Given the availability screen is open, when 5 seconds elapse, then the client automatically fetches the latest slot data and updates the UI.
+      - When the user performs a pull‑to‑refresh gesture, the client immediately fetches fresh data and updates the UI.
+    edge_cases:
+      - The client loses network connectivity during auto‑refresh – the UI indicates “Offline” and pauses auto‑refresh until connectivity is restored.
+      - The scheduling API throttles requests – the client implements exponential back‑off and retries after the throttle window.
+    dependencies:
+      - FR-0009
+
+  - id: FR-0014
+    description: The system must support displaying slots in the patient’s local time zone and optionally convert to provider’s time zone for traveling patients.
+    priority: Medium
+    related_usecase:
+      - USE_CASE-0002
+    acceptance_criteria:
+      - Given a patient in a different time zone selects a provider in another time zone, when the slots are displayed, then times are converted to the patient’s local time zone.
+      - When the patient opts to view provider time zone, the UI shows both time zones side by side.
+    edge_cases:
+      - Daylight‑saving time change occurs between the client’s time zone and provider’s time zone – the system correctly adjusts slot times.
+      - The patient’s device time zone is incorrectly set – the system provides a “Sync time” prompt.
+    dependencies:
+      - FR-0009
+
+non_functional_requirements:
+  - id: NFR-0000
+    description: |
+      All data in transit must be encrypted using TLS 1.3, and all data at rest must be encrypted with AES‑256. Encryption keys shall be managed via a Hardware Security Module (HSM).
+    related_fr:
+      - FR-0000
+      - FR-0001
+      - FR-0002
+      - FR-0008
+      - FR-0007
+    measurement:
+      - The TLS handshake must negotiate TLS 1.3 for all client‑server connections.
+      - AES‑256 encryption must be verified on a sample of stored tokens and audit logs.
+      - Key rotation must occur at least every 90 days, and key usage logs must be retained for 12 months.
+
+  - id: NFR-0001
+    description: |
+      The system must comply with HIPAA security and privacy rules, including audit logging retention for 24 months, breach notification procedures, and data minimization.
+    related_fr:
+      - FR-0004
+    measurement:
+      - Audit logs must be retained for 24 months and be immutable.
+      - A breach notification workflow must be documented and tested annually.
+      - Data minimization checks must confirm that only required fields are stored for authentication.
+
+  - id: NFR-0002
+    description: |
+      End‑to‑end authentication (magic link generation, MFA, OAuth token acquisition, session creation) must resolve within 2 seconds for 99th percentile of users.
+    related_fr:
+      - FR-0000
+      - FR-0001
+      - FR-0002
+      - FR-0008
+    measurement:
+      - Latency measured via automated performance tests; 99th percentile < 2 s.
+      - Real‑time monitoring dashboards must alert if median latency exceeds 1 s.
+
+  - id: NFR-0003
+    description: |
+      Email and SMS delivery for magic links and MFA codes must complete within 30 seconds for 95th percentile of messages.
+    related_fr:
+      - FR-0008
+    measurement:
+      - Delivery timestamps recorded; 95th percentile < 30 s.
+      - Retry logic must not exceed 2 attempts.
+
+  - id: NFR-0004
+    description: |
+      The authentication service must achieve 99.9 % uptime, with automatic failover to a secondary instance in the event of a primary failure.
+    related_fr:
+      - FR-0000
+      - FR-0001
+      - FR-0002
+      - FR-0008
+    measurement:
+      - Uptime calculated from health‑check logs over a rolling 30‑day period.
+      - Failover must occur within 30 seconds and restore service with minimal disruption.
+
+  - id: NFR-0005
+    description: |
+      The system must scale to handle 10,000 concurrent login attempts during peak periods without degradation in response time.
+    related_fr:
+      - FR-0000
+      - FR-0001
+      - FR-0002
+    measurement:
+      - Load testing with 10,000 concurrent simulated users; response time must remain < 2 s.
+      - CPU and memory usage must stay below 80 % during peak load.
+
+  - id: NFR-0006
+    description: |
+      At least 95 % of patients surveyed post‑login must report confidence in the login process.
+    related_fr:
+      - FR-0000
+      - FR-0001
+      - FR-0003
+    measurement:
+      - Quarterly UX surveys; confidence score ≥ 95 % required.
+      - Survey response rate must be ≥ 70 % of active users.
+
+  - id: NFR-0007
+    description: |
+      MFA codes must expire 5 minutes after issuance, and the system must allow a maximum of 3 attempts per code.
+    related_fr:
+      - FR-0001
+    measurement:
+      - Code expiry verified via automated tests; 5 min timeout.
+      - Attempt counter reset after successful verification or expiry.
+
+  - id: NFR-0008
+    description: |
+      Session idle timeout must be 30 minutes, and session termination must invalidate all session tokens.
+    related_fr:
+      - FR-0007
+    measurement:
+      - Idle timeout enforced in session management module; verified via integration tests.
+      - Logout flow must revoke session tokens and delete session cookies.
+
+  - id: NFR-0009
+    description: |
+      Audit logs must be tamper‑evident, searchable, and protected from unauthorized access.
+    related_fr:
+      - FR-0004
+    measurement:
+      - Log integrity checks (hash chaining) must detect any alterations.
+      - Access controls verified via penetration tests; only authorized roles can read logs.
+
+  - id: NFR-0010
+    description: |
+      All third‑party integrations (email, SMS, OAuth provider) must be vetted and certified for HIPAA compliance before use.
+    related_fr:
+      - FR-0008
+    measurement:
+      - Vendor security assessments completed and signed off annually.
+      - Compliance certificates stored in the system’s vendor registry.
+  - id: NFR-0011
+    description: The system must meet performance targets for API latency and UI rendering to ensure a responsive user experience.
+    related_fr:
+      - FR-0009
+      - FR-0010
+    measurement:
+      - API latency: ≤ 1 second (measured from request sent to response received in production).
+      - UI rendering time: ≤ 2 seconds (measured from data receipt to full slot list visible).
+      - Verification: Continuous monitoring via Application Performance Monitoring (APM) tools and automated end‑to‑end tests.
+
+  - id: NFR-0012
+    description: The availability view must maintain high reliability and graceful degradation in case of scheduling API failures.
+    related_fr:
+      - FR-0009
+      - FR-0013
+    measurement:
+      - Uptime: ≥ 99.9 % for the availability view over a 30‑day period.
+      - Retry logic: automatic retry every 30 seconds if the scheduling API is unreachable.
+      - Verification: Uptime monitoring dashboards and simulated API outages in testing environments.
+
+  - id: NFR-0013
+    description: The system must adhere to HIPAA security requirements and enforce secure data transmission.
+    related_fr:
+      - FR-0009
+      - FR-0010
+      - FR-0011
+      - FR-0012
+    measurement:
+      - All data in transit is encrypted with TLS 1.2+.
+      - Authentication is handled via OAuth 2.0 with short‑lived access tokens.
+      - Regular penetration testing reports with no critical vulnerabilities.
+      - Verification: Security audit logs, penetration test results, and compliance certifications.
+
+  - id: NFR-0014
+    description: The system must scale to support at least 10,000 concurrent patients per clinic without performance degradation.
+    related_fr:
+      - FR-0009
+      - FR-0010
+      - FR-0011
+      - FR-0012
+      - FR-0013
+      - FR-0014
+    measurement:
+      - Concurrent user load: ≥ 10,000 users per clinic with API latency ≤ 1 second.
+      - Verification: Load testing with tools such as k6 or JMeter and monitoring of resource utilization.
+
+  - id: NFR-0015
+    description: The user experience must enable at least 90 % of patients to find a suitable slot on the first page of results.
+    related_fr:
+      - FR-0009
+    measurement:
+      - Success rate: ≥ 90 % (tracked via analytics on slot selection behavior).
+      - Verification: User analytics dashboards and A/B testing.
+
+  - id: NFR-0016
+    description: The availability feature must be available 24/7 and handle network interruptions gracefully.
+    related_fr:
+      - FR-0009
+      - FR-0013
+    measurement:
+      - Availability: 24/7 with no planned downtime.
+      - Offline handling: UI displays “You are offline” and queues actions when connectivity is restored.
+      - Verification: Real‑time monitoring and automated offline simulation tests.
+
+  - id: NFR-0017
+    description: The UI must comply with WCAG 2.1 AA accessibility standards.
+    related_fr:
+      - FR-0009
+      - FR-0010
+    measurement:
+      - Accessibility audit score: ≥ 95 % passing on tools like axe-core.
+      - Verification: Automated accessibility scans and manual screen‑reader testing.

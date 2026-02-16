@@ -1,0 +1,32 @@
+# When chatbots mislead: Three traps and fixes for AI customer service
+## Introduction
+Customer service is being reshaped by AI at an unprecedented pace. Chatbots and virtual assistants have evolved from clunky answer machines into the front line of engagement, handling millions of queries and connecting consumers with brands, employees with employers and citizens with governments.
+
+## The Benefits and Risks of AI Customer Service
+The benefits of AI customer service are clear: faster response times, 24/7 availability and lower cost per ticket. However, new risks are emerging. When AI delivers incomplete, misleading or exploitable answers — or when users manipulate it for dishonest purposes — the consequences are immediate. It can result in customer frustration, reputational damage and even legal exposure.
+
+## Three Common Traps
+This blog post examines three common traps and how to avoid them:
+
+1. **The $1 Chevy — A design trap**: A customer manipulated a LLM-powered chatbot into “agreeing” to sell a Chevy for $1. The chatbot lacked intention detection and guardrails, leaving it unable to flag manipulation or enforce business boundaries.
+2. **The Canadian lawsuit — A liability trap**: A passenger was denied a bereavement fare after relying on Air Canada’s chatbot, which incorrectly told him he could apply after travel. The airline argued that the chatbot was a “separate legal entity” responsible for its own actions, but the tribunal rejected this, ruling the airline accountable for the chatbot’s words.
+3. **The sabbatical delay — A knowledge trap**: The author applied for a sabbatical using an enterprise AI knowledge tool, but was later told they had to wait another 60 days due to an advance-notice requirement buried in a broader global leave policy.
+
+## Key Learnings
+These stories highlight the most frequent mistakes enterprises make when deploying AI assistants:
+
+* The design trap is technical and requires a well-designed, modular RAG system to detect and neutralize suspicious user behavior.
+* The liability trap is organizational and requires continuous monitoring of factual accuracy, prompt human intervention when errors occur, and a holistic support process for recovery.
+* The knowledge trap arises from incomplete or fragmented information and requires maintaining reliable pipelines to generate AI-ready knowledge bases and routing sensitive queries to human experts.
+
+## Best Practices
+Avoiding these traps requires more than quick fixes. It calls for AI assistants designed with layered retrieval modules, safeguards, continuous oversight and clear support structures within a defined legal framework. Five practices stand out:
+
+1. **Intent detection modules** to recognize manipulative behaviors and structure requests before responses are generated.
+2. **Comprehensive offline evaluations** before release, testing groundedness, safety security, and retrieval quality to ensure the system behaves within defined boundaries.
+3. **Confidence checks with human escalation**, ensuring low-confidence or ambiguous cases are handed to people rather than answered definitively.
+4. **AI Evals embedded end-to-end** across the product lifecycle, stress-testing boundaries, measuring accuracy and surfacing weaknesses before deployment.
+5. **Continuous knowledge readiness**, with policies and operational data maintained in AI-ready form so chatbots draw from complete, up-to-date sources.
+
+## Moving Forward
+Enterprises must adopt chatbots carefully. The way forward is clear — design with guardrails, accept liability when errors occur and ensure knowledge is complete and current. By doing this, AI chatbots can deliver real value instead of forcing users to call for a human representative in frustration.

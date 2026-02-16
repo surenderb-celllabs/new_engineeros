@@ -1,0 +1,28 @@
+# Customer Satisfaction - take this with a pinch of salt!!!
+## Forum Discussion
+### Original Post
+Customer Satisfaction - take this with a pinch of salt!!! 
+Posted by Gggirdwood, Contributor, 10 years ago, January 16, 2015
+5 replies, 102 views
+
+Hi folks,
+I've been chasing FD for quite some time regarding this and still do not have a solution. 
+In my FD setup we send customer satisfaction links once a ticket is marked as resolved, as you may know links that are embedded within the email point directly to satisfaction results e.g. /survey/happy survey/ok survey/poor.  
+The problem with this is that many corporate companies check URLs when an email is sent for security purposes and even peoples personal AV check URLs also.  
+So when these systems scan the links they will register as a customer satisfaction response on your system.
+
+I found this out as we like to contact any customer who leaves poor feedback and follow up with them to see how we can improve and also if we can help them any further.
+When we called we started getting customers swearing blind that they never left this feedback, initially we thought they may be embarrassed but we then found that it was happening with all customers we contacted that had left negative feedback.
+
+It's very embarrassing for us and it is also affecting staff morale, I don't want to turn the satisfaction off as that is a great metric that we have to see how we are doing and the genuine feedback we get from our customers is imperative so we can gauge how well we are doing.
+I've suggested that FD just give a direct link to the survey page as opposed to survey/good etc...  
+I've actually mentioned it a few times but I've not heard anything yet.
+I thought I'd let you know, you may of already found this out yourself if so and you have a work around please let me know.
+As it currently stands take any satisfaction responses (that do not contain customer comments) with a pinch of salt as the likelihood is that the customer did not leave this feedback rendering the satisfaction system absolutely useless!!!
+
+### Replies
+* **Ppaul.mcasey**, Community Debut, 10 years ago, January 30, 2015: We have this issue too. It's really frustrating having to contact clients and ask why the feedback was bad.  Makes us look incompetent with the software. This needs to be fixed because the stats are wrong and usually we would publish these - Not any more!!
+* **Gggirdwood**, Author, Contributor, 10 years ago, January 30, 2015: Hi Paul, I've been having lengthy discussions with FD over the last few months and this will be addressed allegedly in the coming weeks, they are worried that changing the way it works would result in fewer responses from requesters... which I am bemused at, the current responses aren't a true reflection as you can't say if a requester has chosen the rating themselves.
+* **Ppaul.mcasey**, Community Debut, 10 years ago, January 30, 2015: Thanks Grant - lets hope there is a solution asap.
+* **Aabishek**, Contributor, 10 years ago, February 18, 2015: This has been resolved. Earlier when you click on a survey link from email, it would record the response and take you to a page where you can submit additional comments. Now the survey response from the email is carried over to the survey page where the user has to click on submit again in order to record the survey response.  We would still like to go back to our earlier way of recording surveys if we fix the issue. Can you help us by letting us know what environments your customers are in.
+* **+12aravind.sundararajan**, Skilled Expert, 7 years ago, July 13, 2018: Hello, With the latest release, we've pushed out a fix to handle this issue. The survey links will no longer be susceptible to email scanners. You can read more about the latest release here. Cheers!
