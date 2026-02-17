@@ -1,0 +1,75 @@
+# Pros and Cons of Smart Bulbs - Some thoughts and mini review
+## Hardware
+### Home Assistant Community
+
+#### Introduction
+I currently use a variety of smart bulbs and LED strips through the house, all zigbee based, and I thought I would share my experience with these in case others find it useful.
+
+#### Buying from Aliexpress
+Firstly, if you are looking to save money, I’ve yet to get a bad buy from aliexpress, but there is a caveat. The descriptions on the items can be confusing, and it can take some research to find the actual device you want. Also, even if you buy from the same seller again, the chances are that the device has changed in some way since you last bought it (if some time has passed) as the firmware on (especially!) tuya based devices seems to be constantly changing, even when the device itself looks physically identical. This can mean (in my case), that pre-existing ZHA quirks no longer work, and there can be some effort involved to get the device up and running. However, I’ve never yet failed to get a device working.
+
+#### Smart Bulbs
+I bought a tuya smart bulb from aliexpress as a bit of an experiment, it was this one: [https://www.aliexpress.com/item/1005004194686662.html?spm=a2g0o.order_list.order_list_main.23.59801802wApXaV&gatewayAdapt=glo2en](https://www.aliexpress.com/item/1005004194686662.html?spm=a2g0o.order_list.order_list_main.23.59801802wApXaV&gatewayAdapt=glo2en)
+Recognised in Home Assistant as a TS0505B variant.
+
+* It's an RGBCW bulb, and the cool and warm white are great, really bright, no issues at all.
+* The coloured mode uses the RGB leds and they are pretty dim. Don’t expect them to light up the room in anyway the same as the WW/CW leds. Not much more than night light levels.
+
+#### Comparison with Other Bulbs
+Next we have: [https://www.aliexpress.com/item/1005004791471038.html?spm=a2g0o.order_list.order_list_main.5.59801802wApXaV](https://www.aliexpress.com/item/1005004791471038.html?spm=a2g0o.order_list.order_list_main.5.59801802wApXaV)
+From a different seller, but identical description and physical appearance to the earlier bulb.
+These are recognised in HA and in ZHA expose more entities.
+
+* Other than having some more entities to play with the performance of these bulbs is identical to the first one.
+* Both batches of bulbs also have a few quirks to make note of:
+  * They both report as being dimmable… this is true to some extent. The RGB LEDs are not, but the WW/CW are, but only in a very small number of increments, perhaps only 4 or 5.
+  * Secondly, the bulbs really dont seem to like switching between RGB mode and WW/CW modes, and can get stuck if you do this too quickly.
+  * And finally, despite setting the bulbs on and off transition to 0, the reality is that it still takes about a second for them to come on.
+
+#### IKEA Tradfri Bulbs
+The IKEA E14 RGB bulbs are much more vibrant.
+However, the only issue with these is that they are e14 socket only, and here in the UK, most overhead room lights are B22 type.
+There are however, adapters you can get to convert those pesky lights, but you’re then trading a strong RGB display over brighter whites, as the IKEA RGB bulbs only go to 470 lumens, when the cheap Tuya stuff (when in white mode) are probably putting out 800-1200 lumens.
+
+#### Signal Strength
+One last observation. The Tradfri bulbs (I have both RGB and just CW/WW ones) all seem to get a stronger signal with my zigbee network, as compared to the tuya bulbs. Its not a show stopper, but they are usally 20-30 LQI higher than the tuya bulbs, regardless of position in the house.
+
+### Comments and Discussions
+
+* **hunterdrayman**: Thanks for the info and comparison. Very timely as I’ve had these [Tuya Zigbee E27 Smart LED Light Bulb 9/12/15/18W RGB Colour Changing Lamp UK](https://www.ebay.co.uk/itm/Tuya-Zigbee-E27-Smart-LED-Light-Bulb-9-12-15-18W-RGB-Colour-Changing-Lamp-UK/184614439619) in my ‘saved for later’ for a few days while I dithered.
+* **Rofo**: Adapters for pretty much any format to any other format are available on aliexpress, so I suspect you’d find one to convert a socket if you have bulbs of another type.
+* **k8gg**: Question to the crowd in this thread: Could you help add, in your review, which bulb could go the dimmest at the dimmest brightness setting?
+* **P6Dave**: I settled on the MOES Zigbee lamps in GU10, E27 and E14 candle.
+* **Rofo**: The TS5050Bs don’t go very dim at all when in white mode. If you want a bulb that can dim to a low level whilst in white mode, then the IKEA CW/WW bulbs are great.
+* **JeeCee**: Smart Home Hookup recently did a review.
+* **Rofo**: If you want a review of a bunch of smart bulbs, this one is not bad.
+* **k8gg**: I actually would agree that in general non-smart LED bulbs would perform (in many cases a lot) better than smart bulbs, with better lighting quality.
+* **Rofo**: In some use cases, I don’t disagree with that statement. Using a smart switch instead of a smart bulb has its pro’s and con’s.
+
+### Update and Comparison with IKEA Bulb
+Today I bought one of these: [TRÅDFRI LED bulb E27 806 lumen, smart wireless dimmable/colour and white spectrum globe](https://www.ikea.com/gb/en/catalog/products/50373711/)
+In the UK they retail for £17, compared to the aliexpress tuya bulbs that are around £8-£10, so nearly approaching double the money… but are they worth it ?
+A few direct comparisons between the IKEA 806 RGB bulb and the TS5050B above.
+* Firstly, in cool white, the Tuya is brighter, there is no doubt about it. Given that the version I bought was rated at 18watts, this is not a surprise.
+* However, the difference is not that much, and 806 lumens is certainly enough to light a room.
+* Some other observations:
+  * The Ikea bulb has a way better range of cool white to warm white, whereas the tuya is always towards the cooler/bluer white end of the spectrum, but it can go some way towards warm white.
+  * The Ikea bulb has a MUCH better graduation of dimming, and also dims when not in white mode (which the tuya does not do).
+  * The RBG colour brightness of the IKEA bulb is MUCH brighter than the tuya colour modes, which are little more than night lights.
+  * The Ikea Bulb seems to struggle with Green. Green looks very yellowy. On the tuya bulb, green looks green (albeit very dim!).
+  * The Ikea bulb is only available in screw thread e27 format at 806 lumens, so if you want to use these in the UK, where most ceiling lights are B22, you will need an adapter. Ikea also sell these at about £3 each, but you can get them super cheap from aliexpress at about 10p each!
+* Signal strength - Positioned in the same place, the IKEA bulb clearly has a much better antenna design, as its LQI score is nearly 100 more than the tuya bulb. As a consequence they (tuya bulbs) make really poor repeaters.
+* Is it worth the extra money… definitely.
+
+### Retirement of Tuya Bulbs
+So, I’ve decided to retire my cheap Tuya bulbs listed above, a couple of issues to note:
+* I think I mentioned previously that switching between RGB mode and white mode causes these things to lock up frequently, this is highly annoying. You have to unplug them from the socket to get them working again.
+* At least one bulb regularly just doesn’t respond to commands, even though HA thinks it has.
+* And finally, unless you filter them out of your logs, you’ll get absolutely spammed with errors like these: Error… blah blah… because Data is too short to contain 1 bytes.
+* This happens hundreds of times a day, and doesn’t give me confidence its not causing stability issues with my network.
+* So they’ll go in the emergency bulb spares, and I’ll stick with IKEA bulbs for now.
+* If it wasn’t for IKEA green colour being very yellow, they would otherwise be perfect.
+
+### WiFi Light Bulb Holder
+* **Autobotiq**: Does someone have experience with this (or similar) WiFi light bulb holder from Aliexpress/Ebay? [https://www.aliexpress.com/item/1005005030553475.html](https://www.aliexpress.com/item/1005005030553475.html)
+* **dproffer**: Welcome! If you search this web site listed below with the term “socket adapter” or similar you may find some information. The struggle with

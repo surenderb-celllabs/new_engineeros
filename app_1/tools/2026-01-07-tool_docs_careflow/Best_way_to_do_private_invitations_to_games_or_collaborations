@@ -1,0 +1,34 @@
+# Best way to do private invitations to games or collaborations?
+## Question
+I have a site where users can create a sort of session where they can handle data privately but I would like to allow my users to invite external users who may not be part of the site to collaborate or simply view the session.
+What would be the best way for users to send the invite to other users?
+
+## Personal Preference
+I would personally argue that the most user-friendly way would be to simply provide a link, like http://example.com/mysession/someprivatehash, that the user could send to someone.
+
+## Alternative Suggestion
+On the other hand, it was suggested to me that I consider using a pin system where the user would be told to go to a URL and simply input a pin code to join the session. An example can be found here https://kahoot.it/
+
+## Priority
+I would prefer usability to be the main concern. Security is not of great importance here.
+
+## Tags
+* user-behavior
+* web-app
+* web-onboarding
+
+## Answers
+### Answer 1
+If Security is not what you are concerned about, it's best to send invites in form of URL since user is more satisfied if the activities to be undertaken for completion of task is bare minimum.
+Clicking a URL and taken directly to be part of the site is rather swift and effortless as compared to remembering or copying a input pin code. Pin and Input here increases overhead for completion of a rather simple task that can be achieved via simple click of a link.
+
+### Answer 2
+As an addendum to this, I would provide the user sending the invitation with both the URL and the option to email the URL to their friend(s?).
+
+### Answer 3
+There are many ways, including the ones you mention. For this purpose, you can check Invite Friends Design Pattern with several examples and approaches.
+However, you may also add awards system (see Collectible Achievements Pattern) in order to improve the amount of shares between friends and to provide more engagement
+
+## Comments
+* Try thinking about what "technical" there is about sending out that link - what if sending this link could be easier? As a receiver, I certainly would like clicking a link over memorising a pin, clicking a link and finally inputting a pin.
+* I definitely agree. I also do see that a pin could work if you are doing this on different devices where receiving the link may be difficult, thus no copy paste into a web browser or a simple click.

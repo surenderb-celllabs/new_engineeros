@@ -1,0 +1,58 @@
+Executive Summary
+
+Research Insights Recap
+
+- Current shrimp market relies heavily on intermediaries, leading to opaque pricing, delayed payments, and reduced freshness.
+- Farmers lack reliable data and digital infrastructure to showcase their shrimp.
+- Users desire transparency, trust signals, and convenience when ordering directly from farms.
+
+HMW Statements by Theme
+
+User Experience
+- How might we design a single‑screen comparison card that stacks farm listings vertically, showing a unified price, weight, and freshness snapshot?
+- How might we let users swipe left/right to cycle through farms while keeping a persistent cart icon that updates in real time?
+- How might we use color‑coded badges (green for freshness, blue for sustainability) that appear next to each farm’s thumbnail for instant recognition?
+- How might we enable a compare mode where selecting two farms overlays a side‑by‑side table with key metrics, and a single button adds the chosen batch to the cart?
+- How might we implement a quick‑tap Add to Cart that auto‑fills the quantity based on the user’s typical order size, reducing input friction?
+- How might we provide a micro‑animation (shrimp icon moving into the cart) for a satisfying visual cue?
+- How might we allow a favorite farms toggle so users can pin their go‑to suppliers and compare them instantly?
+- How might we incorporate a quick‑filter toggle (Top 3 by price, Nearest 5 km) that re‑orders the comparison list instantly?
+- How might we let users see a live availability counter next to each farm?
+
+Core Functionality
+- How might we let shoppers tap a pin on the map and instantly see a live inventory feed for that farm?
+- How might we use real‑time traffic data to recommend the fastest route to the pick‑up point?
+- How might we allow the shopper to set a delivery radius and receive push notifications when a new shrimp batch appears within that zone?
+- How might we create a share‑your‑route feature that lets buyers invite friends to join a pick‑up?
+- How might we let users filter farms by their sustainability score right on the map view?
+- How might we show a color‑coded legend so users can instantly spot greener options?
+
+Business Model
+- How might we reward shoppers who consistently pick lower‑impact farms with loyalty points or badges?
+- How might we highlight a Sustainability Spotlight section featuring farms that have reduced their footprint?
+- How might we provide a community leaderboard where towns compete to see who’s ordering the greenest shrimp?
+
+Technology & Innovation
+- How might we layer farm‑specific sustainability metrics (carbon footprint, water usage) on the map so buyers can choose greener options?
+- How might we provide a quick tooltip that explains how a farm’s carbon footprint was calculated?
+- How might we enable farmers to update their sustainability metrics so the app stays current?
+- How might we let buyers send feedback on a farm’s environmental practices?
+
+Market Differentiation
+- How might we allow a quick‑view modal with a 3‑second video of shrimp in the pond for sensory comparison?
+- How might we use a micro‑animation to show the shrimp icon moving into the cart for a satisfying visual cue?
+- How might we provide a live availability counter next to each farm to create urgency?
+
+Top 5–7 Priority HMWs
+- How might we design a single‑screen comparison card that stacks farm listings vertically?
+- How might we layer farm‑specific sustainability metrics on the map?
+- How might we let shoppers tap a pin on the map and instantly see a live inventory feed?
+- How might we use color‑coded badges for instant recognition of freshness and sustainability?
+- How might we implement a quick‑tap Add to Cart that auto‑fills quantity?
+
+Themes & Patterns
+- Transparency & Trust
+- Convenience & Speed
+- Sustainability & Impact
+- Social & Community
+- Data‑Driven Decision Making

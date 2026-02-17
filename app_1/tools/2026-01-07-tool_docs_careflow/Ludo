@@ -1,0 +1,50 @@
+# Ludo
+## Multiplayer Ludo Game Made in Unity
+This is a multi-player game. However, due to a lack of budget, it is not possible to make it an online multi-player game. Therefore, users have to play it on a single device.
+
+## Features
+* Optimized only for Android devices
+* 2, 3, or 4 players can play at a time
+* All the rules of the traditional Ludo game are maintained during development
+* Start screen, winning screen, and exit screen are included
+* Cheerful background music
+* Simple, user-friendly UI
+* Fact: Over 4000+ lines of code were written in C# to make this whole app run
+
+## Flowchart
+Not provided.
+
+## Future Updates
+* Adding an app icon
+* Adding an online multi-player feature
+* Adding user authentication and authorization
+* Adding points for every player
+* Adding cross-platform support
+* Updating the game UI
+* Improving animations of multiple color buttons on the same cell
+
+## Sample Game Screens
+Not provided.
+
+## About
+Multiplayer ludo game made in Unity: [drive.google.com/file/d/1v1cVv5jLXpoX8q3XtLfk4PokAiIhEW6j/view?usp=sharing](http://drive.google.com/file/d/1v1cVv5jLXpoX8q3XtLfk4PokAiIhEW6j/view?usp=sharing)
+
+## Resources
+* Readme
+
+## Activity
+* Stars: 56
+* Watchers: 1
+* Forks: 12
+
+## Releases
+No releases published.
+
+## Packages
+No packages published.
+
+## Languages
+* C++: 82.7%
+* C#: 9.7%
+* C: 7.2%
+* Other: 0.4%

@@ -1,0 +1,68 @@
+# Automatic Page Refresh Extension - Auto Refresh Plus
+## Home
+### Feature Showcase
+* **Time Interval**: Automated web page refreshing with predefined or custom intervals ensures up-to-date info for tracking stocks, news, or sports.
+* **Random Interval**: Allows web pages to refresh at unpredictable times within a set range, which is ideal for avoiding detection and keeping data fresh.
+* **Hard Refresh**: Reload pages without relying on cached data, ensuring you access the latest content
+* **Set refresh Numbers**: Define how many times you want to refresh the specific webpage, empowering you to manage your browsing sessions efficiently.
+* **Display Visual Timer**: The visual timer shows the countdown on the webpage during refresh, which is ideal for tracking live events or auctions. Customize its display and enable it per URL.
+* **Stop refreshing when interacting**: Automatic refreshes pause when you click or type on a webpage, ensuring uninterrupted interaction with content and preventing refresh interruptions.
+* **Countdown mode**: Schedule page refreshes with the countdown timer. Set by hours for short-term needs or by date for long-term plans like product launches or events.
+* **Active Tabs List**: An active tabs list provides an overview of tabs set to auto-refresh, showing timers and settings for each. This is ideal for managing multiple data streams efficiently.
+* **Auto start URLs list**: Save time and effort by auto-refreshing predefined URLs upon browser startup. Explore the Auto Start URLs list in Auto Refresh Plus for seamless browsing
+* **Refresh Predefined URL**: Setting a predefined URL allows you to refresh a specific webpage automatically without opening it, ideal for frequent single-site refreshes and time savings.
+* **URL Changes and Redirection Handling**: Automatically follow site changes to new URLs, ensuring uninterrupted refresh tasks and continuous updates, which is crucial for professionals relying on real-time data.
+* **Page Monitor**: Stay alert to any webpage changes, making it easy to monitor when specific text appears or vanishes. This ensures you never miss critical updates.
+* **Versatile Refresh Types for Page Monitor**: Update specific webpage parts with a full page refresh or XHR Refresh, auto-click elements, and open monitored links in new tabs.
+* **Monitor Types**: Monitor specific webpage changes via visual elements or source code. Track layout, image, and text updates or behind-the-scenes HTML, JavaScript, and CSS changes.
+* **Default Target Text / Keyword**: Using a keyword template enhances website monitoring with ease. Customize and automate tracking across multiple sites effortlessly. Simplify your workflow today!
+* **Continue Refreshing When the Keyword Found/Lost**: Keep refreshing webpages even after specific keywords are detected or lost. Ideal for continuously monitoring breaking news, stock updates, or dynamic content changes.
+* **Window Focus**: The window focus feature automatically brings specific tabs into view for immediate attention when key updates occur, ensuring timely reactions to critical changes.
+* **Refresh Predefined Text Keywords**: Easily detect specific text changes on web pages. Set predefined keywords for instant alerts during browsing
+* **Get Alerted via Push Notification and Email**: Stay updated with instant notifications. Get alerts when changes occur on your monitored web pages, ensuring you never miss important updates
+* **Supported Expressions for Page Monitor**: Define complex conditions with supported expressions for precise webpage monitoring. Ideal for tracking dynamic content changes, price updates, and specific text appearances.
+* **Execute Custom script**: Execute custom scripts automatically upon page refresh to automate tasks and enhance functionality, perfect for tailored web interactions and dynamic content management.
+* **Hotkeys**: Enhance browsing efficiency with hotkeys for quick control. Set shortcuts for starting a time interval, initiating random intervals, activating timer mode, stopping intervals, and silencing notifications.
+* **Your Settings in your control**: Save and export customized settings for backup or sharing, and sync them across devices by logging in. Maintain uniform settings and switch between profiles easily.
+
+## Functionality Overview
+Discover Auto Refresh Plus's extensive capabilities with our comprehensive breakdown of power-packed features designed to enhance your browsing experience effortlessly.
+* **Time Interval**: Automated web page refreshing with predefined or custom intervals ensures up-to-date info for tracking stocks, news, or sports.
+* **Random Interval**: Allows web pages to refresh at unpredictable times within a set range, which is ideal for avoiding detection and keeping data fresh.
+* **Hard Refresh**: Reload pages without relying on cached data, ensuring you access the latest content
+* **Set refresh Numbers**: Define how many times you want to refresh the specific webpage, empowering you to manage your browsing sessions efficiently.
+* **Display Visual Timer**: The visual timer shows the countdown on the webpage during refresh, which is ideal for tracking live events or auctions. Customize its display and enable it per URL.
+* **Stop refreshing when interacting**: Automatic refreshes pause when you click or type on a webpage, ensuring uninterrupted interaction with content and preventing refresh interruptions.
+
+## Diverse Use Cases
+Discover the myriad use cases of Auto Refresh, your go-to solution for all your daily refreshing and monitoring requirements.
+* **Freelancing Platforms**: Stay updated on new project postings and job opportunities, while monitoring specific keywords and receiving alerts for relevant gigs
+* **Job Listings**: Never miss a career opportunity with Auto Refresh Plus, monitoring job listings, detecting targeted keywords, and sending alerts for relevant positions
+* **Help Desk and Support Monitor**: Provide exceptional customer support with Auto Refresh Plus, monitoring help desk portals, detecting support tickets, and ensuring timely responses
+* **Online Shopping**: Shop smarter with Auto Refresh Plus, monitoring online stores, detecting price drops, and receiving alerts for discounted items
+* **Travel Deals**: Explore the world affordably with Auto Refresh Plus, monitoring travel websites, detecting flight deals, and receiving alerts for discounted vacation packages
+* **Appointment Booking**: Streamline scheduling with Auto Refresh Plus, monitoring appointment booking platforms, detecting availability, and receiving alerts for open slots
+* **Monitoring Auctions**: Gain a competitive edge in online auctions with Auto Refresh Plus, monitoring bidding activity, detecting item availability, and receiving alerts for winning bids
+
+## User Love
+Discover why our extension rocks:
+> Auto Refresh Plus has transformed my browsing experience! As a freelancer, I rely on staying updated on job postings and project opportunities. With ARP, I effortlessly monitor multiple platforms, receive timely alerts, and never miss a gig. It's a game-changer! - Sarah Johnson / TechGenius Inc.
+> Auto Refresh Plus is a productivity powerhouse! It's become an indispensable tool for my team, helping us monitor support tickets, track client inquiries, and provide swift responses. The page monitor feature is incredibly useful for staying on top of customer demands. Highly recommended! - Michael Smith / Smith Consulting Services
+> Planning my next adventure has never been simpler, all thanks to Auto Refresh Plus! With ARP, I effortlessly monitor travel deals, detect flight discounts, and receive alerts for vacation packages. It's like having a personal travel assistant. I couldn't be happier! - David Rodriguez / Traveler
+> Auto Refresh Plus is a game-changer for online auctions! We rely on ARP to monitor bidding activity, track item availability, and receive alerts for winning bids. It's given us a competitive edge and streamlined our bidding strategy. We're impressed! - Jack Wilson / Auction Masters Ltd
+> As a job seeker, Auto Refresh Plus has been a lifesaver! I use ARP to monitor job listings, detect new opportunities, and receive alerts for relevant positions. It's saved me countless hours of scrolling and helped me land my dream job. Thank you, ARP! - Olivia Parker / Job seeker
+> Auto Refresh Plus has transformed our customer support operations! With ARP, we monitor help desk portals, track support tickets, and receive alerts for urgent inquiries. It's improved response times and customer satisfaction. An invaluable tool for any support team! - Daniel Brown / Using HelpDesk Solutions
+> Auto Refresh Plus is my go-to shopping companion! I use ARP to monitor online stores, detect price drops, and receive alerts for discounted items. It's helped me snag some incredible deals and save money. I can't imagine shopping without it! - Emma Clark / Shopaholic
+> As a Fiverr freelancer, Auto Refresh Plus is my secret weapon! I stay online round the clock, effortlessly monitoring gig updates and receiving instant alerts for new job postings. It's helped me secure more gigs and boost my earnings. Thank you, ARP! - Lucas Taylor / Fiverr Freelancer
+> Auto Refresh Plus saved the day when I needed to book a passport appointment! It's a lifesaver for monitoring appointment availability, detecting open slots, and securing appointments swiftly. During the pandemic, ARP also helped me snag vaccination appointments seamlessly. - Emily Smith
+> As a blogger, staying updated with news is crucial. Auto Refresh Plus has been a game-changer, making it effortless to monitor news sites, detect breaking stories, and receive alerts for trending topics. It's streamlined my research and improved my blog posts. - Alex Johnson / News Blogger
+
+## Frequently Asked Questions (FAQ)
+* Can I use Auto Refresh Plus extension free version lifetime? 
+Absolutely! Auto Refresh Plus offers its free version for a lifetime, ensuring you receive continuous updates at no cost. However, please note that priority support is not included in the free version.
+* Is Auto Refresh Plus compatible with all browsers? 
+Indeed! Auto Refresh Plus is compatible with all Chromium-based browsers such as Chrome, Opera, Edge, Vivaldi, and Brave. Additionally, it supports Firefox, ensuring seamless functionality across various browsers.
+* Is it possible to synchronize settings across multiple devices? 
+Absolutely! Auto Refresh Plus offers a built-in sync system. By creating an account on the ARP website, you can effortlessly synchronize settings across multiple devices. If needed, you can disable sync settings or create multiple settings profiles to maintain uniqueness across devices.
+* Does Auto Refresh Plus support international languages? 
+Absolutely! Auto Refresh Plus supports various international languages, including Deutsch, English, Français, Türkçe, español, italiano, português (Brasil), português (Portugal), русский, ไทย, 中文 (简体), 日本語, 한국어. We're continually adding support

@@ -1,0 +1,119 @@
+# Best Practices Using Weather API Web Services
+The Google Maps Platform web services are a collection of HTTP interfaces to Google services providing geographic data for your maps applications.
+
+## Introduction
+This guide describes some common practices useful for setting up your web service requests and processing service responses. Refer to the developer’s guide for full documentation of the Weather API.
+
+## What is a Web Service?
+Google Maps Platform web services are an interface for requesting Maps API data from external services and using the data within your Maps applications. These services are designed to be used in conjunction with a map, as per the License Restrictions in the Google Maps Platform Terms of Service.
+
+## Making a Request
+The Maps APIs web services use HTTP(S) requests to specific URLs, passing URL parameters and/or JSON-format POST data as arguments to the services. Generally, these services return data in the response body as JSON for parsing and/or processing by your application.
+
+### Example Request
+The following example shows the URL of a REST GET request:
+```http
+https://weather.googleapis.com/v1/forecast/days:lookup?key=API_KEY
+```
+Note: All Weather API applications require authentication. Get more information on authentication credentials.
+
+## SSL/TLS Access
+HTTPS is required for all Google Maps Platform requests that use API keys or contain user data. Requests made over HTTP that contain sensitive data may be rejected.
+
+## Building a Valid URL
+You may think that a "valid" URL is self-evident, but that's not quite the case. A URL entered within an address bar in a browser, for example, may contain special characters (e.g. "上海+中國"); the browser needs to internally translate those characters into a different encoding before transmission.
+
+### URL-encoding or Percent-encoding
+This process is called URL-encoding or percent-encoding. Caution: Browsers and/or services may automatically URL-encode a request URI before sending. On APIs that use cryptographic request signing, this can potentially invalidate the signature, if URL-encoding alters the request after signing. To avoid this issue, always URL-encode your query string before signing the request.
+
+### Special Characters
+We need to translate special characters because all URLs need to conform to the syntax specified by the Uniform Resource Identifier (URI) specification. In effect, this means that URLs must contain only a special subset of ASCII characters: the familiar alphanumeric symbols, and some reserved characters for use as control characters within URLs.
+
+#### Summary of Valid URL Characters
+| Set | Characters | URL Usage |
+| --- | --- | --- |
+| Alphanumeric | a-z, A-Z, 0-9 | Text strings, scheme usage (http), port (8080), etc. |
+| Unreserved | - _ . ~ | Text strings |
+| Reserved | ! * ' ( ) ; : @ & = + $ , / ? % # [ ] | Control characters and/or Text Strings |
+
+### Common Characters that Need Encoding
+Some common characters that must be encoded are:
+| Unsafe Character | Encoded Value |
+| --- | --- |
+| Space | %20 |
+| " | %22 |
+| < | %3C |
+| > | %3E |
+| # | %23 |
+| % | %25 |
+| | | %7C |
+
+## Polite Use of Google APIs
+Poorly designed API clients can place more load than necessary on both the Internet and Google's servers. This section contains some best practices for clients of the APIs. Following these best practices can help you avoid your application being blocked for inadvertent abuse of the APIs.
+
+### Exponential Backoff
+In rare cases something may go wrong serving your request; you may receive a 4XX or 5XX HTTP response code, or the TCP connection may simply fail somewhere between your client and Google's server. Often it is worthwhile re-trying the request as the followup request may succeed when the original failed. However, it is important not to simply loop repeatedly making requests to Google's servers.
+
+#### Example Code
+```python
+import json
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+# The maps_key defined below isn't a valid Google Maps API key.
+# You need to get your own API key.
+# See https://developers.google.com/maps/documentation/timezone/get-api-key
+API_KEY = "YOUR_KEY_HERE"
+TIMEZONE_BASE_URL = "https://maps.googleapis.com/maps/api/timezone/json"
+
+def timezone(lat, lng, timestamp):
+    # Join the parts of the URL together into one string.
+    params = urllib.parse.urlencode(
+        {"location": f"{lat},{lng}", "timestamp": timestamp, "key": API_KEY,}
+    )
+    url = f"{TIMEZONE_BASE_URL}?{params}"
+
+    current_delay = 0.1  # Set the initial retry delay to 100ms.
+    max_delay = 5  # Set the maximum retry delay to 5 seconds.
+
+    while True:
+        try:
+            # Get the API response.
+            response = urllib.request.urlopen(url)
+        except urllib.error.URLError:
+            pass  # Fall through to the retry loop.
+        else:
+            # If we didn't get an IOError then parse the result.
+            result = json.load(response)
+
+            if result["status"] == "OK":
+                return result["timeZoneId"]
+            elif result["status"] != "UNKNOWN_ERROR":
+                # Many API errors cannot be fixed by a retry, e.g. INVALID_REQUEST or
+                # ZERO_RESULTS. There is no point retrying these requests.
+                raise Exception(result["error_message"])
+
+        if current_delay > max_delay:
+            raise Exception("Too many retry attempts.")
+
+        print("Waiting", current_delay, "seconds before retrying.")
+
+        time.sleep(current_delay)
+        current_delay *= 2  # Increase the delay each time we retry.
+
+if __name__ == "__main__":
+    tz = timezone(39.6034810, -119.6822510, 1331161200)
+    print(f"Timezone: {tz}")
+```
+
+### Synchronized Requests
+Large numbers of synchronized requests to Google's APIs can look like a Distributed Denial of Service (DDoS) attack on Google's infrastructure, and be treated accordingly. To avoid this, you should make sure that API requests are not synchronized between clients.
+
+## Processing Responses
+Note: As the exact format of individual responses with a web service request is not guaranteed (some elements may be missing or in multiple locations), you should never assume that the format returned for any given response will be the same for different queries. Instead, you should process the response and select appropriate values via expressions.
+
+The Google Maps web services provide responses which are easy to understand, but not exactly user friendly. When performing a query, rather than display a set of data, you probably want to extract a few specific values. Generally, you will want to parse responses from the web service and extract only those values which interest you.
+
+The parsing scheme you use depends on whether you are returning output in JSON. JSON responses, being already in the form of Javascript objects, may be processed within Javascript itself on the client.

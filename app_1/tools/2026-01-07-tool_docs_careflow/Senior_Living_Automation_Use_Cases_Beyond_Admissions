@@ -1,0 +1,85 @@
+# Beyond Admissions: 10 High-Impact Senior Living Automation Use Cases That Are Overlooked
+## Introduction
+Most senior living organizations have already automated admissions workflows. However, admissions is only one part of the operational picture. Across clinical, HR, finance, and operations, teams still spend significant time on manual processes that increase risk, slow decisions, and pull staff away from resident care.
+
+## The Microsoft-First Automation Advantage
+The majority of high-impact automation opportunities can be implemented inside the existing Microsoft environment many organizations already license. Common tools include:
+* Power Automate
+* Power BI
+* SharePoint
+* Teams
+* Azure integrations
+This approach enables:
+* Faster deployment
+* Lower IT risk
+* Higher staff adoption
+* No new software procurement
+
+## Why Senior Living Automation Must Go Beyond Admissions in 2026
+Senior living operators are facing three converging pressures:
+1. Ongoing labor shortages
+2. Tighter Medicaid reimbursement and billing scrutiny
+3. Increased CMS compliance and PBJ reporting enforcement
+Automation beyond admissions is no longer just about efficiency. It’s about reducing operational risk, supporting staff retention, and building resilience in an environment where margins, compliance, and workforce stability are all under strain.
+
+## High-Impact Automation Use Cases
+### Clinical Automation Use Cases
+1. **Clinical Data Transfer Between Portals**
+	* Problem: Clinical teams still re-enter the same data across EMRs, billing systems, and care platforms.
+	* What automation changes: Data syncs automatically between systems, eliminating duplicate documentation.
+	* Why it matters: Improves data accuracy, reduces clinical risk, and frees staff time for resident care.
+	* How it’s enabled: Power Automate, secure APIs, and RPA within the Microsoft ecosystem.
+2. **CMS Quality Measure & Census Tracking**
+	* Problem: Quality measures and census data are often tracked manually using spreadsheets.
+	* What automation changes: Key clinical indicators and census updates are monitored continuously in one place.
+	* Why it matters: Improves audit readiness and reduces last-minute compliance pressure.
+	* How it’s enabled: Power Automate workflows and Power BI dashboards.
+3. **Healthcare KPI Reporting Automation**
+	* Problem: Leadership reports are compiled manually, often weeks after the fact.
+	* What automation changes: Operational and clinical metrics update automatically from source systems.
+	* Why it matters: Enables faster decisions and more consistent performance visibility.
+	* How it’s enabled: Power BI with automated data refresh.
+
+### HR & IT Automation Use Cases Driving Turnover Reduction
+1. **Employee Account Provisioning & Termination**
+	* Problem: New hires wait days for system access, while offboarding is often inconsistent.
+	* What automation changes: A single workflow provisions or removes access across all required systems.
+	* Why it matters: Improves onboarding experience and reduces security and compliance gaps.
+	* How it’s enabled: Power Automate integrated with Active Directory and HR systems.
+2. **Payroll Status & PTO Automation**
+	* Problem: HR teams handle repetitive payroll and PTO queries through tickets and emails.
+	* What automation changes: Staff access payroll status and submit PTO requests through self-service workflows.
+	* Why it matters: Reduces HR workload and improves staff satisfaction.
+	* How it’s enabled: Microsoft Forms, Power Automate, and Teams notifications.
+3. **Recruitment Automation & PBJ Reporting**
+	* Problem: Hiring and PBJ reporting processes are fragmented and manual.
+	* What automation changes: Recruitment steps and payroll-based journal data flow through structured workflows.
+	* Why it matters: Supports faster hiring and more consistent PBJ compliance.
+	* How it’s enabled: Power Automate with HR, payroll, and reporting integrations.
+
+### Finance Automation Use Cases Protecting Margins
+1. **Medicaid Billing & Triple Check Automation**
+	* Problem: Eligibility checks, coding validation, and billing reviews rely heavily on manual effort.
+	* What automation changes: Validation steps are automated before claims submission.
+	* Why it matters: Reduces billing errors and protects reimbursement integrity.
+	* How it’s enabled: Power Automate and system integrations within existing finance tools.
+2. **Accounts Payable & Purchase Order Automation**
+	* Problem: Invoice matching and approvals are slow and email-driven.
+	* What automation changes: Invoices are automatically matched to POs and routed for approval.
+	* Why it matters: Improves cash flow visibility and reduces processing delays.
+	* How it’s enabled: SharePoint, Power Automate, and Outlook approvals.
+
+### Operations & PACE Automation Use Cases
+1. **Incident Management & Resident Check-Ins**
+	* Problem: Incident reporting is delayed and paperwork-heavy.
+	* What automation changes: Incidents are logged in real time, with automated resident check-ins.
+	* Why it matters: Improves safety documentation and operational responsiveness.
+	* How it’s enabled: Mobile workflows, Power Automate, and Teams-based alerts.
+2. **PACE Care Plan & Service Automation**
+	* Problem: PACE programs require extensive coordination across assessments, authorizations, and care plans.
+	* What automation changes: Care workflows update automatically as services and approvals change.
+	* Why it matters: Allows PACE programs to scale without proportional staff increases.
+	* How it’s enabled: Power Automate and SharePoint-based care coordination workflows.
+
+## Conclusion
+The goal isn’t full transformation in 90 days; it’s measurable relief where staff feel it most. If automation is on your 2026 roadmap, the question isn’t what tool to buy. It’s which workflows to fix first, using what you already own. Book a 15-minute strategy call to identify high-ROI use cases inside your Microsoft environment.

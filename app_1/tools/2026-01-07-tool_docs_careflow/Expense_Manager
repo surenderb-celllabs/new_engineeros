@@ -1,0 +1,110 @@
+# Expense Manager
+## Overview
+Expense Manager is a simple, intuitive, stable, and feature-rich app designed to manage expenditures, checkbooks, and budgets. It is 100% free with no hidden charges or in-app purchases.
+
+## Features
+### Expense Tracking
+* Tracking expenses and incomes
+* Split Transaction - Record all items in a single transaction with different category and amount
+* Recurring expense and income
+* Multiple accounts
+* Taking a picture of receipt
+* Tracking tax
+* Tracking mileage
+* Tracking debts
+* Credit Card
+* Credit Card and bank SMS message parsing
+* Write, Print, and Email Checks
+
+### Budget and Bill Organizing
+* Organizing bills by week, month, and year as well as by categories
+* Schedule the payments and recurring payments
+* Payment alerts
+* Daily, weekly, monthly, and yearly budget with progress bar
+* Daily, weekly, monthly, and yearly summary
+* Calendar view for expense and income
+* Calendar budget forecasting
+
+### Search and Report
+* Search by category, subcategory, payee/payer, payment method, status, description, tag, etc.
+* Reports in HTML, CSV, Excel, and PDF
+* Import and export account activities
+* Charts by category, subcategory, payee/payer, payment method, status, description, tag, date, etc.
+* Email report for print
+
+### Backup and Sync
+* Automatic backup on Dropbox, Google Drive, and SD Card
+* Automatic sync between Android devices via Dropbox
+* Connect to PC via Network
+* View all accounts on one page in bigger screen
+* Do your regular work such as add expense/income, edit Settings, view charts, etc.
+* Add multiple expense or income records
+* Backup data and restore data on PC
+
+### Convenient Tools
+* Currency converter
+* Regular calculator
+* Tip calculator
+* Loan calculator
+* Credit card payoff calculator
+* Interest calculator
+* Note
+* Shopping list
+
+### Customization
+* User can easily customize background color, action bar color, and button color
+* Customizing date format
+* Customizing category and subcategory
+* Payment method, payee/payer, Tags, income category, and status can be entered or updated by user
+* Multiple currencies support
+
+### Languages
+* English
+* German
+* French
+* Spanish
+* Portuguese
+* Russian
+* Italian
+* Turkish
+* Indonesian
+* Chinese (Simplified)
+* Chinese (Traditional)
+
+### Others
+* Widgets: overview, summary, budget, calculator, quick add, etc.
+* PIN protection
+* No registration and internet access are required
+* Active developer support
+
+## Permissions Explanation
+* Storage: backup data in sdcard and external storage. Save purchase receipt in sdcard and external storage.
+* GET_ACCOUNTS: back up data on Google Drive.
+* SMS: Parse SMS message from your credit card and bank and save it automatically in the app.
+* ACCESS_WiFi_STATE: This permission allows PC connection via WiFi.
+
+## Privacy Policy
+https://sites.google.com/site/expensemgr/privacy
+
+## Support
+Please email questions and feature requests directly to the developer at pfinanceapp@gmail.com.
+
+## Reviews
+### 4.3/5 stars, 63.4K reviews
+* "I've been using this app for 10 years. You create a recurring budget and manually log expenses, income, and transfers between budgets. It's very flexible and has kept me feeling great about my spending habits ever since I had to start earning my own money." - Lanky
+* "It's got a calendar that not only reports future transactions, but it SHOWS ME HOW MUCH MONEY I'LL HAVE ON ANY GIVEN DAY!!! You can set up recurring payments, recurring account transfers, and it gives a chart of where your money is going. And it. Is. FREE." - Jason Victoria Oconaill
+* "Been using this app for years, the main issue is syncing issues between multiple devices." - Anthony Balaich
+
+## Developer
+Bishinews
+pfinanceapp@gmail.com
+763 Century Farm Ln, Naperville, IL 60563, United States
++1 872-762-3057
+
+## Similar Apps
+* Trackwallet: Budget & Expenses
+* Budgeting App - Spend Tracker
+* Daily budget planner: Spendee
+* MyMoney Pro - Expense & Budget
+* Expensify - Travel & Expense
+* Money Manager Expense & Budget

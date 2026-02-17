@@ -1,0 +1,35 @@
+# How to Build a Temperature Controlled Fan using Arduino
+## Introduction to the Project
+To build a temperature controlled fan using Arduino, follow these steps:
+
+### Materials Needed
+* Arduino board
+* Temperature sensor
+* Fan
+* Power supply
+* Jumper wires
+* Breadboard
+
+### Step 1: Connect the Temperature Sensor
+Connect the temperature sensor to the Arduino board.
+
+### Step 2: Connect the Fan
+Connect the fan to the Arduino board.
+
+### Step 3: Write the Code
+```cpp
+// Code to control the fan based on temperature
+```
+
+### Step 4: Upload the Code
+Upload the code to the Arduino board.
+
+### Step 5: Test the Project
+Test the temperature controlled fan.
+
+## Additional Information
+> For more information, visit YouTube.
+# About
+About Press Copyright Contact us Creator Advertise Developers Terms Privacy Policy & Safety How YouTube works Test new features
+# Copyright Information
+ 2026 Google LLC

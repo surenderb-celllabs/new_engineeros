@@ -1,0 +1,69 @@
+# What is Smart Lighting? A Complete Guide
+## Introduction to Smart Lighting
+Smart lighting is a more advanced way to light your home. In this article, we will explore how smart lights work, the different technologies used, and the benefits of smart lighting.
+
+## How Do Smart Lights Work?
+Smart lights have a chip inside them that allows them to communicate with other devices wirelessly. Every light can connect to an app, smart home assistant, or other smart accessory, so you can automate your lights, change their color, or control them remotely. Unlike conventional lights, which can only turn on or off and can be dimmed only with a wired switch, smart lights offer more flexibility and convenience.
+
+## Smart Lighting Technology
+There are multiple technologies that can make a light smart. The most popular ones are:
+
+* **Zigbee**: a type of wireless communication protocol that allows smart devices to “talk” to each other. It's common in smart home technology because it’s very secure, low power, and works even when the Wi-Fi is down.
+* **Wi-Fi**: a popular technology for smart lighting because it’s familiar. However, it has downsides such as overloading the Wi-Fi network, not working when the router is down, and limited range.
+* **Bluetooth**: a wireless communication technology that uses RF signals to send data. It’s easy, requires no other hardware, and is accessible by almost everyone. However, it has limitations such as limited data storage per device and short distance usability.
+
+### Comparison of Zigbee, Wi-Fi, and Bluetooth
+| Technology | Requires Hub | Control Lights from Anywhere | Works Even When Wi-Fi is Down |
+| --- | --- | --- | --- |
+| Zigbee | Yes | Yes | Yes |
+| Wi-Fi | No | Yes | No |
+| Bluetooth | No | No | Yes |
+
+## What is a Smart Hub?
+A smart hub is a device that creates a super-fast network between smart lights and connects them to the internet. In the Philips Hue system, there are two hubs: the Bridge and Bridge Pro. The hub allows smart lights to build a mesh network, making it possible to add lights everywhere in the home and have them all work seamlessly.
+
+## LED Technology
+Smart lights are often LED because:
+
+1. They don’t heat up like other types of lights, which would damage the chip that makes them smart.
+2. LEDs already have internal electronics, so it’s easy to include the smart chip.
+3. They can produce millions of light colors.
+4. They’re the current standard in home lighting, due in part to LED energy efficiency.
+
+## Color Lighting Technologies
+There are several color lighting technologies, including:
+
+* **RGB**: stands for “red, green, blue.” RGB lights mix red, green, and blue LEDs to create a wide variety of colors.
+* **RGBIC**: stands for “red, green, blue” and “independent controller.” RGBIC lights can control the different LEDs individually, displaying multiple colors at the same time.
+* **RGBA**: stands for “red, green, blue, amber.” RGBA lights use amber in addition to red, green, and blue to display a wider range of yellow light.
+* **RGBW**: stands for “red, green, blue, warm white.” RGBW lights feature a warm white chip to include thousands of additional shades of white light.
+* **RGBWW**: stands for "red, green, blue, cool white, warm white.” RGBWW lights have two different white LEDs, allowing for even richer colors.
+* **RGBWWIC**: stands for “red, green, blue, cool white, warm white” and “independent controller.” RGBWWIC lights have all the colors of light and can set multiple colors at the same time.
+
+## Benefits of Smart Lighting
+The benefits of smart lighting include:
+
+* **Convenience**: lights that do what you want, when you want.
+* **Voice Control**: adjust your lights with a command.
+* **Automations**: schedule your lights to go on and off at certain times and settings.
+* **Easy Dimmable Light**: dimming is built-in, no need for a special dimmer switch.
+* **Surround Lighting**: sync your lights to your TV or computer and watch as they dance, flash, dim, brighten, and change color along with the content on the screen.
+* **Get Cool Light Effects**: make your lights sparkle, mimic a fireplace, or twinkle like the stars.
+* **Connect with Other Devices**: use your smart lighting system with other connected devices, such as cameras, speakers, thermostats, and home assistants.
+
+## Recommended Products
+We recommend the following products:
+
+* **Hue Bridge Pro**: supports 150+ lights, 50+ accessories, and enables Hue Sync and MotionAware.
+* **Hue White and Color Ambiance**: a smart bulb that offers up to 806 lumens, white and colored light, and instant control via Bluetooth.
+* **Create a Starter Kit**: a bundle that includes two smart bulbs, a Bridge, and a starter kit to get you started with smart lighting.
+
+## Questions and Answers
+Some frequently asked questions about smart lighting include:
+
+* Who invented smart lights?
+* Should I choose a smart bulb or smart switch?
+* What are individually addressable LEDs?
+* What is the difference between RGBA and RGBWW?
+* How does Philips Hue ensure that all the lights display the same color?
+* What makes Philips Hue color lights different?

@@ -1,0 +1,3018 @@
+functional_requirements:
+- id: FR-0000
+  description: 'The system shall provide a password‑less authentication flow that
+
+    delivers a one‑time magic link via email or SMS, or a biometric
+
+    prompt on supported devices, allowing the patient to log in with a
+
+    single click or biometric confirmation.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0001
+  description: 'The system shall enforce multi‑factor authentication (MFA) by sending
+    a one‑time code via SMS or email, which the patient must enter within 5 minutes
+    to complete login.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0002
+  description: 'The system shall integrate with the existing OAuth 2.0 provider to
+    obtain an access token, store it securely, and establish a user session upon successful
+    authentication.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0003
+  description: 'The system shall grant the patient immediate access to their appointment
+    data after successful authentication, without requiring additional navigation
+    steps.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0004
+  description: 'The system shall maintain an immutable audit log for all login attempts,
+    magic link generation, MFA steps, and subsequent data access events, retaining
+    logs for 24 months.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0005
+  description: 'The system shall provide clear, user‑friendly error messages for all
+    failure scenarios encountered during login, including expired links, invalid credentials,
+    MFA failures, and service outages.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0006
+  description: 'The system shall enforce rate limiting on login attempts, allowing
+    a maximum of 5 failed attempts per user per 15‑minute window, after which the
+    account is locked for 15 minutes.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0007
+  description: 'The system shall enforce a session idle timeout of 30 minutes, after
+    which the user must re‑authenticate to continue accessing appointment data.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0008
+  description: 'The system shall integrate with a compliant email and SMS gateway
+    to deliver magic links and MFA codes, ensuring delivery within 30 seconds.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0009
+  description: The system must display real‑time appointment slots for a selected
+    provider and specialty, filtered by date and time window.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0010
+  description: For each slot displayed, the system must show the provider’s profile,
+    credentials, and office location.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0011
+  description: The system must allow a patient to select an available slot to initiate
+    a booking or appointment request.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0012
+  description: The system must present a confirmation view that displays the selected
+    slot details and includes a secure “Book” button to finalize the appointment.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0013
+  description: The system must auto‑refresh slot data every 5 seconds or provide a
+    pull‑to‑refresh gesture to fetch the latest availability.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0014
+  description: The system must support displaying slots in the patient’s local time
+    zone and optionally convert to provider’s time zone for traveling patients.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0015
+  description: 'Provide a patient‑facing UI that displays all upcoming appointments
+    and allows the
+
+    patient to select one for rescheduling. The UI must present a calendar or date/time
+
+    picker for choosing a new slot.
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0016
+  description: 'Perform a real‑time availability check for the selected new slot before
+    confirming the reschedule. The system must query the provider’s schedule and any
+    external calendars to ensure the slot is free.
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0017
+  description: 'Enforce the reschedule window by preventing changes to an appointment
+    less than 24 hours before its scheduled time. The system must compare the new
+    requested time against the original appointment timestamp.
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0018
+  description: 'Detect and prevent scheduling conflicts by ensuring the provider does
+    not have overlapping appointments. The system must check the provider’s calendar
+    for any appointment that would clash with the new slot.
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0019
+  description: 'Automatically notify the patient and the provider of the updated appointment
+    details via email, SMS, and/or portal notification immediately after a successful
+    reschedule.
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0020
+  description: 'Maintain an audit trail that logs every reschedule attempt, including
+    old time, new time, user ID, timestamp, and outcome (success, failure, manual
+    override).
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0021
+  description: 'Provide a manual override path for staff to intervene when the system
+    cannot automatically process a reschedule (e.g., due to conflicting constraints
+    or system errors).
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-0022
+  description: 'Allow patients to cancel a pending reschedule request before it is
+    finalized, restoring the original appointment time.
+
+    '
+  related_usecase:
+  - USER_STORY-0004
+- id: FR-00023
+  description: The system must send an appointment reminder to the patient via the
+    patient’s chosen channel (email, SMS, or app push) before the scheduled appointment
+    time.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00024
+  description: The reminder message must include a clear reply option that allows
+    the patient to indicate attendance status (“Yes, I will attend” / “No, I will
+    not attend”).
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00025
+  description: The system must capture and store the patient’s reply with a timestamp
+    and update the appointment record to reflect attendance status.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00026
+  description: If a patient replies “No”, the system must trigger a follow‑up workflow
+    (e.g., send a cancellation confirmation email or initiate a phone call to reschedule).
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00027
+  description: Patients must be able to set or change their preferred reminder channel
+    in their patient portal.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00028
+  description: Patients must be able to opt‑in or opt‑out of reminder notifications
+    for each channel.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00029
+  description: Administrators must have an interface to configure reminder templates,
+    send windows (e.g., 48 h, 24 h, 1 h before appointment), and channel preferences
+    for each clinic.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-00030
+  description: The system must log every reminder sent, delivery status, and patient
+    reply for audit and compliance purposes.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-0031
+  description: The system shall display a user‑friendly interface that shows the current
+    reminder channel (SMS or In‑App) and frequency (Immediate, 24 hrs before, 1 week
+    before, or Custom time) for each reminder type.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0032
+  description: The system shall allow the patient to change the reminder channel and
+    frequency for each reminder type, and to save or cancel those changes.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0033
+  description: The system shall validate the phone number format for SMS channel selection
+    and require verification before the preference can be saved.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0034
+  description: The system shall persist the patient’s communication preferences to
+    the database and expose them to the messaging engine for all future reminders.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0035
+  description: The system shall allow patients to update their communication preferences
+    at any time without restriction.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0036
+  description: The system shall prepopulate default preferences using data from USER_STORY-0001
+    (e.g., default channel SMS, frequency Immediate) during first‑time setup or when
+    no prior preferences exist.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0031
+  description: The system shall display a consolidated, paginated list of all patient
+    appointments, including upcoming and past appointments, with each row showing
+    the appointment date, time, provider name, and current status.
+  related_usecase: []
+- id: FR-0032
+  description: The system shall allow a patient to view detailed information for a
+    selected appointment, including location, preparation notes, reminders, and status
+    updates, with cancellation reasons displayed if applicable.
+  related_usecase: []
+- id: FR-0033
+  description: The system shall provide filter options (Upcoming, Past, Provider)
+    and sorting options (Date Ascending/Descending, Provider Name, Status) on the
+    appointment list page.
+  related_usecase: []
+- id: FR-0034
+  description: The system shall refresh appointment data in real time or on-demand
+    when changes occur in the EHR, ensuring the UI reflects the latest state within
+    5 seconds of the change.
+  related_usecase: []
+- id: FR-0035
+  description: The system shall enable patients to access the appointment details
+    page within no more than 3 clicks from the login screen.
+  related_usecase: []
+- id: FR-0042
+  description: The portal must display a list of the patient’s upcoming appointments,
+    including appointment ID, date, time, and provider name.
+  related_usecase: []
+- id: FR-0043
+  description: The patient must be able to initiate a cancellation of an appointment
+    by clicking a “Cancel” button next to the desired appointment.
+  related_usecase: []
+- id: FR-0044
+  description: The system must display a modal confirmation dialog that requires the
+    patient to explicitly confirm the cancellation.
+  related_usecase: []
+- id: FR-0045
+  description: Upon confirmation, the system must update the appointment status to
+    “canceled” in the backend and release the time slot for re‑booking.
+  related_usecase: []
+- id: FR-0046
+  description: The system must send a notification (email and/or SMS) to the patient
+    and the provider informing them of the cancellation.
+  related_usecase: []
+- id: FR-0047
+  description: The system must record an audit trail entry for every cancellation,
+    including timestamp, user ID, appointment ID, and action performed.
+  related_usecase: []
+- id: FR-0048
+  description: The portal must provide a “Cancellation History” view where patients
+    can see all past cancellations with details.
+  related_usecase: []
+- id: FR-0042
+  description: Encrypt all patient data at rest using AES‑256 before storage.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0043
+  description: Encrypt all network transmissions with TLS 1.2 or higher.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0044
+  description: Implement role‑based access control (RBAC) with least‑privilege policies
+    for all patient data.
+  related_usecase:
+  - USE_CASE-0003
+- id: FR-0045
+  description: Maintain an immutable audit trail that logs every access, modification,
+    and deletion event for patient data.
+  related_usecase:
+  - USE_CASE-0004
+- id: FR-0046
+  description: Provide secure deletion mechanisms that ensure patient data is irrecoverable
+    after deletion.
+  related_usecase:
+  - USE_CASE-0005
+- id: FR-0047
+  description: Create an incident reporting workflow that automatically alerts, creates
+    tickets, captures evidence, and escalates when a security incident is detected.
+  related_usecase:
+  - USE_CASE-0006
+- id: FR-0048
+  description: Enforce multi‑factor authentication (MFA) for all privileged roles
+    (e.g., Admin, Doctor, Compliance Officer).
+  related_usecase:
+  - USE_CASE-0007
+- id: FR-0042
+  description: 'The portal shall implement lazy loading for all non‑critical images
+    and components
+
+    so that only visible content is fetched during the initial page load.
+
+    '
+  related_usecase: []
+- id: FR-0043
+  description: 'The portal shall cache all static assets (CSS, JS, images) on a CDN
+    with a
+
+    Cache‑Control header of max‑age 2592000 seconds (30 days) and must purge
+
+    assets immediately when they are updated.
+
+    '
+  related_usecase: []
+- id: FR-0044
+  description: 'The portal’s API endpoints used for appointment availability and booking
+
+    shall be optimized to reduce payload size, enable HTTP/2 multiplexing,
+
+    and cache GET responses for 60 seconds.
+
+    '
+  related_usecase: []
+- id: FR-0045
+  description: 'The portal shall use responsive design principles to serve mobile‑optimized
+
+    assets (e.g., lower‑resolution images, compressed CSS) based on the
+
+    viewport width.
+
+    '
+  related_usecase: []
+- id: FR-0046
+  description: 'The portal shall expose a real‑time performance monitoring widget
+    that
+
+    displays page load time and error rate per user session to internal
+
+    dashboards.
+
+    '
+  related_usecase: []
+- id: FR-0047
+  description: 'The portal shall provide graceful degradation: if the CDN is unreachable,
+
+    the origin server must serve cached assets for up to 5 seconds before
+
+    retrying the CDN.
+
+    '
+  related_usecase: []
+- id: FR-0062
+  description: The system must display the backend‑suggested appointment slot to the
+    patient alongside any previously selected slots.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0063
+  description: The system must allow the patient to accept the suggested slot with
+    a single tap/click.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0064
+  description: The system must allow the patient to override the suggested slot by
+    selecting an alternative date/time from the calendar or list.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0065
+  description: The system must validate the chosen slot against clinic availability
+    and business rules before persisting it.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0066
+  description: The system must persist the final appointment selection in the backend
+    appointment database.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0067
+  description: The system must provide a confirmation UI to the patient after successful
+    booking.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0068
+  description: The system must provide a rollback/undo option that allows the patient
+    to cancel or change the booking within 30 seconds after confirmation.
+  related_usecase:
+  - USE_CASE-0012
+- id: FR-0062
+  description: 'The system must provide a Conflict Check Service that receives a proposed
+    reservation (doctor ID, start time, duration) and compares it against live doctor
+    calendars and existing appointments to determine if an overlap exists.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0063
+  description: 'The system must confirm a booking in a single atomic transaction only
+    after a successful conflict check, ensuring no partial commits occur.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0064
+  description: 'The system must return a clear pass/fail status and, if failed, a
+    list of overlapping appointment details to the caller (UI or API client).
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0065
+  description: 'The system must implement retry and fallback logic when the Conflict
+    Check Service is unavailable, attempting up to three retries with exponential
+    back‑off before flagging the booking for manual review.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0066
+  description: 'The system must expose a REST API endpoint `/bookings` that accepts
+    a booking payload, triggers the conflict check, and returns the result to the
+    caller.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0067
+  description: 'The system must log each conflict check attempt with timestamp, user
+    ID, doctor ID, appointment window, result, and conflict details (if any).
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0068
+  description: 'The system must complete the conflict check within one second for
+    99.5% of booking attempts, ensuring real‑time responsiveness.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0069
+  description: 'The system must ensure the conflict detection algorithm executes within
+    a single database transaction to guarantee data consistency.
+
+    '
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0077
+  description: The system must load and validate all admin‑defined rules that govern
+    crowd limits, appointment length, and other scheduling constraints before any
+    conflict resolution is attempted.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0078
+  description: The engine must fetch live availability data from the calendar service
+    and historical usage patterns from the analytics store within 5 seconds of a conflict
+    trigger.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0079
+  description: The system must detect all overlapping or conflicting appointments
+    across the affected resources based on the loaded rules and the retrieved availability
+    data.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0080
+  description: The engine must compute and return the next best available slot that
+    satisfies crowd, length, and admin‑defined rules, prioritizing minimal deviation
+    from the original requested time.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0081
+  description: The system must apply the resolution atomically, updating or adjusting
+    bookings in a single transaction to avoid double‑booking.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0082
+  description: The engine must trigger notifications (email/SMS/webhook) to affected
+    users and administrators immediately after a conflict is resolved.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0083
+  description: The system must maintain an immutable audit trail for every conflict,
+    resolution decision, and slot adjustment for compliance and traceability.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0084
+  description: The engine must expose a RESTful API endpoint `/resolve-conflict` that
+    accepts a conflict payload and returns the resolved slot or error message.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0085
+  description: The engine must support dynamic updates to admin‑defined rules via
+    an authenticated admin API, propagating changes to all in‑memory rule caches within
+    10 s.
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0077
+  description: 'The system shall expose a secure API endpoint `/appointments/{id}/cancel`
+    that allows a patient or a doctor to cancel a scheduled appointment.
+
+    '
+  related_usecase:
+  - USE_CASE-0015
+- id: FR-0078
+  description: 'Upon successful cancellation, the system shall immediately mark the
+    corresponding time slot as available in the resource calendar, making it eligible
+    for new bookings.
+
+    '
+  related_usecase:
+  - USE_CASE-0015
+- id: FR-0079
+  description: 'The system shall update crowdedness and resource utilization metrics
+    within 2 seconds after a cancellation.
+
+    '
+  related_usecase:
+  - USE_CASE-0015
+- id: FR-0080
+  description: 'The system shall persist an audit record for every cancellation, capturing
+    user ID, appointment ID, timestamp, and optional cancellation reason.
+
+    '
+  related_usecase:
+  - USE_CASE-0015
+- id: FR-0081
+  description: 'The system shall return a confirmation response and send a notification
+    (email/SMS/push) to both the patient and the doctor confirming the slot release.
+
+    '
+  related_usecase:
+  - USE_CASE-0015
+- id: FR-0082
+  description: 'The system shall handle cancellation failures gracefully, ensuring
+    idempotency and providing clear error messages to the user.
+
+    '
+  related_usecase:
+  - USE_CASE-0015
+- id: FR-0092
+  description: 'Detect when a patient misses a scheduled appointment by monitoring
+    the appointment start time against a configurable grace period and mark the appointment
+    as a no‑show if the patient has not checked in.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0093
+  description: 'Generate up to five alternative appointment slots for a missed appointment,
+    prioritizing slots that preserve the provider’s current day schedule, respect
+    room/equipment constraints, and fall within clinic operating hours.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0094
+  description: 'Notify the patient of the no‑show status and present the suggested
+    reschedule options via SMS, email, or push notification, and provide an immediate
+    acceptance or decline action.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0095
+  description: 'Log all no‑show detection events, notification attempts, patient responses,
+    and final appointment changes in a tamper‑evident audit trail that is accessible
+    for compliance reporting.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0096
+  description: 'Provide an administrative dashboard that displays no‑show counts,
+    auto‑reschedule attempt rates, acceptance rates, and provider performance metrics,
+    with drill‑down to individual appointment details.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0097
+  description: 'Allow clinicians or administrators to manually approve, reject, or
+    modify a suggested reschedule slot before it is sent to the patient.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0098
+  description: 'Provide a configuration interface to set the grace period for no‑show
+    detection, with a default of 15 minutes and a maximum of 60 minutes.
+
+    '
+  related_usecase:
+  - USE_CASE-0016
+- id: FR-0991
+  description: 'Provide a secure web UI that allows a Clinic Administrator to create,
+    edit, and delete conflict resolution rules
+
+    for crowd level, session length, and alternative doctor preferences.
+
+    '
+  related_usecase: []
+- id: FR-0992
+  description: 'Validate rule input syntax and semantic constraints before activation,
+    ensuring thresholds are numeric, within defined bounds, and logically consistent.
+
+    '
+  related_usecase: []
+- id: FR-0993
+  description: 'Allow administrators to enable or disable individual conflict resolution
+    rules without affecting system availability or ongoing appointments.
+
+    '
+  related_usecase: []
+- id: FR-0994
+  description: 'Ensure that any change to a rule (create, update, delete, enable/disable)
+    is propagated to the conflict‑resolution engine within 1 s and is reflected in
+    subsequent conflict decisions.
+
+    '
+  related_usecase: []
+- id: FR-0995
+  description: 'Maintain an audit trail for all rule changes, recording who made the
+    change, the timestamp, the rule state before and after, and the operation type
+    (create, update, delete, toggle).
+
+    '
+  related_usecase: []
+- id: FR-0996
+  description: 'Apply rule updates without any service interruption, ensuring zero
+    downtime for the rule‑management interface and the conflict‑resolution engine.
+
+    '
+  related_usecase: []
+- id: FR-0997
+  description: 'Provide a rollback mechanism that restores the last known good configuration
+    if a rule update fails during deployment.
+
+    '
+  related_usecase: []
+- id: FR-0106
+  description: The system must capture every conflict detection event, storing a unique
+    event ID, conflict type, affected record identifiers, and the initiating user
+    or process.
+  related_usecase: []
+- id: FR-0107
+  description: The system must capture every conflict resolution event, storing a
+    unique event ID, resolution action, resolver metadata, and resolution outcome.
+  related_usecase: []
+- id: FR-0108
+  description: Each audit log entry must be timestamped with UTC time in ISO 8601
+    format, accurate to the millisecond.
+  related_usecase: []
+- id: FR-0109
+  description: Audit log entries must be persisted in a durable, transactional storage
+    system (e.g., relational database table or append‑only file) that guarantees 100 %
+    durability.
+  related_usecase: []
+- id: FR-0110
+  description: Administrators must be able to search and filter audit logs by date
+    range, event type, user, and affected record ID.
+  related_usecase: []
+- id: FR-0111
+  description: The system must provide export functionality for audit logs in CSV
+    and JSON formats, supporting pagination and full‑dataset export.
+  related_usecase: []
+- id: FR-0112
+  description: The system must enforce a retention policy that retains audit logs
+    for at least five years, after which logs are archived securely and cannot be
+    modified.
+  related_usecase: []
+- id: FR-0113
+  description: Audit logs must be tamper‑evident, implemented via a hash chain where
+    each log entry includes the hash of the previous entry.
+  related_usecase: []
+- id: FR-0114
+  description: Only users with the “Audit Admin” role may read audit logs; all other
+    users are denied access.
+  related_usecase: []
+- id: FR-0115
+  description: The system shall capture the patient’s IANA time‑zone identifier either
+    through explicit user selection or inference from the patient’s device/browser.
+  related_usecase: []
+- id: FR-0116
+  description: The system shall convert a patient‑selected local appointment time
+    to the clinic’s configured local time‑zone and display the converted time to the
+    patient for confirmation.
+  related_usecase: []
+- id: FR-0117
+  description: The system shall persist both the patient’s original datetime (with
+    time‑zone information) and the converted clinic‑local datetime in the appointment
+    record.
+  related_usecase: []
+- id: FR-0118
+  description: The system shall validate time‑zone conversions through automated unit
+    tests covering at least 95 % of active IANA zones, including DST transitions and
+    leap seconds.
+  related_usecase: []
+- id: FR-0119
+  description: The system shall provide graceful error handling and fallback when
+    a patient’s time‑zone cannot be determined.
+  related_usecase: []
+- id: FR-0120
+  description: The system shall expose a RESTful API endpoint `/convert-timezone`
+    that accepts a datetime and IANA time‑zone, returns the converted datetime in
+    the clinic’s time‑zone, and supports batch conversion for up to 100 entries per
+    request.
+  related_usecase: []
+- id: FR-0121
+  description: Detect loss of connectivity to the external doctor calendar service
+    and transition the system into offline mode.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0122
+  description: Capture and persist all scheduling changes locally while the system
+    is offline.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0123
+  description: Maintain a per-doctor queue of pending changes, preserving the order
+    of operations.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0124
+  description: Detect reconnection to the doctor calendar service and automatically
+    trigger replay of queued changes in original order.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0125
+  description: Verify replay success, handle failures with a retry mechanism, and
+    flag changes that exceed retry limits for manual intervention.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0126
+  description: Prevent duplicate appointments during replay by detecting and discarding
+    changes that would create duplicates.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0127
+  description: Provide an audit trail of all replayed changes, including success,
+    failure, and duplicate skips, accessible to administrators.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0128
+  description: Allow users to manually trigger replay of pending changes or cancel
+    them before replay.
+  related_usecase:
+  - USER_STORY-0020
+- id: FR-0129
+  description: The system must trigger a push, email, or SMS notification immediately
+    when a slot is confirmed.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0130
+  description: The system must trigger a push, email, or SMS notification immediately
+    when a slot is changed (date, time, or other attributes).
+  related_usecase:
+  - USE_CASE-0002
+- id: FR-0131
+  description: The system must trigger a push, email, or SMS notification immediately
+    when a slot is resolved (canceled or marked as no‑show).
+  related_usecase:
+  - USE_CASE-0003
+- id: FR-0132
+  description: The system must allow patients and doctors to configure preferred notification
+    channels (push, email, SMS) and opt‑out of specific channels during registration
+    or via settings.
+  related_usecase: []
+- id: FR-0133
+  description: The system must record and expose acknowledgment status for each notification
+    sent to patients and doctors.
+  related_usecase:
+  - USE_CASE-0004
+- id: FR-0134
+  description: 'The system must automatically trigger a recalculation of the crowd
+    level metric immediately after any booking or cancellation event.
+
+    '
+  related_usecase: []
+- id: FR-0135
+  description: 'The system must broadcast the updated crowd metric to all dependent
+    services (booking interface, analytics dashboard, and any third‑party APIs) within
+    the same transaction as the metric persistence.
+
+    '
+  related_usecase: []
+- id: FR-0136
+  description: 'Subsequent slot selection queries performed by users must read the
+    most recent crowd metric, ensuring that availability reflects the current crowd
+    level.
+
+    '
+  related_usecase: []
+- id: FR-0137
+  description: 'If the metric calculation fails or the broadcast cannot be completed
+    within a 30‑second grace period, the system must fall back to the most recently
+    successful metric and trigger an operational alert.
+
+    '
+  related_usecase: []
+- id: FR-0138
+  description: 'The system must log every crowd metric update event, including source
+    event ID, calculation status, latency, and any errors, for audit and troubleshooting
+    purposes.
+
+    '
+  related_usecase: []
+- id: FR-0139
+  description: The system must encrypt all patient data at rest using AES‑256 before
+    it is written to persistent storage.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0140
+  description: The system must encrypt all appointment data at rest using AES‑256
+    before it is written to persistent storage.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0141
+  description: The system must protect all patient and appointment data in transit
+    by using TLS 1.2 or higher for every network channel.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0142
+  description: The system must manage encryption keys via a secure Key Management
+    Service (KMS) that supports automatic key rotation.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0143
+  description: The system must enforce key rotation every 90 days and retain revoked
+    keys for 24 months.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0144
+  description: The system must restrict decryption rights to authorized roles only,
+    enforcing role‑based access control.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0145
+  description: The system must log all encryption, decryption, and key‑management
+    events in a tamper‑proof audit trail.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0146
+  description: The system must provide a compliance report that verifies 100 % of
+    patient and appointment data are encrypted at rest and in transit.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0147
+  description: The system must ensure all external integrations (EHR, billing, analytics)
+    use secure channels compliant with TLS 1.2+.
+  related_usecase:
+  - USE_CASE-0024
+- id: FR-0148
+  description: The system shall display all upcoming appointments in a calendar view
+    (month, week, and day modes) when the scheduler opens the calendar.
+  related_usecase: []
+- id: FR-0149
+  description: The system shall highlight any appointments that conflict (overlap
+    in time) for the same resource within the calendar view.
+  related_usecase: []
+- id: FR-0150
+  description: The system shall allow the scheduler to switch between month, week,
+    and day calendar views.
+  related_usecase: []
+- id: FR-0151
+  description: The system shall provide filtering capabilities by resource, date range,
+    and appointment status.
+  related_usecase: []
+- id: FR-0152
+  description: The system shall provide a search bar that allows the scheduler to
+    search appointments by patient name or notes.
+  related_usecase: []
+- id: FR-0153
+  description: The system shall automatically detect and notify the scheduler of any
+    conflicts within 5 minutes of opening the calendar view.
+  related_usecase: []
+- id: FR-0154
+  description: The system shall cache appointment data on the client side for 30 seconds
+    to reduce API calls.
+  related_usecase: []
+- id: FR-0155
+  description: The system shall provide full keyboard navigation and screen reader
+    support for all interactive elements in the calendar view.
+  related_usecase: []
+- id: FR-0156
+  description: The system shall provide an appointment detail modal that opens on
+    click, showing patient name, attending staff, notes, and status, read‑only for
+    schedulers.
+  related_usecase: []
+- id: FR-0157
+  description: The system shall display the resource name and appointment status within
+    each calendar cell for quick reference.
+  related_usecase: []
+- id: FR-0158
+  description: The system shall provide a manual refresh button that re‑fetches appointment
+    data from the scheduling API.
+  related_usecase: []
+- id: FR-0159
+  description: The system shall provide a searchable, paginated dropdown list of providers
+    for the user to select from when filtering the schedule.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0160
+  description: The system shall provide a start date and end date picker that allows
+    the user to select a contiguous date range for filtering appointments.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0161
+  description: The system shall apply the selected provider and date range to the
+    schedule view, displaying only appointments that match both criteria.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0162
+  description: The system shall persist the filter settings for the duration of the
+    user session and optionally store them in user preferences for future sessions.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0163
+  description: The system shall provide a “Clear Filter” action that resets all filter
+    controls to their default state and reloads the full appointment schedule.
+  related_usecase:
+  - USE_CASE-0001
+- id: FR-0164
+  description: 'The system must allow a Clinic Scheduler to drag an existing appointment
+
+    element from its current time slot to any other available time slot on
+
+    the calendar interface.
+
+    '
+  related_usecase: []
+- id: FR-0165
+  description: 'The system must validate the target time slot upon drop, ensuring
+    that the
+
+    doctor, patient, and room are all available, and reject the drop if any
+
+    constraint is violated.
+
+    '
+  related_usecase: []
+- id: FR-0166
+  description: 'During the drag operation the system must provide real‑time visual
+    feedback,
+
+    highlighting available slots, indicating conflicts, and showing a preview
+
+    of the appointment duration.
+
+    '
+  related_usecase: []
+- id: FR-0167
+  description: 'After a successful reschedule, the system must provide an undo option
+    that
+
+    remains available for 30 seconds, allowing the user to revert the change.
+
+    '
+  related_usecase: []
+- id: FR-0168
+  description: 'The system must log every reschedule action, capturing the user performing
+
+    the action, original and new slot times, and timestamps for audit purposes.
+
+    '
+  related_usecase: []
+- id: FR-0169
+  description: 'Upon a successful reschedule, the system must send email and SMS notifications
+
+    to the patient and the assigned doctor, confirming the new appointment time.
+
+    '
+  related_usecase: []
+- id: FR-0170
+  description: 'The system must provide a user interface that allows a Clinic Scheduler
+    to cancel an existing appointment
+
+    directly from either the appointment list view or the appointment detail view.
+
+    '
+  related_usecase:
+  - USE_CASE-0028
+- id: FR-0171
+  description: 'The system must enforce that a cancellation reason is entered before
+    a scheduler can confirm the cancellation.
+
+    '
+  related_usecase:
+  - USE_CASE-0028
+- id: FR-0172
+  description: 'The system must record an audit log entry for every manual cancellation
+    that includes the user ID, appointment ID, cancellation reason, and timestamp.
+
+    '
+  related_usecase:
+  - USE_CASE-0028
+- id: FR-0173
+  description: 'The system must update the clinic calendar in real‑time so that the
+    cancelled slot becomes available for booking immediately after a successful cancellation.
+
+    '
+  related_usecase:
+  - USE_CASE-0028
+- id: FR-0174
+  description: 'The system must restrict cancellation capability to users who possess
+    the “Scheduler” role; other roles may view but not cancel appointments.
+
+    '
+  related_usecase:
+  - USE_CASE-0028
+- id: FR-0175
+  description: 'The system must provide robust error handling for cancellation failures,
+    ensuring the UI reverts any optimistic changes and displays a clear error message.
+
+    '
+  related_usecase:
+  - USE_CASE-0028
+- id: FR-0176
+  description: 'The system must allow a user with the “Clinic Scheduler” role to force
+    schedule an appointment in a time slot that differs from the AI’s suggested slot,
+    after confirming the override.
+
+    '
+  related_usecase: []
+- id: FR-0177
+  description: 'The system must present a confirmation dialog that requires explicit
+    user acknowledgement before finalizing a forced appointment.
+
+    '
+  related_usecase: []
+- id: FR-0178
+  description: 'The system must capture and store a mandatory reason for each forced
+    appointment, entered by the scheduler during the override process.
+
+    '
+  related_usecase: []
+- id: FR-0179
+  description: 'The system must create an immutable audit log entry for every forced
+    appointment that records the scheduler’s identity, timestamp, original AI suggestion,
+    chosen slot, and reason for override.
+
+    '
+  related_usecase: []
+- id: FR-0180
+  description: 'The system must enforce role‑based access control, allowing only users
+    with the “Clinic Scheduler” role or higher to perform forced scheduling.
+
+    '
+  related_usecase: []
+- id: FR-0181
+  description: The system must display a grid view of each provider’s open slots for
+    the selected date range, with each slot showing start time, end time, and provider
+    name.
+  related_usecase: []
+- id: FR-0182
+  description: The system must overlay historical usage bars on the slot grid, representing
+    the percentage of occupied slots per week for the past month.
+  related_usecase: []
+- id: FR-0183
+  description: The system must provide interactive filters allowing the user to filter
+    by provider, specialty, and custom date range.
+  related_usecase: []
+- id: FR-0184
+  description: The system must display a timestamp indicating the last data refresh,
+    and the timestamp must be accurate to the most recent 15‑minute refresh cycle.
+  related_usecase: []
+- id: FR-0185
+  description: The system must allow a Scheduler to click on an open slot to drill
+    down and view appointment details or initiate a new booking, provided the user
+    has the appropriate role.
+  related_usecase: []
+- id: FR-0186
+  description: The system must enforce role‑based access control, allowing only Administrators
+    and Schedulers to view the full dashboard; other staff see a limited view with
+    only aggregated data.
+  related_usecase: []
+- id: FR-0187
+  description: The system must render the dashboard in a mobile‑responsive layout,
+    ensuring usability on devices with screen widths less than 768px.
+  related_usecase: []
+- id: FR-0188
+  description: The system must provide an option to export the current dashboard view
+    to a CSV file, including provider name, slot times, and occupancy percentage.
+  related_usecase: []
+- id: FR-0189
+  description: 'The system shall allow a Clinic Manager to generate a performance
+    report summarizing no‑show rates, average wait times, and utilization metrics
+    for a selected time period.
+
+    '
+  related_usecase: []
+- id: FR-0190
+  description: 'The system shall provide filtering controls to narrow the report by
+    clinic, date range, and appointment type.
+
+    '
+  related_usecase: []
+- id: FR-0191
+  description: 'The system shall allow the manager to export the generated report
+    in PDF, CSV, or Excel format.
+
+    '
+  related_usecase: []
+- id: FR-0192
+  description: 'The system shall support scheduling of recurring report generation
+    (e.g., daily, weekly) and send an email notification to the Clinic Manager upon
+    completion.
+
+    '
+  related_usecase: []
+- id: FR-0193
+  description: 'The system shall allow the manager to drill down from aggregate metrics
+    to individual appointment details within the report.
+
+    '
+  related_usecase: []
+- id: FR-0194
+  description: 'The system shall maintain an audit trail of all report generation
+    activities, recording the user, timestamp, report parameters, and outcome (success/failure).
+
+    '
+  related_usecase: []
+- id: FR-0195
+  description: Clinic Manager can initiate an export of any available report from
+    the Reports dashboard.
+  related_usecase: []
+- id: FR-0196
+  description: Clinic Manager can select the export format (CSV or PDF) before initiating
+    the export.
+  related_usecase: []
+- id: FR-0197
+  description: Clinic Manager can apply date range and filter criteria to the report
+    before export.
+  related_usecase: []
+- id: FR-0198
+  description: The system generates the export file on the server and streams it to
+    the Clinic Manager’s browser.
+  related_usecase: []
+- id: FR-0199
+  description: After export completion, the system displays a success or failure notification
+    with download link or error details.
+  related_usecase: []
+- id: FR-0200
+  description: All export actions are logged to an audit trail with user ID, timestamp,
+    and export parameters.
+  related_usecase: []
+- id: FR-0201
+  description: Detect schedule conflicts in real‑time and generate an alert trigger
+    within 5 minutes of the conflict occurring.
+  related_usecase: []
+- id: FR-0202
+  description: Create a persistent alert record containing conflict details (staff,
+    patient, time slot, conflict type) and a unique alert ID.
+  related_usecase: []
+- id: FR-0203
+  description: Deliver the alert to the Clinic Scheduler via the existing notification
+    service using push, email, or in‑app channels as configured.
+  related_usecase: []
+- id: FR-0204
+  description: Allow the Clinic Scheduler to acknowledge, ignore, or delegate an alert
+    through the user interface or API.
+  related_usecase: []
+- id: FR-0205
+  description: Log all alert actions (creation, delivery, acknowledgment, delegation,
+    ignoring) with timestamps and user identifiers for audit and reporting.
+  related_usecase: []
+- id: FR-0206
+  description: Provide a user interface that lists current alerts with status, priority
+    indicators, and actions to resolve or delegate.
+  related_usecase: []
+- id: FR-0207
+  description: Support multi‑channel notifications (push, email, SMS) for alerts,
+    configurable per user preference.
+  related_usecase: []
+- id: FR-0208
+  description: Provide an API endpoint for historical alert search and reporting,
+    supporting filters by date range, status, and staff.
+  related_usecase: []
+- id: FR-209
+  description: Log every manual change made through the UI or API, capturing user
+    identity, action type, timestamp (UTC), reason/comment (if provided), and affected
+    record identifiers.
+  related_usecase: []
+- id: FR-210
+  description: Store audit log entries in an immutable, tamper‑evident store that
+    prevents modification or deletion by non‑admin users.
+  related_usecase: []
+- id: FR-211
+  description: Provide a query interface for audit logs that supports filtering by
+    date range, user, action type, and entity, and allows export of results in CSV
+    or JSON format.
+  related_usecase: []
+- id: FR-212
+  description: Trigger real‑time alerts for high‑risk changes (e.g., deletion of critical
+    records) and log the alert details.
+  related_usecase: []
+- id: FR-213
+  description: Ensure audit trail completeness by persisting the audit log entry before
+    committing the business transaction.
+  related_usecase: []
+- id: FR-214
+  description: Enforce an audit log retention policy that automatically archives or
+    deletes logs older than a configurable period (e.g., 7 years) while maintaining
+    compliance.
+  related_usecase: []
+- id: FR-0215
+  description: 'The system must perform bidirectional synchronization of patient schedules,
+    appointments, and clinical notes between the EHR and billing systems.
+
+    '
+  related_usecase: []
+- id: FR-0216
+  description: 'The system must support event‑driven triggers that initiate an immediate
+    sync when an appointment or claim event occurs in either system.
+
+    '
+  related_usecase: []
+- id: FR-0217
+  description: 'The system must perform scheduled batch synchronization to capture
+    any missed or delayed events, running no more frequently than every 5 minutes.
+
+    '
+  related_usecase: []
+- id: FR-0218
+  description: 'The system must provide a data transformation layer that maps EHR
+    data models to billing data models, including type conversions, date formatting,
+    and code system translations.
+
+    '
+  related_usecase: []
+- id: FR-0219
+  description: 'The system must detect duplicate records and resolve conflicts using
+    a last‑write‑wins strategy or a configurable user‑approved rule set.
+
+    '
+  related_usecase: []
+- id: FR-0220
+  description: 'The system must maintain a comprehensive audit trail, logging every
+    sync event, payload, status, and error details, searchable by patient ID, timestamp,
+    and sync type.
+
+    '
+  related_usecase: []
+- id: FR-0221
+  description: 'The system must implement robust error handling, automatically retrying
+    transient failures up to three times with exponential back‑off and flagging persistent
+    failures for manual intervention.
+
+    '
+  related_usecase: []
+- id: FR-0222
+  description: 'The system must provide an administrative UI that allows field mapping,
+    sync schedule configuration, status monitoring, and failure log review.
+
+    '
+  related_usecase: []
+- id: FR-0223
+  description: 'The system must expose a secure RESTful API/SDK that allows external
+    systems to trigger sync operations or retrieve sync status.
+
+    '
+  related_usecase: []
+- id: FR-0224
+  description: The system shall allow a System Administrator to create, edit, and
+    delete role definitions.
+  related_usecase: []
+- id: FR-0225
+  description: The system shall allow a System Administrator to assign a set of permissions
+    (e.g., view, edit, delete) to each role.
+  related_usecase: []
+- id: FR-0226
+  description: The system shall allow a System Administrator to assign one or more
+    existing roles to individual staff users.
+  related_usecase: []
+- id: FR-0227
+  description: The system shall propagate any permission changes (role creation, permission
+    updates, role assignment changes) to all affected staff users within 1 hour of
+    the change being made.
+  related_usecase: []
+- id: FR-0228
+  description: The system shall maintain an immutable audit trail for all permission
+    changes, recording the actor, timestamp, and details of the change.
+  related_usecase: []
+- id: FR-0229
+  description: The system shall provide real‑time UI feedback for unauthorized access
+    attempts and enforce a threshold that no more than 1% of total access attempts
+    are unauthorized.
+  related_usecase: []
+- id: FR-0230
+  description: New staff members must be able to log in to the LMS and view the list
+    of available dashboard training modules.
+  related_usecase: []
+- id: FR-0231
+  description: The system must display LMS‑compatible training content (video, slides,
+    interactive widgets) within the module view.
+  related_usecase: []
+- id: FR-0232
+  description: Users must be able to navigate forward and backward through the sections
+    of a training module.
+  related_usecase: []
+- id: FR-0233
+  description: At the end of each module, the system must present a quiz with at least
+    5 multiple‑choice questions and provide immediate feedback after each answer.
+  related_usecase: []
+- id: FR-0234
+  description: The system must track and display the user’s progress percentage completed,
+    time spent, and quiz scores on a dashboard.
+  related_usecase: []
+- id: FR-0235
+  description: Upon successful completion of a module (quiz score ≥ 90 % and 100 %
+    module completion), the system must issue a digital badge and record certification
+    in the user’s profile.
+  related_usecase: []
+- id: FR-0236
+  description: The system must expose an API endpoint that returns analytics data
+    (completion rate, average quiz score, time spent) for managers.
+  related_usecase: []
+- id: FR-0237
+  description: Training modules must be fully responsive and usable on desktop, tablet,
+    and mobile browsers.
+  related_usecase: []
+non_functional_requirements:
+- id: NFR-0000
+  description: 'All data in transit must be encrypted using TLS 1.3, and all data
+    at rest must be encrypted with AES‑256. Encryption keys shall be managed via a
+    Hardware Security Module (HSM).
+
+    '
+  related:
+  - FR-0000
+  - FR-0001
+  - FR-0002
+  - FR-0008
+  - FR-0007
+- id: NFR-0001
+  description: 'The system must comply with HIPAA security and privacy rules, including
+    audit logging retention for 24 months, breach notification procedures, and data
+    minimization.
+
+    '
+  related:
+  - FR-0004
+- id: NFR-0002
+  description: 'End‑to‑end authentication (magic link generation, MFA, OAuth token
+    acquisition, session creation) must resolve within 2 seconds for 99th percentile
+    of users.
+
+    '
+  related:
+  - FR-0000
+  - FR-0001
+  - FR-0002
+  - FR-0008
+- id: NFR-0003
+  description: 'Email and SMS delivery for magic links and MFA codes must complete
+    within 30 seconds for 95th percentile of messages.
+
+    '
+  related:
+  - FR-0008
+- id: NFR-0004
+  description: 'The authentication service must achieve 99.9 % uptime, with automatic
+    failover to a secondary instance in the event of a primary failure.
+
+    '
+  related:
+  - FR-0000
+  - FR-0001
+  - FR-0002
+  - FR-0008
+- id: NFR-0005
+  description: 'The system must scale to handle 10,000 concurrent login attempts during
+    peak periods without degradation in response time.
+
+    '
+  related:
+  - FR-0000
+  - FR-0001
+  - FR-0002
+- id: NFR-0006
+  description: 'At least 95 % of patients surveyed post‑login must report confidence
+    in the login process.
+
+    '
+  related:
+  - FR-0000
+  - FR-0001
+  - FR-0003
+- id: NFR-0007
+  description: 'MFA codes must expire 5 minutes after issuance, and the system must
+    allow a maximum of 3 attempts per code.
+
+    '
+  related:
+  - FR-0001
+- id: NFR-0008
+  description: 'Session idle timeout must be 30 minutes, and session termination must
+    invalidate all session tokens.
+
+    '
+  related:
+  - FR-0007
+- id: NFR-0009
+  description: 'Audit logs must be tamper‑evident, searchable, and protected from
+    unauthorized access.
+
+    '
+  related:
+  - FR-0004
+- id: NFR-0010
+  description: 'All third‑party integrations (email, SMS, OAuth provider) must be
+    vetted and certified for HIPAA compliance before use.
+
+    '
+  related:
+  - FR-0008
+- id: NFR-0011
+  description: The system must meet performance targets for API latency and UI rendering
+    to ensure a responsive user experience.
+  related:
+  - FR-0009
+  - FR-0010
+- id: NFR-0012
+  description: The availability view must maintain high reliability and graceful degradation
+    in case of scheduling API failures.
+  related:
+  - FR-0009
+  - FR-0013
+- id: NFR-0013
+  description: The system must adhere to HIPAA security requirements and enforce secure
+    data transmission.
+  related:
+  - FR-0009
+  - FR-0010
+  - FR-0011
+  - FR-0012
+- id: NFR-0014
+  description: The system must scale to support at least 10,000 concurrent patients
+    per clinic without performance degradation.
+  related:
+  - FR-0009
+  - FR-0010
+  - FR-0011
+  - FR-0012
+  - FR-0013
+  - FR-0014
+- id: NFR-0015
+  description: The user experience must enable at least 90 % of patients to find a
+    suitable slot on the first page of results.
+  related:
+  - FR-0009
+- id: NFR-0016
+  description: The availability feature must be available 24/7 and handle network
+    interruptions gracefully.
+  related:
+  - FR-0009
+  - FR-0013
+- id: NFR-0017
+  description: The UI must comply with WCAG 2.1 AA accessibility standards.
+  related:
+  - FR-0009
+  - FR-0010
+- id: NFR-0018
+  description: 'End‑to‑end response time for the reschedule flow (UI submission →
+    confirmation receipt) must not exceed 2 minutes under peak load conditions.
+
+    '
+  related:
+  - FR-0015
+  - FR-0016
+  - FR-0017
+  - FR-0018
+  - FR-0019
+- id: NFR-0019
+  description: 'The reschedule service must be available 99.9% of the time over a
+    30‑day period, excluding planned maintenance windows.
+
+    '
+  related:
+  - FR-0015
+  - FR-0019
+- id: NFR-0020
+  description: 'The system must scale to handle a 50% surge in appointment changes
+    (e.g., during flu season) without a performance degradation of more than 10% relative
+    to baseline metrics.
+
+    '
+  related:
+  - FR-0015
+- id: NFR-0021
+  description: 'All patient data must be encrypted in transit using TLS 1.3 and at
+    rest using AES‑256. Role‑based access control must restrict actions to authorized
+    users only.
+
+    '
+  related:
+  - FR-0015
+  - FR-0016
+  - FR-0019
+- id: NFR-00023
+  description: Reminder delivery latency must be under 2 seconds for 95 % of send
+    requests, even during peak load.
+  related:
+  - FR-00023
+- id: NFR-00024
+  description: Response processing latency must be under 1 second for 95 % of patient
+    replies.
+  related:
+  - FR-00025
+- id: NFR-00025
+  description: The notification service must maintain 99.5 % uptime over a 30‑day
+    period.
+  related:
+  - FR-00023
+  - FR-00025
+  - FR-00026
+- id: NFR-00026
+  description: All patient data (contact info, reminder content, replies) must be
+    encrypted at rest and in transit in accordance with HIPAA requirements.
+  related:
+  - FR-00030
+- id: NFR-00027
+  description: The system must support up to 20 000 response events per day without
+    performance degradation.
+  related:
+  - FR-00025
+- id: NFR-00028
+  description: Audit logs must be retained for a minimum of 7 years in a tamper‑evident
+    format.
+  related:
+  - FR-00030
+- id: NFR-00029
+  description: The admin dashboard and patient portal must meet WCAG 2.1 AA accessibility
+    standards.
+  related:
+  - FR-00029
+- id: NFR-00030
+  description: The system must handle a 50 % spike in reminder send volume during
+    peak periods without exceeding 5 % of the 95 % latency threshold.
+  related:
+  - FR-00023
+- id: NFR-00031
+  description: The system must comply with all HIPAA opt‑in/out requirements, including
+    audit trails for consent changes.
+  related:
+  - FR-00028
+- id: NFR-0032
+  description: The Preference page and associated APIs must meet performance targets
+    to ensure a responsive user experience.
+  related:
+  - FR-0031
+  - FR-0032
+  - FR-0034
+- id: NFR-0033
+  description: The system must provide robust security and privacy controls for communication
+    preference data.
+  related:
+  - FR-0034
+- id: NFR-0034
+  description: The Preference API must exhibit high reliability and graceful error
+    handling.
+  related:
+  - FR-0034
+- id: NFR-0035
+  description: The Preference UI must be accessible and provide a usable experience
+    for all patients.
+  related:
+  - FR-0031
+  - FR-0032
+  - FR-0033
+- id: NFR-0036
+  description: The system must scale to accommodate high concurrent usage without
+    performance degradation.
+  related:
+  - FR-0031
+  - FR-0032
+- id: NFR-0032
+  description: The appointment list page must load within 2 seconds for 95 % of accesses.
+  related:
+  - FR-0031
+  - FR-0035
+- id: NFR-0033
+  description: The appointment viewing feature shall have 99.9 % uptime over a 30‑day
+    period.
+  related:
+  - FR-0031
+  - FR-0032
+  - FR-0033
+  - FR-0034
+  - FR-0035
+- id: NFR-0034
+  description: The system shall encrypt patient appointment data in transit and at
+    rest, and require multi‑factor authentication (MFA) for portal access.
+  related:
+  - FR-0031
+  - FR-0032
+  - FR-0033
+  - FR-0034
+  - FR-0035
+- id: NFR-0035
+  description: The appointment pages must comply with WCAG 2.1 AA accessibility standards.
+  related:
+  - FR-0031
+  - FR-0032
+  - FR-0033
+  - FR-0034
+  - FR-0035
+- id: NFR-0036
+  description: The appointment viewing interface shall render correctly on iOS and
+    Android browsers as well as on the native mobile app, ensuring consistent layout
+    and functionality.
+  related:
+  - FR-0031
+  - FR-0032
+  - FR-0033
+  - FR-0034
+  - FR-0035
+- id: NFR-0037
+  description: Appointment data displayed must reflect the latest EHR state within
+    5 seconds of an update.
+  related:
+  - FR-0034
+- id: NFR-0043
+  description: The end‑to‑end cancellation process (from click to status update) must
+    complete in 2 seconds or less, 90% of the time.
+  related:
+  - FR-0045
+  - FR-0046
+- id: NFR-0044
+  description: The portal must maintain 99.9% uptime during business hours (8 AM–6 PM
+    local time) for all cancellation-related features.
+  related: []
+- id: NFR-0045
+  description: All cancellation actions must be protected by authentication (JWT or
+    OAuth) and role‑based access control, ensuring only the owning patient can cancel.
+  related:
+  - FR-0042
+  - FR-0043
+  - FR-0045
+- id: NFR-0046
+  description: Audit logs for cancellations must be immutable, tamper‑proof, and retained
+    for a minimum of 7 years.
+  related:
+  - FR-0047
+- id: NFR-0047
+  description: The cancellation flow must be a single‑click action after the confirmation
+    dialog, with no additional steps or required form fields.
+  related:
+  - FR-0043
+  - FR-0044
+- id: NFR-0048
+  description: The user interface for cancellation must meet WCAG 2.1 AA accessibility
+    standards and be responsive on all devices.
+  related:
+  - FR-0043
+  - FR-0044
+  - FR-0049
+- id: NFR-0043
+  description: All data transmissions must be encrypted using TLS 1.2 or higher (100%
+    compliance).
+  related:
+  - FR-0043
+- id: NFR-0044
+  description: Zero security incidents involving patient data over a 12‑month period.
+  related:
+  - FR-0047
+- id: NFR-0045
+  description: Audit logs must be exportable in HIPAA, GDPR, and local DPA compliant
+    formats.
+  related:
+  - FR-0045
+- id: NFR-0046
+  description: Compliance with local data‑privacy laws, including data residency constraints
+    (data stored only in approved regions).
+  related:
+  - FR-0042
+  - FR-0043
+  - FR-0044
+- id: NFR-0047
+  description: Achieve 99.9% uptime for all compliance‑related services (encryption,
+    RBAC, audit, incident workflow).
+  related:
+  - FR-0042
+  - FR-0043
+  - FR-0044
+  - FR-0045
+  - FR-0046
+  - FR-0047
+  - FR-0048
+- id: NFR-0048
+  description: Encryption/decryption processing time must be less than 200 ms per
+    request.
+  related:
+  - FR-0042
+  - FR-0043
+- id: NFR-0049
+  description: MFA for privileged roles must enforce a second factor for every authentication
+    attempt.
+  related:
+  - FR-0048
+- id: NFR-0050
+  description: Penetration testing must be performed quarterly (or bi‑annual if required).
+  related:
+  - FR-0047
+- id: NFR-0051
+  description: Audit trail integrity must be ensured through cryptographic hash chaining.
+  related:
+  - FR-0045
+- id: NFR-0043
+  description: 'The portal must achieve a performance target of 90% of page loads
+    completing
+
+    within 2 seconds, measured by synthetic tests and real‑user monitoring.
+
+    '
+  related:
+  - FR-0042
+  - FR-0043
+  - FR-0044
+  - FR-0045
+- id: NFR-0044
+  description: '95% of patients must report satisfaction with portal speed in post‑booking
+    surveys.
+
+    '
+  related:
+  - FR-0042
+  - FR-0043
+  - FR-0044
+  - FR-0045
+- id: NFR-0045
+  description: 'The portal and CDN must maintain an uptime of 99.9% over any 30‑day
+    period.
+
+    '
+  related:
+  - FR-0043
+  - FR-0047
+- id: NFR-0046
+  description: 'All portal traffic must use HTTPS 1.3 with TLS 1.3 enforced, and a
+    Content Security Policy (CSP) must be applied to mitigate XSS.
+
+    '
+  related:
+  - FR-0042
+  - FR-0043
+  - FR-0044
+  - FR-0045
+- id: NFR-0047
+  description: 'The portal must comply with WCAG 2.1 AA accessibility guidelines for
+    all dynamically loaded content.
+
+    '
+  related:
+  - FR-0042
+  - FR-0044
+  - FR-0045
+- id: NFR-0048
+  description: 'Web and API layers must auto‑scale based on the 95th percentile response
+    time, ensuring no single instance exceeds 250 ms under normal load.
+
+    '
+  related:
+  - FR-0044
+  - FR-0045
+- id: NFR-0064
+  description: The system must process the patient’s accept or override action and
+    persist the selection within 3 seconds of the user’s tap.
+  related:
+  - FR-0063
+  - FR-0064
+  - FR-0066
+- id: NFR-0065
+  description: The system must record 99% of final selections in the appointment database
+    without error.
+  related:
+  - FR-0066
+- id: NFR-0066
+  description: All patient data and booking requests must be transmitted over TLS
+    1.3 and audit logs must capture the final slot choice with timestamp and patient
+    ID.
+  related:
+  - FR-0066
+  - FR-0067
+- id: NFR-0067
+  description: The UI must meet WCAG 2.1 AA accessibility standards.
+  related:
+  - FR-0062
+  - FR-0063
+  - FR-0064
+- id: NFR-0068
+  description: The backend service must handle 10× the current peak booking traffic
+    without degradation of response time.
+  related:
+  - FR-0066
+- id: NFR-0069
+  description: The acceptance or override flow must complete for 90% of patients within
+    5 seconds to meet the success metric.
+  related:
+  - FR-0063
+  - FR-0064
+- id: NFR-0070
+  description: The system must ensure data integrity by preventing duplicate appointment
+    records for the same patient and slot.
+  related:
+  - FR-0065
+  - FR-0066
+- id: NFR-0064
+  description: 'Performance: 99.5% of booking attempts must pass the conflict check
+    within 1 second.
+
+    '
+  related:
+  - FR-0062
+  - FR-0068
+- id: NFR-0065
+  description: 'Reliability: The conflict detection system must flag incorrect conflicts
+    for no more than 0.5% of booking attempts.
+
+    '
+  related:
+  - FR-0062
+- id: NFR-0066
+  description: 'Scalability: The system must support at least 200 concurrent booking
+    attempts per second without degradation.
+
+    '
+  related:
+  - FR-0062
+- id: NFR-0067
+  description: 'Availability: The Conflict Check microservice must maintain 99.9%
+    uptime over a rolling 30‑day period.
+
+    '
+  related:
+  - FR-0062
+- id: NFR-0068
+  description: 'Security: All data in transit must use TLS 1.3 and all data at rest
+    must be encrypted with AES‑256.
+
+    '
+  related:
+  - FR-0062
+  - FR-0063
+- id: NFR-0069
+  description: 'Observability: The system must log conflict check attempts and expose
+    metrics for latency, error rates, and conflict outcomes.
+
+    '
+  related:
+  - FR-0067
+  - FR-0064
+- id: NFR-0070
+  description: 'Data Consistency: The conflict detection algorithm must run in a single
+    database transaction to prevent double‑booking under high concurrency.
+
+    '
+  related:
+  - FR-0063
+- id: NFR-0078
+  description: The entire conflict resolution cycle, including data retrieval, rule
+    application, slot generation, atomic commit, and notification, must complete within
+    30 seconds for 95 % of executions.
+  related:
+  - FR-0084
+- id: NFR-0079
+  description: The resolution service must maintain 99.9 % uptime, measured over a
+    30‑day rolling window.
+  related: []
+- id: NFR-0080
+  description: The system must achieve an automatic resolution success rate of ≥95 %
+    within 30 seconds, with a double‑booking rate of <1 % after resolution.
+  related:
+  - FR-0081
+- id: NFR-0081
+  description: All data exchanges with external services must use TLS 1.3 or higher,
+    and access to rule and conflict data must be protected by role‑based access control.
+  related:
+  - FR-0085
+- id: NFR-0082
+  description: The engine must handle up to 10,000 concurrent conflict resolution
+    requests per minute without a >10 % increase in average latency.
+  related:
+  - FR-0084
+- id: NFR-0083
+  description: The system must expose metrics for resolution count, success rate,
+    average latency, and double‑booking incidents, with alerts for anomalies exceeding
+    3 σ from the mean.
+  related:
+  - FR-0084
+- id: NFR-0084
+  description: The codebase must achieve ≥90 % unit test coverage and ≥80 % integration
+    test coverage, with all tests passing in the CI pipeline before each release.
+  related: []
+- id: NFR-0085
+  description: 'Performance: End‑to‑end cancellation processing must complete within
+    5 seconds, and metrics updates must occur within 2 seconds of cancellation.
+
+    '
+  related:
+  - FR-0077
+  - FR-0078
+  - FR-0079
+- id: NFR-0081
+  description: 'Transactional Integrity: The deletion of the appointment record and
+    the update of the slot status must be atomic; partial updates are forbidden.
+
+    '
+  related:
+  - FR-0077
+  - FR-0078
+- id: NFR-0082
+  description: 'Security: All cancellation requests must be authenticated via OAuth2,
+    authorized with role‑based access control, and all data must be encrypted at rest
+    and in transit.
+
+    '
+  related:
+  - FR-0077
+  - FR-0080
+- id: NFR-0083
+  description: 'Reliability: The cancellation service must maintain 99.9% availability,
+    employing a circuit‑breaker pattern and graceful degradation in case of downstream
+    failures.
+
+    '
+  related:
+  - FR-0077
+  - FR-0081
+- id: NFR-0084
+  description: 'Scalability: The system must handle at least 200 cancellation requests
+    per second without degradation in performance or reliability.
+
+    '
+  related:
+  - FR-0077
+  - FR-0081
+- id: NFR-0085
+  description: 'Observability: All cancellation events, errors, and performance metrics
+    must be logged, traced, and exposed to monitoring systems with alerts for delays
+    exceeding 5 seconds or error rates above 1%.
+
+    '
+  related:
+  - FR-0077
+  - FR-0081
+- id: NFR-0091
+  description: 'The system must detect a no‑show and send the first notification within
+    10 minutes of the scheduled appointment start time.
+
+    '
+  related:
+  - FR-0092
+  - FR-0094
+- id: NFR-0092
+  description: 'The system must handle at least 10,000 concurrent appointments without
+    degradation in detection or notification performance.
+
+    '
+  related:
+  - FR-0092
+  - FR-0093
+  - FR-0094
+- id: NFR-0093
+  description: 'The scheduling and notification subsystems must have a 99.5% uptime
+    during business hours and 99.9% uptime overall.
+
+    '
+  related:
+  - FR-0092
+  - FR-0093
+  - FR-0094
+- id: NFR-0094
+  description: 'All patient data, including audit logs, must be stored encrypted at
+    rest and in transit, and the system must comply with HIPAA and GDPR.
+
+    '
+  related:
+  - FR-0095
+- id: NFR-0095
+  description: 'The system must automatically retry failed notification attempts up
+    to three times with exponential back‑off, and mark the notification as failed
+    after the third attempt.
+
+    '
+  related:
+  - FR-0094
+- id: NFR-0096
+  description: 'Notification messages must meet WCAG 2.1 AA accessibility standards
+    for readability and color contrast.
+
+    '
+  related:
+  - FR-0094
+- id: NFR-0097
+  description: 'Audit logs must be tamper‑evident and immutable, with a hash chain
+    verification process that can be audited monthly.
+
+    '
+  related:
+  - FR-0095
+- id: NFR-0098
+  description: 'The system must provide real‑time analytics on no‑show rates and reschedule
+    acceptance rates, with a maximum data latency of 5 minutes.
+
+    '
+  related:
+  - FR-0096
+- id: NFR-0991
+  description: 'All rule‑management operations must be accessible only to authenticated
+    users with the Clinic Administrator role, and every action must be logged with
+    user identity and timestamp.
+
+    '
+  related:
+  - FR-0991
+  - FR-0995
+- id: NFR-0992
+  description: 'Validation and deployment of rule changes must complete within 5 seconds
+    under normal load (up to 100 concurrent administrators).
+
+    '
+  related:
+  - FR-0992
+  - FR-0994
+- id: NFR-0993
+  description: 'The rule‑management service and conflict‑resolution engine must maintain
+    99.99% availability, ensuring that rule changes and conflict decisions can be
+    processed 24/7.
+
+    '
+  related:
+  - FR-0991
+  - FR-0994
+  - FR-0996
+- id: NFR-0994
+  description: 'The rollback mechanism must guarantee 100% success in restoring the
+    previous rule configuration when a deployment fails.
+
+    '
+  related:
+  - FR-0997
+- id: NFR-0995
+  description: 'The rule‑management UI must comply with WCAG 2.1 AA accessibility
+    guidelines to support all administrators.
+
+    '
+  related:
+  - FR-0991
+- id: NFR-0996
+  description: 'The rule engine must continue to process conflict decisions with no
+    performance degradation when concurrent appointments increase to 10× the current
+    peak load.
+
+    '
+  related:
+  - FR-0994
+- id: NFR-0997
+  description: 'All rule changes must be persisted with transactional consistency;
+    partial updates must not leave the system in an inconsistent state.
+
+    '
+  related:
+  - FR-0991
+  - FR-0992
+  - FR-0995
+- id: NFR-0106
+  description: The audit logging subsystem must guarantee 100 % durability of events,
+    even in the event of a system crash or power loss.
+  related:
+  - FR-0109
+- id: NFR-0107
+  description: Write latency for each audit log event must not exceed 50 ms, ensuring
+    no perceptible impact on main transaction flows.
+  related:
+  - FR-0106
+  - FR-0107
+- id: NFR-0108
+  description: Read queries (search, filter, export) must respond within 2 seconds
+    for result sets up to 100 k records.
+  related:
+  - FR-0110
+  - FR-0111
+- id: NFR-0109
+  description: The system must ingest up to 10 000 conflict events per minute without
+    queue buildup or back‑pressure.
+  related:
+  - FR-0106
+  - FR-0107
+- id: NFR-0110
+  description: The audit logging service must provide 99.9 % uptime over a 30‑day
+    period, including fail‑over between cluster nodes.
+  related:
+  - FR-0109
+- id: NFR-0111
+  description: Audit logs must be encrypted at rest using AES‑256 encryption, complying
+    with industry best practices.
+  related:
+  - FR-0109
+- id: NFR-0112
+  description: Audit logs must be tamper‑evident, implemented via cryptographic hash
+    chaining, and tamper attempts must be detectable.
+  related:
+  - FR-0113
+- id: NFR-0113
+  description: Audit logs must be retained for a minimum of five years, after which
+    they are archived securely and marked immutable.
+  related:
+  - FR-0112
+- id: NFR-0114
+  description: Role‑based access control must ensure that only users with the “Audit
+    Admin” role can read audit logs; all other users are denied.
+  related:
+  - FR-0114
+- id: NFR-0115
+  description: The time‑zone conversion logic must achieve 100 % accuracy for all
+    supported IANA zones, verified by unit tests.
+  related:
+  - FR-0116
+  - FR-0118
+- id: NFR-0116
+  description: The time‑zone conversion service must complete a single conversion
+    in less than 10 ms to maintain UI responsiveness.
+  related:
+  - FR-0116
+  - FR-0120
+- id: NFR-0117
+  description: The system must handle at least 10,000 concurrent time‑zone conversion
+    requests without performance degradation.
+  related:
+  - FR-0120
+- id: NFR-0118
+  description: The time‑zone conversion API must be available 99.99 % of the time
+    over a 30‑day period.
+  related:
+  - FR-0120
+- id: NFR-0119
+  description: All time‑zone data transmitted or persisted must be encrypted in transit
+    using TLS 1.2 or higher and must not be logged in plaintext.
+  related:
+  - FR-0115
+  - FR-0116
+  - FR-0117
+- id: NFR-0120
+  description: The user interface for time‑zone selection and conversion confirmation
+    must comply with WCAG 2.1 AA accessibility guidelines.
+  related:
+  - FR-0115
+  - FR-0116
+- id: NFR-0121
+  description: Replay latency must meet the business metric of replaying 99 % of queued
+    changes within 5 minutes after reconnection.
+  related:
+  - FR-0124
+  - FR-0125
+- id: NFR-0122
+  description: Data integrity – no data loss or duplicate appointments during replay.
+  related:
+  - FR-0126
+- id: NFR-0123
+  description: Local queue persistence latency must not exceed 200 ms per scheduling
+    change.
+  related:
+  - FR-0122
+- id: NFR-0124
+  description: Queue capacity and scalability – the system must handle up to 10,000
+    pending changes without performance degradation.
+  related:
+  - FR-0123
+- id: NFR-0125
+  description: Security – all locally stored changes must be encrypted at rest using
+    AES‑256.
+  related:
+  - FR-0122
+  - FR-0123
+- id: NFR-0126
+  description: Retry policy – maximum of 3 replay attempts per change before manual
+    intervention.
+  related:
+  - FR-0125
+- id: NFR-0127
+  description: UI notification latency – user-facing notifications of pending or replayed
+    changes must appear within 500 ms.
+  related:
+  - FR-0128
+- id: NFR-0128
+  description: Service availability – the replay service must achieve 99.95 % uptime
+    during business hours.
+  related:
+  - FR-0124
+  - FR-0125
+- id: NFR-0129
+  description: 99% of notifications must be delivered within 10 seconds of the slot
+    event.
+  related:
+  - FR-0129
+  - FR-0130
+  - FR-0131
+- id: NFR-0130
+  description: The notification delivery system must retry up to 3 times for transient
+    failures and use a fallback channel if the primary channel fails.
+  related:
+  - FR-0129
+  - FR-0130
+  - FR-0131
+- id: NFR-0131
+  description: The system must support sending up to 10,000 notifications per minute
+    during peak booking hours without degradation.
+  related:
+  - FR-0129
+  - FR-0130
+  - FR-0131
+- id: NFR-0132
+  description: All push and email notifications must be end‑to‑end encrypted; SMS
+    content must be stored securely.
+  related:
+  - FR-0129
+  - FR-0130
+  - FR-0131
+  - FR-0133
+- id: NFR-0133
+  description: User contact data (phone numbers, email addresses) must be stored in
+    a GDPR‑compliant manner, encrypted at rest, and access restricted to authorized
+    services.
+  related:
+  - FR-0132
+- id: NFR-0134
+  description: The notification system must maintain an immutable audit trail of all
+    sent notifications, including timestamps, delivery status, and acknowledgment
+    status.
+  related:
+  - FR-0133
+- id: NFR-0135
+  description: The notification service must achieve 99.9% uptime, excluding scheduled
+    maintenance windows.
+  related:
+  - FR-0129
+  - FR-0130
+  - FR-0131
+  - FR-0132
+  - FR-0133
+- id: NFR-0136
+  description: 'Latency SLA: 95% of metric updates (calculation + broadcast) must
+    complete within 2 seconds of the triggering event.
+
+    '
+  related:
+  - FR-0134
+  - FR-0135
+- id: NFR-0137
+  description: 'Reliability: 100% of subsequent slot checks must use the latest crowd
+    metric; no stale reads are permitted.
+
+    '
+  related:
+  - FR-0136
+- id: NFR-0138
+  description: 'Scalability: The system must handle up to 10,000 concurrent booking
+    or cancellation events during peak periods without violating the 2‑second latency
+    SLA.
+
+    '
+  related:
+  - FR-0134
+  - FR-0135
+- id: NFR-0139
+  description: 'Security: All metric update messages transmitted between services
+    must use TLS 1.3+ and be protected by fine‑grained role‑based access controls.
+
+    '
+  related:
+  - FR-0135
+- id: NFR-0140
+  description: 'Observability: The system must expose Prometheus metrics for update
+    latency and failure rates, ship logs to a centralized platform, and trigger alerts
+    when SLA breaches or repeated failures occur.
+
+    '
+  related:
+  - FR-0134
+  - FR-0135
+  - FR-0137
+- id: NFR-0141
+  description: Encryption and decryption operations must complete with a latency of
+    no more than 2 ms per KB of data processed.
+  related:
+  - FR-0139
+  - FR-0140
+  - FR-0141
+- id: NFR-0142
+  description: Key‑management API responses must be ≤ 20 ms for 99.5 % of requests.
+  related:
+  - FR-0142
+  - FR-0143
+- id: NFR-0143
+  description: The encryption service must provide 99.95 % uptime over a 30‑day period.
+  related:
+  - FR-0139
+  - FR-0140
+  - FR-0141
+- id: NFR-0144
+  description: Key rotation must occur automatically every 90 days without manual
+    intervention.
+  related:
+  - FR-0143
+- id: NFR-0145
+  description: Audit logs must be immutable, append‑only, and retained for at least
+    7 years.
+  related:
+  - FR-0145
+- id: NFR-0146
+  description: All stored data must be encrypted exclusively with AES‑256; no weaker
+    algorithms may be used.
+  related:
+  - FR-0139
+  - FR-0140
+- id: NFR-0147
+  description: All network channels must enforce TLS 1.2+ and must not allow protocol
+    downgrade attacks.
+  related:
+  - FR-0141
+  - FR-0147
+- id: NFR-0148
+  description: Key access must be restricted to authorized roles and require two‑factor
+    authentication for key retrieval.
+  related:
+  - FR-0144
+- id: NFR-0149
+  description: Compliance reports must be generated within 5 minutes of the latest
+    data ingestion event.
+  related:
+  - FR-0146
+- id: NFR-0150
+  description: The calendar UI must load within 2 seconds of the scheduler opening
+    the view.
+  related:
+  - FR-0148
+  - FR-0149
+  - FR-0150
+  - FR-0153
+- id: NFR-0151
+  description: The initial data fetch from the scheduling API must complete within
+    1 second on a standard broadband connection.
+  related:
+  - FR-0148
+  - FR-0149
+  - FR-0150
+- id: NFR-0152
+  description: The calendar view must be able to render up to 5,000 appointments without
+    rendering time exceeding 2 seconds.
+  related:
+  - FR-0148
+  - FR-0149
+- id: NFR-0153
+  description: The calendar service must achieve 99.9% uptime over a 30‑day period.
+  related:
+  - FR-0148
+  - FR-0149
+  - FR-0150
+  - FR-0151
+  - FR-0152
+  - FR-0153
+  - FR-0154
+  - FR-0155
+  - FR-0156
+  - FR-0157
+  - FR-0158
+- id: NFR-0154
+  description: The system must enforce role‑based access control, ensuring that only
+    schedulers can view confidential patient details.
+  related:
+  - FR-0156
+  - FR-0157
+- id: NFR-0155
+  description: The calendar UI must comply with WCAG 2.1 AA accessibility guidelines.
+  related:
+  - FR-0155
+  - FR-0157
+- id: NFR-0156
+  description: Conflict indicators must be intuitive, with tooltips explaining the
+    conflict reason.
+  related:
+  - FR-0149
+  - FR-0153
+- id: NFR-0157
+  description: Client‑side caching of appointment data must be valid for 30 seconds
+    and invalidate thereafter.
+  related:
+  - FR-0154
+- id: NFR-0158
+  description: In the event of an API failure, the calendar view must display a graceful
+    fallback message without crashing.
+  related:
+  - FR-0148
+  - FR-0149
+- id: NFR-0159
+  description: All appointment times displayed in the calendar must reflect the scheduler’s
+    local time zone.
+  related:
+  - FR-0148
+  - FR-0157
+- id: NFR-0160
+  description: Filter response time must be less than 2 seconds from the user initiating
+    the filter action to the schedule view being fully rendered.
+  related:
+  - FR-0161
+- id: NFR-0161
+  description: The filter feature must be used in at least 90% of schedule view sessions
+    to demonstrate adoption.
+  related:
+  - FR-0161
+- id: NFR-0162
+  description: The filter controls must comply with WCAG 2.1 AA accessibility guidelines.
+  related:
+  - FR-0159
+  - FR-0160
+  - FR-0163
+- id: NFR-0163
+  description: The filter API endpoint must support filtering on up to 200,000 appointments
+    without exceeding 1.5 seconds latency.
+  related:
+  - FR-0161
+- id: NFR-0164
+  description: Only authenticated scheduler users with the appropriate role may access
+    the filter endpoint; provider data should be masked for users without full privileges.
+  related:
+  - FR-0161
+- id: NFR-0165
+  description: 'The drag‑and‑drop user interface must respond to user actions within
+    200 ms
+
+    to provide a seamless experience.
+
+    '
+  related:
+  - FR-0164
+  - FR-0166
+- id: NFR-0166
+  description: 'The backend commit of a reschedule must complete within 2 seconds
+
+    from drop to database persistence and notification dispatch.
+
+    '
+  related:
+  - FR-0165
+  - FR-0167
+  - FR-0169
+- id: NFR-0167
+  description: 'The scheduling module, including the drag‑and‑drop feature, must maintain
+
+    99.95 % uptime during business hours.
+
+    '
+  related:
+  - FR-0164
+  - FR-0165
+  - FR-0166
+  - FR-0167
+  - FR-0168
+  - FR-0169
+- id: NFR-0168
+  description: 'The drag‑and‑drop interface must comply with WCAG 2.1 AA accessibility
+
+    standards, ensuring keyboard navigation and screen‑reader support.
+
+    '
+  related:
+  - FR-0164
+  - FR-0166
+- id: NFR-0169
+  description: 'Audit logs of reschedule actions must be tamper‑evident and immutable
+
+    for regulatory compliance.
+
+    '
+  related:
+  - FR-0168
+- id: NFR-0170
+  description: 'The system must support at least 500 concurrent drag interactions
+    without
+
+    exceeding a 200 ms UI response time or a 2 s backend commit time.
+
+    '
+  related:
+  - FR-0164
+  - FR-0165
+- id: NFR-0171
+  description: 'The cancellation operation must complete (UI response and audit log
+    write) within 1 second 95th percentile under normal load.
+
+    '
+  related:
+  - FR-0170
+  - FR-0171
+  - FR-0172
+  - FR-0173
+- id: NFR-0172
+  description: 'The cancellation success rate must be at least 99.5% (error rate <
+    0.5%) during clinic operating hours.
+
+    '
+  related:
+  - FR-0170
+  - FR-0171
+  - FR-0175
+- id: NFR-0173
+  description: 'Audit logs for cancellations must be immutable and write‑once, ensuring
+    no post‑hoc edits are possible.
+
+    '
+  related:
+  - FR-0172
+- id: NFR-0174
+  description: 'Audit logs must be encrypted at rest and access to them must be controlled
+    via role‑based ACLs, complying with HIPAA/GDPR requirements.
+
+    '
+  related:
+  - FR-0172
+- id: NFR-0175
+  description: 'The cancellation interface must meet WCAG 2.1 AA accessibility standards
+    and provide a labeled mandatory reason field with a dropdown of predefined suggestions.
+
+    '
+  related:
+  - FR-0171
+- id: NFR-0176
+  description: 'The system must complete the forced scheduling action—including UI
+    confirmation, reason capture, appointment creation, and audit log writing—within
+    2 seconds of the scheduler’s final confirmation.
+
+    '
+  related:
+  - FR-0176
+  - FR-0177
+  - FR-0179
+- id: NFR-0177
+  description: 'Audit trail completeness for forced appointments must be 100 %—every
+    forced appointment must have a corresponding audit log entry.
+
+    '
+  related:
+  - FR-0179
+- id: NFR-0178
+  description: 'The scheduling service must maintain 99.9 % uptime during business
+    hours, ensuring forced scheduling is available at all times.
+
+    '
+  related:
+  - FR-0176
+  - FR-0177
+  - FR-0179
+- id: NFR-0179
+  description: 'The forced scheduling UI—including confirmation dialog and reason
+    entry—must meet WCAG 2.1 AA accessibility standards.
+
+    '
+  related:
+  - FR-0177
+- id: NFR-0180
+  description: 'The audit logs for forced appointments must be immutable and tamper‑proof,
+    stored in a write‑once, append‑only data store.
+
+    '
+  related:
+  - FR-0179
+- id: NFR-0181
+  description: 'The system must handle peak loads of up to 1,000 forced scheduling
+    requests per hour without performance degradation beyond the 2‑second response
+    time target.
+
+    '
+  related:
+  - FR-0176
+  - FR-0179
+- id: NFR-0182
+  description: The dashboard must load and render completely within 2 seconds for
+    95% of requests under normal load conditions.
+  related:
+  - FR-0181
+  - FR-0182
+  - FR-0183
+  - FR-0184
+  - FR-0185
+  - FR-0186
+  - FR-0187
+- id: NFR-0183
+  description: Availability data accuracy must be ≥ 98% compared to source system
+    logs over a rolling 24‑hour period.
+  related:
+  - FR-0181
+  - FR-0184
+- id: NFR-0184
+  description: The system must support up to 100 concurrent Scheduler users without
+    degradation of load time or responsiveness.
+  related:
+  - FR-0181
+  - FR-0182
+  - FR-0183
+  - FR-0185
+- id: NFR-0185
+  description: The dashboard service must achieve 99.9% uptime, with a maximum mean
+    time to recovery (MTTR) of 30 minutes for any outage.
+  related:
+  - FR-0181
+  - FR-0182
+  - FR-0183
+  - FR-0184
+  - FR-0185
+  - FR-0186
+  - FR-0187
+- id: NFR-0186
+  description: All data transmitted between client and server must be encrypted using
+    TLS 1.2 or higher, and all stored data must be encrypted at rest with AES‑256.
+  related:
+  - FR-0181
+  - FR-0182
+  - FR-0183
+  - FR-0184
+  - FR-0185
+  - FR-0186
+  - FR-0187
+- id: NFR-0187
+  description: The dashboard must comply with WCAG 2.1 Level AA accessibility standards.
+  related:
+  - FR-0181
+  - FR-0183
+  - FR-0187
+- id: NFR-0188
+  description: The API endpoints used by the dashboard must be versioned and any new
+    filtering functionality must result in less than 50 lines of code change in the
+    API layer.
+  related:
+  - FR-0183
+- id: NFR-0189
+  description: The “Last refreshed” timestamp displayed on the dashboard must reflect
+    the most recent successful data refresh within a 15‑minute window.
+  related:
+  - FR-0184
+- id: NFR-0190
+  description: Role‑based authentication must be implemented using SAML/OIDC, with
+    session tokens expiring after 30 minutes of inactivity.
+  related:
+  - FR-0186
+- id: NFR-0191
+  description: The system must provide audit logging for all dashboard accesses, including
+    user ID, timestamp, and action performed, with logs retained for 90 days.
+  related:
+  - FR-0181
+  - FR-0182
+  - FR-0183
+  - FR-0184
+  - FR-0185
+  - FR-0186
+  - FR-0187
+- id: NFR-0192
+  description: 'Report generation must complete in less than 1 minute under normal
+    operating conditions.
+
+    '
+  related:
+  - FR-0189
+- id: NFR-0193
+  description: 'Report data must be 100 % accurate compared to the source analytics
+    data store.
+
+    '
+  related:
+  - FR-0189
+- id: NFR-0194
+  description: 'Role‑based access control (RBAC) must restrict report features to
+    users with the “Clinic Manager” role only.
+
+    '
+  related:
+  - FR-0189
+  - FR-0190
+  - FR-0191
+  - FR-0192
+  - FR-0193
+  - FR-0194
+- id: NFR-0195
+  description: 'System availability must be 99.9 % during business hours (8 AM–6 PM
+    local time).
+
+    '
+  related:
+  - FR-0189
+  - FR-0190
+  - FR-0191
+  - FR-0192
+  - FR-0193
+  - FR-0194
+- id: NFR-0196
+  description: 'The export dialog must require no more than three clicks from report
+    generation to file download.
+
+    '
+  related:
+  - FR-0191
+- id: NFR-0197
+  description: 'The system must support 20 concurrent report generation requests without
+    exceeding 2 seconds latency for UI rendering.
+
+    '
+  related:
+  - FR-0189
+- id: NFR-0198
+  description: 'Audit logs must be retained for a minimum of 365 days.
+
+    '
+  related:
+  - FR-0194
+- id: NFR-0199
+  description: 'All sensitive data must be encrypted at rest and transmitted over
+    TLS 1.2+.
+
+    '
+  related:
+  - FR-0189
+  - FR-0190
+  - FR-0191
+  - FR-0192
+  - FR-0193
+  - FR-0194
+- id: NFR-0200
+  description: 'The system shall return user‑friendly error messages within 2 seconds
+    of encountering an error.
+
+    '
+  related:
+  - FR-0189
+  - FR-0190
+  - FR-0191
+  - FR-0192
+  - FR-0193
+  - FR-0194
+- id: NFR-0201
+  description: Export success rate must be at least 99 % (max 1 % failure rate).
+  related:
+  - FR-0198
+  - FR-0199
+- id: NFR-0202
+  description: Exported file size must be less than 5 MB for all supported report
+    types.
+  related:
+  - FR-0198
+- id: NFR-0203
+  description: Export operation must complete within 10 seconds on a 1 Gbps network
+    for average‑size reports.
+  related:
+  - FR-0198
+- id: NFR-0204
+  description: System must support concurrent exports for up to 20 users without performance
+    degradation.
+  related:
+  - FR-0198
+- id: NFR-0205
+  description: Export files are generated in a secure sandbox and are accessible only
+    to the requesting user until download completes.
+  related:
+  - FR-0198
+- id: NFR-0206
+  description: Export process complies with HIPAA (or applicable data privacy regulations)
+    when protected health information is included.
+  related:
+  - FR-0198
+- id: NFR-0207
+  description: UI response time for export initiation must be less than 2 seconds.
+  related:
+  - FR-0195
+- id: NFR-0208
+  description: Audit trail records for export actions must be retained for at least
+    365 days.
+  related:
+  - FR-0200
+- id: NFR-0209
+  description: The alert detection component must complete conflict detection and
+    alert trigger generation within 5 minutes of a conflict occurrence.
+  related:
+  - FR-0201
+- id: NFR-0210
+  description: The alerting component must achieve 99.9% uptime, ensuring alerts are
+    not lost during scheduled maintenance or failures.
+  related:
+  - FR-0201
+  - FR-0203
+- id: NFR-0211
+  description: All alert data must be encrypted in transit using TLS 1.2+ and at rest
+    using AES‑256 encryption; access is controlled via role‑based permissions.
+  related:
+  - FR-0203
+  - FR-0204
+- id: NFR-0212
+  description: The system must scale to support at least 5× the projected peak scheduler
+    load without performance degradation.
+  related:
+  - FR-0201
+  - FR-0203
+  - FR-0206
+- id: NFR-0213
+  description: The alert dashboard UI must comply with WCAG 2.1 AA accessibility standards.
+  related:
+  - FR-0206
+- id: NFR-0214
+  description: All APIs and data contracts must be versioned and fully documented
+    to support maintainability.
+  related:
+  - FR-0202
+  - FR-0203
+  - FR-0205
+  - FR-0208
+- id: NFR-0215
+  description: The notification delivery system must achieve a 95% success rate for
+    alerts delivered within 2 minutes of trigger.
+  related:
+  - FR-0203
+- id: NFR-0216
+  description: Alert logs must be retained for 365 days and be queryable for audit
+    purposes.
+  related:
+  - FR-0205
+- id: NFR-217
+  description: The audit trail must be 100% complete; no manual change should be lost
+    from the audit log.
+  related:
+  - FR-209
+  - FR-213
+- id: NFR-218
+  description: Retrieval of audit log entries must complete in less than 2 seconds
+    for up to 10,000 entries per page.
+  related:
+  - FR-211
+- id: NFR-219
+  description: Audit logs must be immutable and tamper‑evident; write access is restricted
+    to privileged roles; read access requires authentication and authorization.
+  related:
+  - FR-210
+  - FR-211
+- id: NFR-220
+  description: The logging system must scale to handle at least 1,000,000 log entries
+    per day with linear storage growth and no performance degradation.
+  related:
+  - FR-209
+  - FR-210
+- id: NFR-221
+  description: The system must provide tamper‑evident logs using hash chaining or
+    write‑once storage to satisfy regulatory compliance.
+  related:
+  - FR-210
+- id: NFR-0222
+  description: 'The system must achieve a sync latency of less than 5 minutes for
+    99% of events, ensuring timely data consistency.
+
+    '
+  related:
+  - FR-0215
+  - FR-0216
+  - FR-0217
+- id: NFR-0223
+  description: 'The integration service and its endpoints must maintain 99.9% uptime
+    over a 30‑day period.
+
+    '
+  related:
+  - FR-0215
+  - FR-0216
+  - FR-0217
+  - FR-0218
+  - FR-0219
+  - FR-0220
+  - FR-0221
+  - FR-0222
+  - FR-0223
+- id: NFR-0224
+  description: 'The system must comply with HIPAA regulations, ensuring encryption
+    at rest and in transit, and role‑based access control for all data operations.
+
+    '
+  related:
+  - FR-0215
+  - FR-0216
+  - FR-0217
+  - FR-0218
+  - FR-0219
+  - FR-0220
+  - FR-0221
+  - FR-0222
+  - FR-0223
+- id: NFR-0225
+  description: 'The system must scale to handle a tenfold increase in patient load
+    without exceeding the 5‑minute sync latency threshold.
+
+    '
+  related:
+  - FR-0215
+  - FR-0216
+  - FR-0217
+- id: NFR-0226
+  description: 'The system must be maintainable, with a modular architecture and at
+    least 80% automated test coverage for core integration logic.
+
+    '
+  related:
+  - FR-0215
+  - FR-0216
+  - FR-0217
+  - FR-0218
+  - FR-0219
+  - FR-0220
+  - FR-0221
+  - FR-0222
+  - FR-0223
+- id: NFR-0227
+  description: 'The administrative UI must respond within 2 seconds for all user interactions
+    and provide clear, actionable error messages for common configuration issues.
+
+    '
+  related:
+  - FR-0222
+- id: NFR-0230
+  description: The Role Management UI must load and render within 2 seconds for 95%
+    of users under typical load conditions.
+  related:
+  - FR-0224
+  - FR-0225
+  - FR-0226
+- id: NFR-0231
+  description: Permission changes must propagate to all affected staff users within
+    1 hour of the change being made.
+  related:
+  - FR-0227
+- id: NFR-0232
+  description: The audit trail for permission changes must be tamper‑proof and stored
+    in immutable storage.
+  related:
+  - FR-0228
+- id: NFR-0233
+  description: Unauthorized access attempts must constitute less than 1% of total
+    access attempts.
+  related:
+  - FR-0229
+- id: NFR-0234
+  description: The permission service must achieve 99.9% uptime over a 30‑day period.
+  related:
+  - FR-0224
+  - FR-0225
+  - FR-0226
+  - FR-0227
+  - FR-0228
+  - FR-0229
+- id: NFR-0233
+  description: Page load times for module content must be under 2 seconds on a 3G
+    network and under 1 second on Wi‑Fi.
+  related:
+  - FR-0231
+  - FR-0237
+- id: NFR-0234
+  description: Quiz rendering and submission response time must be less than 500 milliseconds.
+  related:
+  - FR-0233
+- id: NFR-0235
+  description: The LMS content service must achieve 99.9 % uptime over a 30‑day period.
+  related:
+  - FR-0231
+  - FR-0236
+- id: NFR-0236
+  description: The system must comply with WCAG 2.1 AA accessibility guidelines for
+    all UI elements.
+  related:
+  - FR-0231
+  - FR-0233
+  - FR-0237
+- id: NFR-0237
+  description: The system must support at least two locales (English and Spanish)
+    for all user‑facing text.
+  related:
+  - FR-0231
+  - FR-0237
+- id: NFR-0238
+  description: The API endpoint for analytics must handle up to 1,000 concurrent requests
+    without performance degradation.
+  related:
+  - FR-0236

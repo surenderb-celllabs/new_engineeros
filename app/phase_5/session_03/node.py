@@ -16,6 +16,7 @@ from langchain_core.messages import (
 from langgraph.config import get_stream_writer
 
 
+USER_STORY_INDEX = 37
 
 def count_tokens(text: str) -> int:
     """Estimate token count for a string."""
@@ -146,10 +147,10 @@ class SystemRequirement(BaseNode):
         user_story = load_yaml("app/phase_5/user_stories.yaml")
 
         prompt_path = Path(STEP_PATH) / "prompts/func_nonfunc.md"
-        prompt_data = load_file(str(prompt_path)).format(user_story=user_story["user_stories"][1])
+        prompt_data = load_file(str(prompt_path)).format(user_story=user_story["user_stories"][USER_STORY_INDEX])
         
-        super().__init__(agent_tools, True, prompt_data)
-        self.node_logger.debug(user_story["user_stories"][1])
+        super().__init__(agent_tools, True, prompt_data, Model.Nvidia.gpt_oss_20b)
+        self.node_logger.debug(user_story["user_stories"][USER_STORY_INDEX])
         
 
     def __call__(self, state: State) -> State:
@@ -224,12 +225,13 @@ class SystemDocument(BaseNode):
 
             response = self.model_chain.invoke({
                 "context": state["messages"],
-                "user_story": self.user_story["user_stories"][1],
+                "user_story": self.user_story["user_stories"][USER_STORY_INDEX],
                 "fr_num": len(self.func["functional_requirements"]),
                 "nfr_num": len(self.func["non_functional_requirements"])
             })
             self.node_logger.debug(response.content)
-            
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
             resp_json = self._yaml_string_with_fence_to_json(response.content)
             self.node_logger.debug(resp_json)
 

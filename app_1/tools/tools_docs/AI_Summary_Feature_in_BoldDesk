@@ -1,0 +1,69 @@
+# AI Summary Feature in BoldDesk
+## Introduction to AI Summary
+The AI Summary feature in BoldDesk uses artificial intelligence to generate concise summaries of:
+* Tickets
+* Chat conversations
+* Knowledge base articles
+
+This helps support agents quickly understand the context, customer intent, and emotional tone without reading full threads. AI Summary is accessible for integrated applications such as Facebook, WhatsApp, X (formerly Twitter), Instagram, and others, all of which are categorized as chat conversations.
+
+## Accessibility of AI Summary
+The AI Summary feature can only be used in the Agent Portal. Customers do not have access to this feature within the Customer Portal.
+All summaries are generated in the language set in the Agent’s personal settings, regardless of whether the portal language differs from the Agent’s language.
+
+## Use Cases for AI Summary
+AI-generated summaries streamline workflows across various support scenarios:
+| Use Case | Benefit |
+| --- | --- |
+| Agent Handover & Shift Transitions | New agents can quickly understand ongoing issues. |
+| Managerial Oversight & Quality Assurance | Managers can audit and escalate cases efficiently. |
+| Faster Ticket Resolution | Agents respond faster using summarized context. |
+| Training & Onboarding | New team members learn from summarized content. |
+| Sentiment & Intent Analysis | Helps prioritize support based on emotional tone and request type. |
+
+## Enabling AI Summary
+To use the Ticket Summary feature, ensure that AI Copilot is enabled and the Ticket Summary option is checked under AI Module > Settings. To disable it, simply uncheck the box under AI Copilot Features.
+
+## Using AI for Summarizing Tickets and Chats
+To use the summary feature for chats and tickets:
+1. Open the ticket/chat in the Agent Portal.
+2. Click on AI Prompt Actions.
+3. Select the Summarize option from the dropdown.
+4. The system will generate a concise summary of the ticket or chat. Alternatively, you may click on Regenerate to receive another version with different phrasing.
+
+### What the Summary Includes
+* Customer Intent: What the customer is asking for (for example, help, complaint, request).
+* Sentiment Analysis: Emotional tone of the message (for instance, frustrated, neutral, happy).
+* Conversation Recap: Key points and outcomes of the interaction.
+
+## Using AI for Article Summary
+The AI Article Summary feature in BoldDesk helps support agents quickly understand the main points of long or technical knowledge base articles.
+### Steps to Access Article Summary
+1. Navigate to the Knowledge Base Module.
+2. Open any article.
+3. Click the “Summarize” button.
+
+The AI will generate:
+* Intent of the article
+* Key points
+* Concise summary of the content
+
+This is especially useful when referencing articles during ticket resolution.
+
+## Frequently Asked Questions (FAQs)
+* Q: Can customers use the AI Summary feature?
+A: No. It is only available in the Agent Portal.
+* Q: What language is the summary generated in?
+A: It uses the language set in the agent’s personal settings.
+* Q: Can I regenerate a summary?
+A: Yes. Click Regenerate to get a different version.
+* Q: Can I summarize articles that are not saved?
+A: No. Only saved articles can be summarized.
+
+## Related Articles
+* Handling AI-Powered Conversations
+* Generative AI Features
+
+## Feedback and Support
+If you have any questions or need further assistance, please contact our support team. 
+Didn't find an answer? [Contact Support](link)

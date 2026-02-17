@@ -1,0 +1,102 @@
+# PUN 1 - Turn-Based Game Demo | Photon Engine
+Please enable Javascript to continue.
+
+## PRODUCTS
+* Fusion
+* Quantum
+* Realtime
+* Chat
+* Voice
+* PUN
+* Tournament
+
+## Support
+* Gaming Circle
+* Industries Circle
+* Circle Discord
+
+## Documentation
+* Fusion
+* Quantum
+* Realtime
+* Chat
+* Voice
+* PUN
+* Bolt
+* Server
+* VR | AR | MR
+
+## About Us
+* Contact Us
+* Compliance
+* Blog
+
+## Resources
+* Dashboard
+* Samples
+* SDK Downloads
+* Cloud Status
+
+## Languages
+* English
+* 日本語
+* 한국어
+* 简体中文
+* 繁体中文
+
+## Public Discord
+* YouTube
+* LinkedIn
+
+## Terms
+* Regulatory
+* Privacy Policy
+* Privacy
+* Code of Conduct
+* Cookie Settings
+
+### Cookie Policy
+We use cookies and related technologies to enhance your experience, show you personalised content and analyze performance and traffic on our website.
+By clicking on the „Accept All“ button you consent to the use of non-functional cookies and the subsequent processing of personal data to optimize our website and services as described in more detail in our Privacy and Cookie Policy.
+
+### Cookie Overview
+We use the following categories of cookies and related technologies to enhance your experience, show you personalized content, and analyze performance and traffic on our website.
+We respect your right to privacy and accordingly you can chose to not allow some types of cookies (and related technologies).
+
+## PUN 1
+PUN Classic (v1.x) and Bolt are outdated and will not receive further updates. Of course, existing PUN Classic and Bolt projects will continue to run. New projects should use Fusion or Quantum.
+
+### Turn-Based Game Demo
+Photon Unity Networking (PUN) can be used for turn-based games, such as strategy titles or board games. This document gives an overview how to implement such games, based on our Rock Paper Scissors Demo, which is in the PUN Package.
+
+#### PunTurnManager
+The PunTurnManager is a generic Component Class that can be reused for similar games and logics. It's important to realize that it's not mandatory, but a simple and nice wrapper for you to get up and running with turn-based games quickly.
+
+#### IPunTurnManagerCallbacks
+With the IPunTurnManagerCallbacks Interface, you can listen to the main turn-based message callbacks. Refer to RpsCore Script to see how PunTurnManager can be binded.
+
+#### TurnManager Extensions
+You'll find across various known classes in PUN new properties and methods that are extensions specifically design for turn-based system.
+
+#### RpsCore
+The RpsCore Component Script is dedicated to this demo and implements the specific rules and data for a typical Rock-Paper-Scissor game.
+
+#### RpsDemoConnect
+The RpsDemoConnect component is very similar to a regular PUN project for connecting, joining room and lobby.
+
+### Do's and Don'ts
+Creating a turn-based game using PUN implies the correct use of PUN features as well as avoiding certain features not supported in turn-based context.
+
+#### Do's
+* Properly set RoomOptions.PlayerTtl when creating rooms.
+* Properly set the RoomOptions.EmptyRoomTtl when creating rooms.
+* Make use of Room Properties to keep track of data inherent of the ongoing game.
+* Make use of Custom Player Properties to keep track of player's data that needs to persist between play sessions.
+* Use PhotonPlayer.ID to keep track of players
+* Use PhotonPlayer.GetNext() to iterate through the players to pass the turn.
+
+#### Don'ts
+* Don't use PhotonView components and derivates.
+* Don't use PunRPC, because they need PhotonViews.
+* Instead use PhotonNetwork.RaiseEvent
+* Don't use PhotonNetwork.Instantiate()

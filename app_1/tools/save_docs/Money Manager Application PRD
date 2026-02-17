@@ -1,0 +1,117 @@
+Executive Summary
+
+Problem Statement
+
+The target users struggle to maintain an accurate and up‑to‑date record of their personal finances. Manual record‑keeping is time consuming, prone to errors, and often results in users missing out on actionable insights such as budgeting, saving, and financial planning.
+
+Business Impact
+
+Without a reliable tool, users may experience financial mismanagement, missed savings opportunities, or inability to meet short‑term and long‑term goals. A robust expense and income tracker can help users gain visibility, reduce stress, and improve financial health.
+
+Proposed Solution Overview
+
+A mobile‑friendly money‑manager application that allows users to log income and expenditures quickly, categorise transactions, view trends, and receive actionable insights. The app will focus on ease of use, data accuracy, and privacy.
+
+Stakeholders & Users
+
+Primary users: Individual consumers who want to track personal finances.
+Secondary stakeholders: Financial advisors, family members (for shared budgets), and potential investors.
+User Personas
+
+1. Alex – 28‑year‑old freelance graphic designer who struggles to reconcile multiple income streams.
+2. Maya – 35‑year‑old stay‑at‑home parent managing household expenses and occasional freelance income.
+
+Current Situation
+
+Existing processes: Users rely on spreadsheets, paper receipts, or generic finance apps that are either too complex or lack certain features.
+Pain Points: Time‑consuming data entry, difficulty reconciling receipts, lack of real‑time insights, and security concerns.
+Current Workarounds: Manual entry, using multiple apps, or ignoring financial tracking altogether.
+
+Requirements
+
+Functional Requirements
+
+1. User registration and secure login (email, social login, biometric).
+2. Easy logging of income and expenses via manual entry or receipt scanning.
+3. Automatic categorisation of transactions with the ability to create custom categories.
+4. Dashboard showing summary of income, expenses, and net balance over selectable periods.
+5. Visual charts (pie, bar, line) for trend analysis.
+6. Alerts for overspending or low balances.
+7. Export/import data (CSV, PDF) for backup or sharing.
+8. Data backup to cloud with encryption.
+9. Multi‑currency support.
+10. Settings for recurring expenses/income.
+
+Non‑Functional Requirements
+
+- Performance: Load dashboard in <2 seconds.
+- Security: End‑to‑end encryption, GDPR compliance, secure storage of credentials.
+- Usability: One‑tap logging, intuitive UI, accessibility standards (WCAG 2.1 AA).
+- Scalability: Support for up to 10,000 concurrent users.
+
+Technical Constraints
+
+- Must run on iOS 13+ and Android 9+.
+- Prefer native or hybrid framework (React Native) for cross‑platform consistency.
+- Backend on Node.js with PostgreSQL; cloud hosting on AWS or Azure.
+
+Compliance / Regulatory
+
+- GDPR for EU users.
+- PCI DSS compliance if card data is stored (though we aim to avoid storing raw card details).
+
+Vision & Success Metrics
+
+Ideal Solution
+
+A seamless, secure app that lets users log finances in seconds, visualises spending habits, and nudges them toward better budgeting.
+
+Success Metrics
+
+- Monthly Active Users (MAU) > 10k within 12 months.
+- Average time spent logging per session < 30 seconds.
+- User retention rate > 60% after 3 months.
+- Net Promoter Score (NPS) > 50.
+- Reduction in manual expense logging time by 70% compared to spreadsheets.
+
+Priorities & Roadmap
+
+Must‑Haves
+
+- Secure authentication.
+- Manual and receipt‑based transaction logging.
+- Basic dashboard and categorisation.
+- Data encryption and GDPR compliance.
+
+Nice‑to‑Haves
+
+- Predictive budgeting suggestions.
+- Integration with bank APIs for auto‑import.
+- Multi‑currency and tax calculations.
+- Social sharing of savings milestones.
+
+Suggested Phasing
+
+Phase 1 (0‑3 months): Core logging, dashboard, security.
+Phase 2 (3‑6 months): Receipt scanning, custom categories, notifications.
+Phase 3 (6‑12 months): Advanced analytics, bank integration, multi‑currency.
+
+Risks & Assumptions
+
+Risks
+
+- Users may be hesitant to store sensitive financial data on a new app.
+- Receipt scanning OCR accuracy may be low in low‑light conditions.
+- Regulatory changes could impose additional compliance costs.
+
+Assumptions
+
+- Users have smartphones with cameras.
+- Users are motivated by clear, actionable insights.
+- Cloud hosting costs will remain stable.
+
+Mitigation Strategies
+
+- Offer strong security assurances and transparent privacy policy.
+- Use proven OCR libraries (e.g., Tesseract, Google Vision) and allow manual correction.
+- Regularly review regulatory landscape and budget for compliance updates.

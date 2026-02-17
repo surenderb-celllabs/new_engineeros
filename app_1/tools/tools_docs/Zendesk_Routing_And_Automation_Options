@@ -1,0 +1,74 @@
+# Routing and Automation Options for Incoming Tickets – Zendesk Help
+## What's My Plan?
+All Suites: Team, Growth, Professional, Enterprise, or Enterprise Plus
+Support: Team, Professional, or Enterprise
+
+## Improve Your Ticket Workflows
+Improve your ticket workflows by using routing and automation options. Choose between push and pull models to assign tickets to agents or let them self-assign. Utilize business rules like triggers, automations, and macros to automate actions and keep tickets moving. Explore omnichannel routing for consistent logic across channels, and consider skills-based routing for specialized handling.
+
+## About the Standard Zendesk Ticket Routing Framework
+When you create an account, you can start receiving support requests right away using the default support email address created during the registration process. All support requests sent to your account, via email or another channel, automatically become tickets in your system. Zendesk provides standard views and triggers that work together to create a basic routing framework for tickets.
+
+### Standard Views
+* Your unsolved tickets
+* All unsolved tickets
+* Recently updated tickets
+
+### Standard Triggers
+* Notify requester and CCs of received request
+* Notify all agents of received request
+
+## Understanding the Routing Models
+In the simplest workflows, fine-tuning the standard views and triggers might provide sufficient routing. However, even simple workflows can benefit from more advanced routing logic. There are two types of routing models you can configure: "push" models, which assign tickets to agents, or a "pull" models, where agents assign work to themselves.
+
+### Routing Models
+#### Push Routing Models
+* **Omnichannel routing**: Route tickets from email (including web form, side conversations, and API), calls, and messaging conversations based on agent status and capacity.
+* **Round robin**: A way to assign tickets by rotating through your agents.
+* **Manual ticket assignment**: Manually triage tickets and assign them to your agents.
+
+#### Pull Routing Models
+* **Play mode**: Play mode allows agents to click through a view using the play button and be assigned to the next available ticket automatically.
+* **Standalone skills-based routing**: Skills are agent attributes that determine an agent's suitability to work a ticket that requires them.
+* **Manually self-assigning tickets from views**: Allow agents to assign tickets directly to themselves from views.
+
+## Deciding Whether to Use Omnichannel Routing
+Omnichannel routing is Zendesk's most sophisticated and complete routing solution. It provides consistent routing logic across the email (including web form, side conversations, and API), messaging, and voice channels. Tickets are assigned to agents based on their availability and capacity.
+
+### Considerations
+* What Zendesk account plan do you have?
+* The size of your organization
+* The channels through which you receive tickets
+* The business rules you already have in place to help route tickets
+
+## Using Business Rules and Configuration Options to Automate Ticket Workflows and Routing
+The following business rules and configuration options can also be used to define and automate ticket routing behavior within Zendesk's routing solutions or in a custom configuration.
+
+### Kicking Off the Ticket Workflow
+* **Support addresses**: By default, you have one email address for users to submit tickets to.
+* **Ticket forms**: A predefined set of ticket fields for support requests.
+* **Tags**: A word or phrase you can use to add more context to ticket and incorporate into business rule logic.
+* **Channels**: The way you communicate with your customers and can be used as a condition in triggers to route tickets based on the channel through which it was received.
+* **Service Level Agreements (SLAs)**: An agreed upon measure of the response and resolution times that your support team delivers to your customer.
+* **Custom ticket fields**: You can customize your ticket forms and web forms to require certain information from customers before a ticket is accepted into the queue or you can add custom ticket fields to the tickets themselves.
+* **Intelligent triage (Copilot add-on)**: If you use intelligent triage, you can automatically route email and messaging tickets to the right teams based on what the ticket is about (its intent), the language it's written in, whether the customer's message is positive or negative (its sentiment), or a combination of all three.
+
+### Performing Automated Actions to Keep Things Moving
+* **Triggers**: Event-based business rules that perform actions any time a ticket is created or updated.
+* **Automations**: Time-based business rules that perform actions based on time elapsed.
+* **Macros**: Predefined set of actions that agents apply to a ticket with one click.
+
+### Monitoring Your Ticket Workflows
+* **Views**: A way to organize tickets based on certain criteria.
+* **Explore reporting**: Explore data sets now include a lot of information about channel, routing, and agent capacity and availability.
+
+## Recipes for Automated Ticket Workflows and Routing
+These articles provide some examples of how you can use these Zendesk business rules and configuration options together to automate ticket workflows and routing:
+* Streamlining your Support workflow
+* Workflow: Using omnichannel routing to achieve first reply time SLAs
+* Workflow: Using skills to route calls to specific agents with omnichannel routing
+* Workflow recipe: Manage outages using SLA policies
+* Workflow recipe: Using triggers to manage requests from important customers
+* Workflow recipe: Funneling orders through Zendesk Support
+* Workflow recipe: Creating an approval process
+* Workflow recipe: Sending automated ticket reminders to customers

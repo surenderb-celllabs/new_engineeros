@@ -1,0 +1,23 @@
+# Horrible experience with Concur
+I am writing to express my frustration and disappointment with my recent experience using the Concur expense management system. As a frequent business traveler, I rely on this platform to manage my travel expenses efficiently, but my recent encounter has left me with a bad taste in my mouth.
+
+I spent an entire workday trying to file a 4-day travel expense, and I encountered many issues with the system. One of the most frustrating aspects was the lack of flexibility in vendor selection. Our company only uses one rental car company, and yet Concur kept insisting that I didn't use the company's preferred vendor. This caused significant delays and wasted my time.
+
+Moreover, when I tried to submit my expense report, Concur would not allow me to do so because I only had paper receipts and did not have e-receipts. Despite my attempts to seek assistance from Concur support, I received no guidance on how to obtain e-receipts. This was extremely frustrating and caused me to waste even more time trying to resolve the issue.
+
+I feel that the Concur system needs significant improvement to provide a better user experience. As a customer, I expect the system to be user-friendly, efficient, and effective. Unfortunately, my recent experience was the opposite, and I am left feeling frustrated and disappointed.
+
+I hope that you will take my feedback into consideration and work towards improving the Concur platform. Thank you for your attention to this matter.
+
+## Response from KevinD, Community Manager
+@jingshincus sorry to hear about your frustration. I'm looking at your expense report and want to comment on a couple of things I noticed that relate to some things you mentioned and might address your concerns. 
+
+* It sounds like you tried to submit the report named: Multi-Segment Trip. Is that correct? It is the only active report I see in your account at the moment. If so, the reason it won't submit is because there is missing information on the Report Header. You need to fill in the Business Purpose. If you go to the report and click Report Details and select Report Header you will see that the Business Purpose field is blank and is denoted as a required field. This is the only red colored alert on your report that would prevent report submission. I provided a screenshot of the alert.
+* The alerts about e-receipts are yellow and do not prevent report submission. I can see where some confusion may arise as all alerts on the report are listed together and it might have appeared the issue was with not having e-receipts. I assure you, this was not why you couldn't submit the report.
+* As for the Rental Car vendor issue, I didn't see any message or alert about not having the preferred vendor. I tested this out myself in your site and typed in Av in the vendor field and saw Avis. I selected Avis and saved with no alert or message. I tested again by typing National. The system found National Car Rental. I selected it and saved which did cause the message about preferred vendors to appear. So, at least for me, the system is working as configured.
+* Lastly, if you aren't able to submit a report or see messages about e-receipts or preferred vendors, these are not things that the SAP Concur system does automatically or out of the box. These appear because those at your company who helped configure the site asked for these rules to be put into place. So, when someone says, "SAP Concur won't let me..." it is actually your company that isn't letting you. SAP Concur is just the tool that enforces this and is the "messenger".
+* Feedback about your experience should be provided to those at your company in charge of administering SAP Concur. I did notice that your company has a chat bot named Lucy. You might want to use that to see how you can submit your feedback.
+
+Thank you,
+Kevin
+SAP Concur Community Manager

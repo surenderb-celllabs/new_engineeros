@@ -1,0 +1,90 @@
+# Lightweight Fall Detection
+## Introduction
+Lightweight fall detection based on human pose estimation. The goal is to deploy it on a Raspberry 3 Model B+ with a webcam and an Intel Neural Compute Stick 2, and push a warning on other devices if a person has fallen.
+
+## Repository Information
+* License: MIT license
+* Stars: 36
+* Forks: 10
+* Branches: 
+* Tags: 
+* Activity: 
+
+## Code
+The repository contains the following files and folders:
+* dataset
+* images
+* lib
+* media
+* models
+	+ train
+	+ test
+* tf_pose
+* .gitignore
+* LICENSE
+* README.md
+* Untitled.ipynb
+* example.log
+* fall_detection.py
+* freeze_graph.py
+* freeze_pb_script.txt
+* model_compression.py
+* model_compression_quantize.py
+* openvino-usbcamera-cpu-ncs2-async.py
+* openvino-usbcamera-cpu-ncs2-sync.py
+* requirements.txt
+* tflite-usbcamera-cpu-sync.py
+* tpu-usbcamera-sync.py
+
+## Usage
+To run the fall detection script:
+```bash
+python3 fall_detection.py -d MYRIAD -b True
+```
+To install numba on Raspberry, refer to [numba/numba#3670 (comment)](https://github.com/numba/numba/issues/3670#issuecomment-470515674).
+
+## Performance
+The performance of the model on Raspberry with Movidius 2.0 FPS, NCS2 2.3 FPS.
+
+## Original README
+The original README is based on [PINTO0309/MobileNetV2-PoseEstimation](https://github.com/PINTO0309/MobileNetV2-PoseEstimation), which is itself based on [ildoonet/tf-pose-estimation](https://github.com/ildoonet/tf-pose-estimation).
+
+### Environment
+* Ubuntu 16.04 x86_64
+* OpenVINO 2019 R1.0.1
+* Tensorflow v1.12.0 + Tensorflow Lite
+* USB Camera
+* Neural Compute Stick 2 (NCS2)
+* Google Edge TPU
+* Python 3.5
+
+### Environment Construction and Training Procedure
+1. Learn "Openpose" from scratch with MobileNetv2 + MS-COCO and deploy it to OpenVINO/TensorflowLite Part.1
+2. Learn "Openpose" from scratch with MobileNetv2 + MS-COCO and deploy it to OpenVINO/TensorflowLite (Inference by OpenVINO/NCS2) Part.2
+
+### Core i7 only + OpenVINO + Openpose Large model + Sync mode (disabled GPU)
+* NCS2 x1 + OpenVINO + Openpose Large model + Async + Normal mode
+* Core i7 only + OpenVINO + Openpose Small model + Sync + Boost mode (disabled GPU)
+* NCS2 x1 + OpenVINO + Openpose Small model + Async + Boost mode
+
+### Usage
+```bash
+$ git clone https://github.com/PINTO0309/MobileNetV2-PoseEstimation.git
+$ cd MobileNetV2-PoseEstimation
+```
+* CPU - Sync Mode: `python3 openvino-usbcamera-cpu-ncs2-sync.py -d CPU`
+* CPU - Sync + Boost Mode: `python3 openvino-usbcamera-cpu-ncs2-sync.py -d CPU -b True`
+* NCS2 - Sync Mode: `python3 openvino-usbcamera-cpu-ncs2-sync.py -d MYRIAD`
+* CPU - Async Mode: `python3 openvino-usbcamera-cpu-ncs2-async.py -d CPU`
+* NCS2 - Async - Single Stick Mode: `python3 openvino-usbcamera-cpu-ncs2-async.py -d MYRIAD`
+* NCS2 - Async - Multi Stick Mode: `python3 openvino-usbcamera-cpu-ncs2-async.py -d MYRIAD -numncs 2`
+* NCS2 - Async - Single Stick + Boost Mode: `python3 openvino-usbcamera-cpu-ncs2-async.py -d MYRIAD -b True`
+* GPU (Intel HD series only) - Async - Boost Mode: `python3 openvino-usbcamera-cpu-ncs2-async.py -d GPU -b True`
+
+## Reference Articles
+* [ildoonet/tf-pose-estimation](https://github.com/ildoonet/tf-pose-estimation)
+* [https://www.tensorflow.org/api_docs/python/tf/image/resize_area](https://www.tensorflow.org/api_docs/python/tf/image/resize_area)
+* [Python OpenCVの基礎 resieで画像サイズを変えてみる](https://www.python.org/)
+* [Blurring and Smoothing - OpenCV with Python for Image and Video Analysis 8](https://www.learnopencv.com/blurring-and-smoothing/)
+* [https://www.learnopencv.com/deep-learning-based-human-pose-estimation-using-opencv-cpp-python/](https://www.learnopencv.com/deep-learning-based-human-pose-estimation-using-opencv-cpp-python/)
+* [https://teratail.com/questions/169393](https://teratail.com/questions/169393)

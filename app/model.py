@@ -18,6 +18,9 @@ class Model:
     class ChatOllama:
         llama3_1 = ChatOllama(model="llama3.1:8b", base_url="http://183.82.99.107:11434")
         mistral_12b = ChatOllama(model="mistral-nemo:12b", base_url="http://183.82.99.107:11434")
+        gpt_oss_20b = ChatOllama(model="gpt-oss:20b", base_url="http://183.82.99.107:11434")
+
+
 
 
     # class ChatTogether:
@@ -44,3 +47,6 @@ class Model:
 
     class Nvidia:
         gpt_oss_20b = ChatNVIDIA(model="openai/gpt-oss-20b")
+
+
+    

@@ -1,0 +1,31 @@
+# What is the Prompt and Completion price in GPT-4 API?
+## Overview
+The GPT-4 API pricing is based on two models: 8K context and 32K context.
+
+## Pricing Model
+The pricing for each model is as follows:
+* 8K context:
+	+ Prompt: $0.03 / 1K tokens
+	+ Completion: $0.06 / 1K tokens
+* 32K context:
+	+ Prompt: $0.06 / 1K tokens
+	+ Completion: $0.12 / 1K tokens
+
+## Understanding Prompt and Completion
+* Prompt: The input sent to the chat completion model.
+* Completion: The output sent back by the model.
+
+## Context Size
+* The context size refers to the maximum token size for the conversation (input + output).
+* For GPT-4, the 8K context and 32K context are two different models with different pricing.
+
+## Choosing the Model
+* The choice of model depends on the specific use case and requirements.
+* The 8K context model has a lower pricing tier, while the 32K context model has a higher pricing tier.
+
+## Related Topics
+* [Confused about pricing on the 3.5 Turbo model](#)
+* [GPT4 and GPT-3.5-turb API cost comparison and understanding](#)
+* [Does OpenAI charge for both prompt and completion?](#)
+* [Any document to refer to cost comparison between completion API and chat completion API for turbo3.5K](#)
+* [Understanding GPT-4 API pricing with respect to roles and request/response](#)

@@ -1,0 +1,134 @@
+# Pricing - United States & Canada | Plaid
+## Products
+### Payments
+* Overview: Explore payments solutions
+* Auth: Verified account and routing numbers
+* Identity: Bank account-holder information
+* Balance: Real-time balance checks
+* Signal: ACH payment risk platform
+* Transfer: ACH, RTP, and FedNow payment processing
+### Investments
+* Move: Streamline asset transfers. Unlock growth.
+### Fraud & risk
+* Overview: Explore fraud and risk solution
+* Identity Verification: Global KYC and anti-fraud
+* Beacon: Anti-fraud network
+* Monitor: AML watchlist screening
+* Signal: ACH payment risk platform
+* Identity: Bank account-holder information
+* Protect: Fraud intelligence system
+### Personal finance insights
+* Overview: Explore the personal finance insights solution
+* Transactions: Up to 24 months of categorized data
+* Investments: Retirement, brokerage, and crypto data
+* Liabilities: Credit card and mortgage data
+* Enrich: Cleanse and categorize internal transactions
+### Credit underwriting
+* Overview: Explore our credit underwriting solutions
+* Income & Underwriting: Credit risk insights powered by Plaid Check
+* LendScore: A credit risk score powered by unique insights
+### Open finance
+* Overview: Explore open finance solution
+* Core Exchange: Industry-aligned API connectivity
+* Permissions Manager: Embeddable consumer permissions management
+* App Directory: App insights to help manage risk and compliance
+### Onboarding
+* Overview: Explore onboarding solutions
+* Link: Industry-leading bank connections for 12,000+ institutions
+* Layer: Capture identity, contact and bank info in a single click.
+
+## Use cases
+* Banks & credit unions
+* Pay by bank
+* Mortgage
+* Government & public sector
+* Property management
+* Gaming
+* Billing & recurring payments
+* Auto
+* Platforms & marketplaces
+
+## Developers
+* Quickstart
+* API documentation
+* Libraries
+* GitHub
+* Link demo
+
+## Resources
+* For builders
+* What's new
+* Blog
+* Library
+* Industry resources
+* Customer stories
+* Events
+* Annual conference
+
+## For users
+* Troubleshoot account connection
+* Trust and safety
+* Control your data with Plaid Portal
+
+## Pricing
+### Pricing Plans
+* **Simple, scalable plans for businesses of all sizes**
+#### Pay as You Go
+* Best for individuals and developers
+* Start with our month-to-month plan: unlimited usage, no commitments upfront—only pay for what you use.
+* Key Features:
+	+ Access to GA products
+	+ Unlimited live API calls
+	+ Link customization
+* Standard Pricing: Request access
+#### Growth
+* Best for small teams and startups
+* Scale with a 12-month commitment: access discounts, platform support package, and account management.
+* Key Features:
+	+ Everything in Pay as You Go
+	+ Discounted product rates
+	+ Platform support package
+	+ Single Sign-On for Plaid Dashboard
+* Talk with our team
+#### Custom
+* Best for businesses that need to scale
+* Create a flexible plan with custom solutions, volume-based pricing, and support for regulated industries.
+* Key Features:
+	+ Everything in Growth
+	+ Access to beta products
+	+ Volume discounts
+	+ Integration assistance
+	+ Premium support
+	+ Account Management
+* Talk with our team
+
+## Products Comparison
+| Product | Pay as You Go | Growth | Custom |
+| --- | --- | --- | --- |
+| Auth | Included | Included | Included |
+| Balance | Included | Included | Included |
+| Identity | Included | Included | Included |
+| Identity Match | Included | Included | Included |
+| Investments Move | Included | Included | Included |
+| Assets | Included | Included | Included |
+| Income | Included | Included | Included |
+| Statements | Included | Included | Included |
+| Enrich | Included | Included | Included |
+| Investments | Included | Included | Included |
+| Liabilities | Included | Included | Included |
+| Transactions | Included | Included | Included |
+| Identity Verification | Included | Included | Included |
+| Monitor | Included | Included | Included |
+| Beacon | Not included | Contact for pricing | Included |
+| Layer | Not included | Contact for pricing | Included |
+| Signal | Not included | Contact for pricing | Included |
+| Transfer | Not included | Contact for pricing | Included |
+| Consumer Report | Not included | Contact for pricing | Included |
+| Protect | Not included | Contact for pricing | Included |
+
+## Frequently Asked Questions
+* **Is Plaid free for consumers?**: Yes. Consumers can use Plaid to safely connect and control the financial information they share with apps or services at no cost.
+* **Can I try Plaid for free?**: Absolutely. Our Limited Production service allows you to make up to 200 API calls with each available product using live data. This is the best way to start learning about and testing Plaid’s APIs.
+* **How much does Plaid cost?**: We offer three basic pricing models based on the product(s) you’re using and how it’s designed: one-time, subscription, and per-request.
+* **Does Plaid offer discounts?**: We offer volume discounts based on the length of your contract and/or the minimum monthly commitment you choose. For more details, please reach out to our sales team.
+* **How does Pay-as-You-Go billing work?**: It’s simple—once you sign up for the products you need in Plaid's production dashboard, we’ll charge the card on file for the connected items (accounts). No upfront commitments. Only pay for what you use.

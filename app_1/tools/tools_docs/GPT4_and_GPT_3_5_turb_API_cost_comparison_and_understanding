@@ -1,0 +1,87 @@
+# GPT4 and GPT-3.5-turb API cost comparison and understanding
+## API
+### OpenAI Developer Community
+
+#### GPT4 and GPT-3.5-turb API cost comparison and understanding
+
+* **Model**: 
+  + gpt-4-0314
+  + gpt-4-32k-0314
+  + gpt-3.5-turb
+* **Completion**: 
+  + gpt-4-0314: $0.06/1K
+  + gpt-4-32k-0314: $0.06/1K
+  + gpt-3.5-turb: $0.002/1K
+* **Prompt**: 
+  + gpt-4-0314: $0.03/1K
+  + gpt-4-32k-0314: $0.12/1K
+  + gpt-3.5-turb: $0.002/1K
+* **Context**: 
+  + gpt-4-0314: 8192
+  + gpt-4-32k-0314: 32768
+  + gpt-3.5-turb: 4096
+* **TPM**: 
+  + gpt-4-0314: 40000
+  + gpt-4-32k-0314: 80000
+  + gpt-3.5-turb: 40000
+* **RPM**: 
+  + gpt-4-0314: 200
+  + gpt-4-32k-0314: 400
+  + gpt-3.5-turb: 200
+* **1M Tokens**: 
+  + gpt-4-0314: $1200.00
+  + gpt-4-32k-0314: $1200.00
+  + gpt-3.5-turb: $4.00
+
+Openai.com shows GPT-3.5-turbo pricing as “usage” and lists only $0.002/1K tokens, but for GPT-4 lists both completion and prompt pricing for 1K each. 
+
+### Discussion
+
+1. **evoknow**: 
+   * Compared the API pricing for GPT-4 and GPT-3.5-turbo.
+   * Calculated the cost for a 1K prompt and 1K response for both models.
+   * Found that GPT-3.5-turbo is 22.5 times cheaper than GPT-4.
+2. **Gsc**: 
+   * Asked if the price difference is due to GPT-4 being more advanced and in beta.
+   * Asked if the price of GPT-3 has been compared.
+3. **stormchaser**: 
+   * Expressed concern about the high cost of GPT-4.
+   * Mentioned that Bing Chat has rolled out GPT-4 and is free.
+4. **Conch**: 
+   * Confirmed that Bing Chat has been using GPT-4 since the beginning.
+5. **stormchaser**: 
+   * Compared the results of free ChatGPT and Bing Chat.
+   * Found that both give the same results for simple questions.
+6. **Aibob**: 
+   * Shared experience with Bing Chat, which was initially hit or miss but improved over time.
+7. **stormchaser**: 
+   * Shared experience with Bing Chat, which gives non-intrusive links and formats source code.
+8. **Gsc**: 
+   * Asked if providing more detailed information with keywords improves the accuracy of Bing Chat.
+9. **dallascao**: 
+   * Calculated the price difference between GPT-4 and GPT-3.5-turbo for different examples.
+   * Found that the price difference can range from 20 to 118 times.
+10. **manjusree.dr**: 
+    * Asked how to identify which model is being used, GPT-4-0314 or GPT-4-32k-0314.
+11. **alessandro.r**: 
+    * Asked if it is possible to use old, less expensive tokens (GPT-3.5-turbo) after getting access to GPT-4.
+12. **dliden**: 
+    * Explained that the model used depends on the API call, not the token.
+    * Provided an example of how to specify the model in the API request.
+13. **mustmolenberg**: 
+    * Asked how to identify which model is being used, GPT-4-0314 or GPT-4-32k-0314.
+    * Shared experience with switching between models in a conversation.
+14. **mustmolenberg**: 
+    * Confirmed that it is possible to switch between models in a conversation.
+15. **vsiegel**: 
+    * Expressed that GPT-4 is not expensive compared to hiring a team of academics.
+16. **BrianLovesAI**: 
+    * Discussed the cost of GPT-4 for personal use, businesses, and larger companies.
+
+### Related Topics
+
+* Cost of API vs chatGPT
+* GPT-4 AI is Great, But at a Hefty Price Tag
+* Cut down GPT-4 model that sits in between 3.5 and 4
+* API cost - How to provide free prompts
+* How to optimize API request in terms of expenses

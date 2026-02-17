@@ -1,0 +1,162 @@
+# Asana PulseDesk Integration - Quick Connect - Zapier
+## Products
+* Zapier Automation Platform: No-code automation across 8,000+ apps
+* Zaps: Do-it-yourself automation for workflows
+* Tables: Databases designed for workflows
+* Interfaces: Custom pages to power your workflows
+* Capabilities: 
+  * App integrations: Explore 8,000+ app connections
+  * AI automation: Cutting-edge AI to upgrade your workflows
+  * Security: Enterprise-grade security
+
+## Solutions
+### By Team
+* RevOps: Drive revenue through automation
+* Marketing: Multiply campaign effectiveness and ROI
+* IT: Better manage systems with automation
+* HR: Empower your HR team with AI automation
+* Sales: Close more deals
+* Customer Support: Elevate customer satisfaction
+* Leaders: Streamline decision-making processes
+* Executive Assistants: Eliminate repetitive admin tasks
+
+### By App
+* NetSuite
+* Salesforce
+* HubSpot
+* Slack
+* ChatGPT (OpenAI)
+* Microsoft Dynamics CRM
+* Microsoft Teams
+* Zendesk
+* Jira Software Cloud
+* View all apps
+
+### By Use Case
+* Lead management: Automate your way to more conversions
+* Sales pipeline: Automate handoffs and streamline sales
+* Marketing campaigns: Boost your marketing campaign's impact
+* Customer support: Quickly route tickets and responses
+* Data management: Connect app data for more insights
+* Project management: Deliver projects seamlessly
+* Tickets and incidents: Resolve issues and incidents faster
+
+## Resources
+* Get inspired: 5 things to automate today
+* Create custom chatbots: Build an AI chatbot in minutes
+* Guides: Go deep with dedicated guidance
+* Webinars: Join live or watch on demand
+* Customer stories: See how businesses grow with Zapier
+* Blog: Read all about apps and automation
+* How to use Zapier: Zapier quick-start guide
+* Webhooks and Zapier: Connect your favorite apps with Zapier’s webhooks
+* Help Center: Find answers to your questions
+* Zapier Support: Get help and find support options
+* Hire a Zapier Solution Partner: Find a consultant to help you do more
+
+## AI & Zapier
+* AI orchestration at work: Your guide to intelligent systems
+* Zapier Copilot: A personalized automation assistant
+* Zapier's AI tools: An AI tool for every need
+* How to use Zapier MCP: Connect AI to thousands of apps—code-free
+* Zapier Agents: Create agents to handle work for you
+
+## How Zapier Works
+Zapier makes it easy to integrate Asana with PulseDesk - no code necessary. 
+1. **Choose trigger event**: Select the event that starts your Zap.
+2. **Choose action**: Select the action that happens after the trigger.
+3. **You’re connected!**: Zapier seamlessly connects Asana and PulseDesk, automating your workflow.
+
+## Supported Triggers and Actions
+### Triggers
+* Completed Task: Triggered when a task within a project, or any project within a workspace, is marked as completed.
+* New Comment on a Task: Triggers when a new Comment is added to a Task in Asana.
+* New Story: Triggered when you add a new story.
+* New Subtask: Triggered when you add a new subtask.
+* New Attachment Added to Task: Triggers when an attachment is added to a task.
+* Tag Added to Task: Triggered when a Tag is added to a Task.
+* Updated Task: Triggered when a Task is updated in a Project.
+* New Workspace/Organization: Triggered when you add a new workspace/organization.
+* Issue Status Changed: Triggers when the status of a ticket changes in PulseDesk.
+* New Ticket Message: Triggers when a new message is added to a ticket.
+* New Ticket: Triggers when a new call appears in PulseDesk.
+* New Contact: Adds a new user in PulseDesk.
+* New Ticket Comment: Triggers when a new comment is added to a ticket.
+
+### Actions
+* Add Task to Section of Project: Adds a Task to a Section of a Project.
+* Create Duplicate Task: Duplicates an existing task.
+* Create Section: Creates a new section within a project.
+* Create Task From Template: Creates a new task in Asana from a selected template.
+* Create Project: Adds a new project.
+* Create Comment/Story: Adds a comment or story to a task.
+* API Request (Beta): This is an advanced action which makes a raw HTTP request that includes this integration's authentication.
+* Find Project: Finds an existing project.
+* Find Section in Project: Finds an existing section within a workspace project.
+* Find Task Comments: Finds comments for a specific task.
+* Find Tasks in Workspace: Searches for tasks in a workspace using Asana's search API.
+* Find User: Finds an existing user of your Asana account.
+* Find or Create Project: Find or Create Project.
+* Add Tag to Task: Adds a tag to an existing task.
+* Attach File: Attaches a File to a task.
+* Create Project From Template: Creates a new project from a custom template.
+* Create Subtask: Adds a Subtask to an existing Task.
+* Create Task: Creates a new task in Asana with specified details.
+* Remove Tag from Task: Removes a tag from an existing task.
+* Update Task: Updates multiple properties of an existing Asana task.
+* Find All Tasks From Project: Searches for all tasks in a specific project with optional filters.
+* Find Project V2: Finds an existing project with enhanced filtering and search capabilities.
+* Find Task Attachments by Task ID: Finds all attachments for a specific task by its ID.
+* Find Task by ID: Finds an existing task by its ID.
+* Find Task in Project: Finds an existing task within a workspace project(s).
+* Find User V2: Finds an existing user of your Asana account with enhanced search capabilities.
+* Find or Create Task: Find or Create Task.
+* New Comment: Adds a comment to an existing ticket.
+* New Ticket: Creates a new ticket in PulseDesk.
+
+## Automate Your Lead Management and Improve Conversions
+With Zapier, you can automate every part of your lead funnel and give yourself the best chance at converting leads.
+
+## Create More Impactful Campaigns with Automation
+Measuring campaign performance across platforms can get chaotic. With Zapier, you can create a centralized view of your performance, skillfully manage your lists, and ensure your campaigns drive ROI across the business.
+
+## Provide World-Class Support with a Little Help from Automation
+Support reps can't be productive when they have to track down crucial information for every incident or ticket. With Zapier, you can automatically send your reps the context they need to resolve tickets quickly and create a seamless customer experience.
+
+## Automate Your Way to Actionable, Up-to-Date Data
+The days of manually exporting and importing data are over. With Zapier, you can send data where it needs to go, in the format you need it—so you can centralize your data and unlock more insights.
+
+## Resolve Incidents Faster with Automation
+Your technical support team wants to focus on tech tickets rather than admin work. With Zapier, you can automate everything from ticket creation to routing to inter-team communication—eliminating friction from incident management and increasing speed to resolution.
+
+## Learn How to Automate Asana on the Zapier Blog
+Asana automation: 7 ways to automate your workflows
+How to create recurring tasks in Asana
+How to turn Google Forms entries into tasks and projects
+
+## Make Work Flow with AI
+Level up your Asana to PulseDesk integration with AI. Extract, summarize, and transform your integration data with leading AI models like OpenAI, Anthropic, and more.
+
+## About Asana
+Asana is a leading work management platform that helps teams orchestrate their work, from daily tasks to strategic initiatives. 
+
+## About PulseDesk
+Pulsedesk is a helpdesk system with multiple communication options. It lets you automate workflows, analyze and improve the performance of your team.
+
+## Connect Asana to PulseDesk on the World's Largest No-Code Automation Platform
+Integrate Apps
+Sign up with Google
+Follow us
+Pricing
+Help
+Developer Platform
+Press
+Jobs
+Enterprise
+Templates
+App Integrations
+Partners Program
+Copyright 2026 Zapier Inc.
+Manage cookies
+Legal
+Privacy

@@ -1,0 +1,46 @@
+# Summarizing Ticket Comments using Generative AI – Zendesk Help
+## What's my plan?
+* Add-on: Copilot
+
+The ticket summarization feature recaps the public comments that have been added to a ticket so far, helping you get up to speed and respond to customers more quickly. If enabled by your admin, ticket summaries also include internal notes to help you stay informed of key internal details.
+
+## Article Topics
+This article contains the following topics:
+1. Viewing a ticket summary
+2. Collapsing, expanding, hiding, or showing the summary banner
+3. Generating a ticket summary for a new language
+4. Refreshing a ticket summary
+
+## Related Articles
+* Turning on ticket summarization
+
+## Viewing a Ticket Summary
+Tickets in the Agent Workspace include a summary of all the public comments added to the ticket so far. Internal comments are also included if your admin has enabled them to be.
+To view a ticket summary:
+1. Open a ticket in the Agent Workspace.
+2. A summary banner appears below the ticket header. The summary banner stays pinned to the top when you scroll through ticket comments.
+
+## Collapsing, Expanding, Hiding, or Showing the Summary Banner
+You can collapse the summary banner so that it takes up less room, or expand it again. Similarly, you can hide the summary banner completely, or show it again.
+### To Collapse the Summary Banner
+* On the right side of the summary banner, click the collapse arrow.
+### To Expand the Summary Banner Again
+* On the right side of the summary banner, click the expand arrow.
+### To Hide the Summary Banner
+* In the ticket header, click the Hide ticket summary button.
+### To Show the Summary Banner Again
+* In the ticket header, click the Show ticket summary button.
+
+## Generating a Ticket Summary for a New Language
+If a summary hasn’t yet been generated for a ticket in the language you’re working in, you can manually generate one.
+To generate a ticket summary for a new language:
+1. In the banner below the ticket header, click View ticket summary.
+
+## Refreshing a Ticket Summary
+A ticket’s summary isn’t automatically updated after it’s generated. However, you can manually refresh the summary to pull in information from ticket comments that were added after the summary was initially generated.
+**Note:** Summaries can be generated only once every five minutes.
+To refresh a ticket summary:
+1. In the summary banner, click Refresh.
+2. The summary is updated.
+
+Powered by Zendesk

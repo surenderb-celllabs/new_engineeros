@@ -1,0 +1,39 @@
+# How do I set up Auto Biorhythm?
+## Configuration Guide
+Updated 05-14-2025 01:33:39 AM
+### Applies to:
+* Tapo L430P
+* Tapo L430C
+
+Recent updates may have expanded access to feature(s) discussed in this FAQ. Visit your product's support page, select the correct hardware version for your device, and check either the Datasheet or the firmware section for the latest improvements added to your product. Please note that product availability varies by region, and certain models may not be available in your region.
+
+## What is Auto Biorhythm Lighting?
+Auto Biorhythm Lighting is a smart feature that adjusts the bulb's brightness and color temperature based on natural solar position to align with your body's circadian rhythm. This promotes better sleep, focus, and overall well-being. You can also customize the perfect lighting effects that align with your needs and preferences throughout the day.
+
+## How to Set Up Auto Biorhythm
+1. **How does Auto Biorhythm work**: After the Auto Biorhythm is enabled, when you turn the bulb on, the lighting will automatically illuminate according to the lighting effects set for the current period (node) and will switch when the next time node arrives. Note: When the Auto Biorhythm is enabled, the bulb will follow the Auto Biorhythm settings and the Default State will be disabled at the same time.
+2. **Navigate to Auto Biorhythm**:
+	* On the Home page, tap your Tapo Bulb device card, then scroll down to find the Auto Biorhythm function.
+	* Please Click on Auto Biorhythm. Confirm your time zone in the pop-up window. If you’re in the same city, click 'Yes'.
+3. **Enable and customize the Auto Biorhythm**:
+	* Tap Enable to activate the feature, and you will find six default recommended nodes settings.
+	* You can also click on any existing nodes to make manual adjustments as you want.
+	* Notes: The specific times for the time nodes of sunrise, sunset, midday, and midnight will adjust daily based on solar positions. It is not a fixed time.
+	* Click Add Time Node to set your desired custom time. Choose the time, select brightness and color temperature, then click Save.
+	* Notes: Up to 8 time nodes can be added in the Auto Biorhythm, allowing you to create the perfect lighting effects that align with your needs and preferences throughout the day.
+4. **Lighting Gradient**: Enabling the Lighting Gradient makes the light automatically adjust and smoothly transition to the lighting effects set in the next time node.
+
+## Feedback
+Is this FAQ useful? Your feedback helps improve this site.
+* Yes
+* No
+
+What’s your concern with this article?
+* Dissatisfied with product
+* Too Complicated
+* Confusing Title
+* Does not apply to me
+* Too Vague
+* Other
+
+We'd love to get your feedback, please let us know how we can improve this content.

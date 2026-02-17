@@ -1,0 +1,31 @@
+# Circadian Track Lighting or Alternative Human Centric Lighting Options
+## QUESTION
+Seeking your advice on the below scenario:
+
+I have a single story 2300 square foot house in the US (Miami) with about 60 total MR16 style bulbs that have a GU5.3 base.
+I’d like to install some kind of color changing options that can support Circadian / Human Centric Lighting.
+Currently doing a minor renovation so want to take into account what switches to use and if I need to cut drywall, do it now during the renovation.
+Flat roof with no attic and shallow trusses so recessed lighting is not a path I want to take.
+Seeking advice on the easiest way to add smart bulbs to this setup without greatly increasing fixture size.
+Open to a different kind of fixture or maybe just using a bunch of Ikea or similar floor lamps instead then have the versatility of E26 bulbs.
+
+## Current Idea
+An idea so far (but it’s pricey):
+* Keep the existing tracks, change all GU5.3 receptacles to GU10, and use Philips Hue GU10 bulbs.
+* Wall control with Zooz dimmer switches that can talk to my Hubitat (bought for this project, but can switch to a different hub if needed).
+* Including installation of all the switches I’d need, napkin math puts me at a whopping $4500.
+
+## Concerns
+* Cheapo Amazon GU5.3 or GU10 bulbs would bring this price down, but reviews are dicey.
+* I assume there must be a better way and the reviews I’ve heard about the color performance of Hue GU10 bulbs are iffy.
+* If price were not a consideration, I’d look further at Lutron Ketra, but assume that’s way out of my range.
+
+## Related Answers
+* Best circadian friendly lighting options
+* Best human centric lighting solutions
+* Effective lights that help you sleep
+* Healthy home light bulb recommendations
+* Circadian lighting design tips
+
+## Community
+* Public: Anyone can view, post, and comment to this community.
