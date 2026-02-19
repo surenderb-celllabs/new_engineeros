@@ -16,7 +16,6 @@ from langchain_core.messages import (
 from langgraph.config import get_stream_writer
 
 
-
 def count_tokens(text: str) -> int:
     """Estimate token count for a string."""
     return len(text.split()) // 4 * 3  # Rough estimate
@@ -142,13 +141,12 @@ class BaseNode:
 
 class UserStoryRequirement(BaseNode):
     def __init__(self, agent_tools: List):
-        goal = load_yaml("app/phase_5/problem.yaml")
+        goal = load_yaml("app/docs/problem.yaml")
         prompt_path = Path(STEP_PATH) / "prompts/user_story.md"
-        prompt_data = load_file(str(prompt_path)).format(goal=goal["goals"][3])
+        prompt_data = load_file(str(prompt_path)).format(total_goals=len(goal["goals"]))
         
-        super().__init__(agent_tools, True, prompt_data)
+        super().__init__(agent_tools, True, prompt_data, Model.Nvidia.gpt_oss_20b.bind_tools(agent_tools))
         
-        self.node_logger.debug(goal["goals"][3])
 
     def __call__(self, state: State) -> State:
         try:
@@ -170,6 +168,14 @@ class UserStoryRequirement(BaseNode):
 
             if isinstance(state["messages"][-1], ToolMessage):
                 RemoveMessage(state["messages"][-1].id)
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
 
             resp_json = self._yaml_string_with_fence_to_json(response.content)
             self.node_logger.debug(resp_json)
@@ -211,20 +217,27 @@ class UserStoryDocument(BaseNode):
         prompt_data = load_file(str(prompt_path))
         super().__init__(
             agent_tools, False, prompt_data,
-            model=Model.Groq.gpt_oss_20b
+            model=Model.Groq.gpt_oss_20b.bind_tools(tools=agent_tools)
         )
-        self.goal = load_yaml("app/phase_5/problem.yaml")
+        self.goal = load_yaml("app/docs/problem.yaml")
 
     def __call__(self, state: State) -> State:
         try:
             self._log_section_header("User Story Doc Generator")
 
             response = self.model_chain.invoke({
-                "context": state["messages"],
-                "goal": self.goal["goals"][3]
+                "conversation": state["messages"]
             })
             self.node_logger.debug(response.content)
             
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
+
             resp_json = self._yaml_string_with_fence_to_json(response.content)
             self.node_logger.debug(resp_json)
 

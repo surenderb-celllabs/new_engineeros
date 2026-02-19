@@ -2,6 +2,7 @@ from langchain_ollama import OllamaEmbeddings, ChatOllama
 # from langchain_together import ChatTogether, TogetherEmbeddings
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 from typing import Literal
 
@@ -19,6 +20,10 @@ class Model:
         llama3_1 = ChatOllama(model="llama3.1:8b", base_url="http://183.82.99.107:11434")
         mistral_12b = ChatOllama(model="mistral-nemo:12b", base_url="http://183.82.99.107:11434")
         gpt_oss_20b = ChatOllama(model="gpt-oss:20b", base_url="http://183.82.99.107:11434")
+
+    
+    class Gemini:
+        gemini3 = ChatGoogleGenerativeAI(model="gemini-3-pro")
 
 
 

@@ -1,0 +1,286 @@
+
+user_stories:
+  - user_story_id: USER_STORY-0001
+    title: Capture media and receipts quickly in a timeline entry
+    as_a: Traveler (Solo, Group, Business)
+    i_want: A single tap “Add entry” that opens a camera, voice recorder, or receipt scanner
+    so_that: I can preserve memories and expenses without switching apps or spreadsheets
+    business_value: Reduces friction in the capture phase, increasing overall app usage and data quality
+    success_metrics:
+      - 80% of logged trips contain at least one media entry captured via the app
+      - Avg. entry creation time ≤ 2 minutes
+    dependencies:
+      - None
+    assumptions:
+      - User has a smartphone with camera and microphone
+      - App has permission to access device storage and camera
+
+  - user_story_id: USER_STORY-0002
+    title: Auto‑tag and auto‑categorise captured content
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The system to automatically attach a timestamp, location, and expense category when I capture media or a receipt
+    so_that: I don’t need to manually tag or categorize, saving time and reducing errors
+    business_value: Improves data consistency and speeds up subsequent reconciliation
+    success_metrics:
+      - 95% of expense entries auto‑categorised within 15 minutes of capture
+      - 70% of trips complete split wizard within 15 minutes of trip end
+    dependencies:
+      - USER_STORY-0001
+    assumptions:
+      - Device has GPS or network-based location services
+      - OCR engine can read receipts in supported formats
+
+  - user_story_id: USER_STORY-0003
+    title: Detect and handle duplicate receipts or media
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The app to warn me when a new receipt or photo matches an existing one
+    so_that: I can keep my data clean and avoid double‑counting expenses
+    business_value: Maintains data integrity, essential for accurate reporting
+    success_metrics:
+      - Duplicate detection accuracy ≥ 90%
+      - Users resolve duplicates in ≤ 1 minute per instance
+    dependencies:
+      - USER_STORY-0002
+    assumptions:
+      - Duplicate detection uses file hash or OCR text comparison
+
+  - user_story_id: USER_STORY-0004
+    title: AI‑generated itinerary suggestions pre‑trip
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The app to propose a day‑by‑day itinerary based on destination, dates, budget, and preferences
+    so_that: I can plan my trip efficiently before I leave
+    business_value: Enhances user engagement and positions the app as a comprehensive travel companion
+    success_metrics:
+      - 60% of users accept at least one AI suggestion per day
+      - 40% of itineraries are edited and saved for future use
+    dependencies:
+      - USER_STORY-0001
+    assumptions:
+      - The app contains an internal attraction database
+      - No external APIs are used
+
+  - user_story_id: USER_STORY-0005
+    title: Edit itinerary during the trip and log changes for all group members
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The ability to modify the shared itinerary on the fly, with a change log visible to everyone
+    so_that: All participants stay on the same plan and can see updates in real time
+    business_value: Supports dynamic travel planning and improves collaboration for group travelers
+    success_metrics:
+      - All itinerary edits are reflected across devices within 5 seconds
+      - Group members view change log entries with ≥ 90% satisfaction
+    dependencies:
+      - USER_STORY-0004
+    assumptions:
+      - Group members have the app installed and are online or will sync later
+
+  - user_story_id: USER_STORY-0006
+    title: Auto‑generate daily and trip summaries
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The app to create a concise summary of each day and the entire trip, including media, key events, and expenses
+    so_that: I can quickly review and share my journey without manual editing
+    business_value: Drives content sharing and keeps users engaged long after the trip
+    success_metrics:
+      - 75% of daily summaries rated ≥ 4/5 on a satisfaction scale
+      - 50% of trip summaries are shared publicly or with friends
+      - Avg. read time ≤ 1 minute
+    dependencies:
+      - USER_STORY-0001
+      - USER_STORY-0004
+    assumptions:
+      - Summarization engine can process mixed media (text, images, audio)
+
+  - user_story_id: USER_STORY-0007
+    title: Export summaries as link, image, or PDF
+    as_a: Traveler (Solo, Group, Business)
+    i_want: A one‑click export that produces a shareable link, a snapshot image, or a PDF of the summary
+    so_that: I can send it via email, social media, or internal communication tools
+    business_value: Simplifies sharing and encourages external visibility of the app’s value
+    success_metrics:
+      - 90% of exported files open correctly on target devices
+      - 70% of exported summaries are shared within 24 hours of trip end
+    dependencies:
+      - USER_STORY-0006
+    assumptions:
+      - The app can generate PDFs and images locally
+
+  - user_story_id: USER_STORY-0008
+    title: Capture entries offline and sync later
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The ability to record media, receipts, and notes while offline, with automatic sync when connectivity returns
+    so_that: I never lose data, even in remote locations
+    business_value: Increases reliability and user trust in challenging environments
+    success_metrics:
+      - 95% of captured entries sync within 24 hours of connectivity
+      - Sync error rate < 1%
+      - No data loss reported during offline periods
+    dependencies:
+      - USER_STORY-0001
+    assumptions:
+      - Device supports local storage up to 10 GB per trip
+      - Background sync service complies with platform guidelines
+
+  - user_story_id: USER_STORY-0009
+    title: View captured entries offline
+    as_a: Traveler (Solo, Group, Business)
+    i_want: To browse and review my trip timeline and media even without internet
+    so_that: I can reflect on my journey anytime, anywhere
+    business_value: Enhances user experience by providing continuous access to data
+    success_metrics:
+      - Offline view latency ≤ 2 seconds
+      - User satisfaction with offline experience ≥ 80%
+    dependencies:
+      - USER_STORY-0008
+    assumptions:
+      - All captured media are stored locally until sync
+
+  - user_story_id: USER_STORY-0010
+    title: Set visibility per entry (public, friends, private)
+    as_a: Traveler (Solo, Group, Business)
+    i_want: To toggle the privacy setting for each timeline entry at capture or later
+    so_that: I control who can see my memories and expenses
+    business_value: Protects user privacy and encourages sharing within trusted circles
+    success_metrics:
+      - 90% of users set visibility preferences for ≥ 50% of entries
+      - 70% of shared content follows user‑defined settings
+    dependencies:
+      - USER_STORY-0001
+    assumptions:
+      - Backend supports role‑based access control
+
+  - user_story_id: USER_STORY-0011
+    title: Share selected entries with specific friends
+    as_a: Traveler (Solo, Group, Business)
+    i_want: To choose friends from my contact list and share individual entries or entire trip summaries with them
+    so_that: I can share moments privately without exposing them to everyone
+    business_value: Facilitates personal sharing while respecting privacy preferences
+    success_metrics:
+      - 80% of share actions complete successfully
+      - 70% of shared content is shared according to user‑defined settings
+    dependencies:
+      - USER_STORY-0010
+    assumptions:
+      - The app can resolve friend lists and maintain secure links
+
+  - user_story_id: USER_STORY-0012
+    title: Export expense report as PDF for business users
+    as_a: Business User
+    i_want: A simple export of the expense reconciliation into a PDF that I can attach to internal emails
+    so_that: I can meet corporate reporting requirements without leaving the app
+    business_value: Provides a business‑ready artifact, increasing adoption among corporate travelers
+    success_metrics:
+      - Exported PDF is accepted by corporate accounting systems ≥ 80% of the time
+      - Users complete export within 5 minutes of trip end
+    dependencies:
+      - USER_STORY-0003 (expense reconciliation)
+      - USER_STORY-0006 (summary generation)
+    assumptions:
+      - The PDF format adheres to corporate standards
+
+  - user_story_id: USER_STORY-0013
+    title: Log changes to itinerary for audit
+    as_a: Traveler (Solo, Group, Business)
+    i_want: A history log that records every edit to the itinerary, including who made the change and when
+    so_that: I can review the evolution of the plan and maintain transparency
+    business_value: Supports accountability for group travelers and audit trails for business users
+    success_metrics:
+      - Log entries are visible to all participants within 5 seconds
+      - Users can revert to any previous version with ≥ 95% success
+    dependencies:
+      - USER_STORY-0005
+    assumptions:
+      - The app maintains a versioned data store for itineraries
+
+  - user_story_id: USER_STORY-0014
+    title: Notify user of potential privacy violations
+    as_a: Traveler (Solo, Group, Business)
+    i_want: A warning if I attempt to share an entry that is set to private with a public link
+    so_that: I avoid accidental disclosure of sensitive content
+    business_value: Reduces privacy incidents and support tickets
+    success_metrics:
+      - 90% of accidental public share attempts are intercepted
+      - Privacy‑related support tickets < 5% of total tickets
+    dependencies:
+      - USER_STORY-0010
+    assumptions:
+      - The app can detect visibility settings before sharing actions
+
+  - user_story_id: USER_STORY-0015
+    title: Maintain offline sync queue integrity
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The app to queue all offline changes and ensure they are applied in order when back online
+    so_that: My data remains consistent across devices
+    business_value: Prevents data corruption and user frustration
+    success_metrics:
+      - 99% of queued changes are applied correctly after sync
+      - No duplicate entries appear after sync
+    dependencies:
+      - USER_STORY-0008
+    assumptions:
+      - Network connectivity returns within 48 hours for most users
+
+  - user_story_id: USER_STORY-0016
+    title: Provide quick access to expense split wizard after trip end
+    as_a: Traveler (Solo, Group, Business)
+    i_want: The app to automatically launch the split wizard within 5 minutes of trip completion
+    so_that: I can finalize expenses promptly and avoid backlog
+    business_value: Improves completion rates for expense reconciliation
+    success_metrics:
+      - 70% of trips complete split wizard within 15 minutes of trip end
+    dependencies:
+      - USER_STORY-0003
+    assumptions:
+      - Trip end is detected via user action or GPS cessation
+
+  - user_story_id: USER_STORY-0017
+    title: Allow manual override of AI itinerary suggestions
+    as_a: Traveler (Solo, Group, Business)
+    i_want: To edit or delete AI‑generated itinerary items without affecting the overall plan
+    so_that: I can tailor the plan to my real‑time needs
+    business_value: Increases user control and satisfaction
+    success_metrics:
+      - 60% of users make at least one manual edit per trip
+    dependencies:
+      - USER_STORY-0004
+    assumptions:
+      - The UI supports drag‑and‑drop and inline editing
+
+  - user_story_id: USER_STORY-0018
+    title: Provide summary preview before export
+    as_a: Traveler (Solo, Group, Business)
+    i_want: A preview of the daily or trip summary with editable text fields
+    so_that: I can correct typos or add personal notes before sharing
+    business_value: Enhances quality of shared content and reduces post‑share edits
+    success_metrics:
+      - 85% of users edit the preview before final export
+    dependencies:
+      - USER_STORY-0006
+    assumptions:
+      - The app can render a formatted preview of the summary
+
+  - user_story_id: USER_STORY-0019
+    title: Log all privacy setting changes for compliance audit
+    as_a: Business User
+    i_want: A record of every privacy setting change with timestamp and user ID
+    so_that: I can demonstrate compliance with corporate data‑protection policies
+    business_value: Meets regulatory requirements and reduces audit risk
+    success_metrics:
+      - Audit logs are retained for 12 months
+      - Log integrity verified with ≥ 99% accuracy
+    dependencies:
+      - USER_STORY-0010
+    assumptions:
+      - The backend stores audit logs in a tamper‑evident manner
+
+  - user_story_id: USER_STORY-0020
+    title: Ensure data encryption at rest for offline storage
+    as_a: Traveler (Solo, Group, Business)
+    i_want: All locally stored media and entries to be encrypted on device
+    so_that: My data remains protected even if the device is lost or stolen
+    business_value: Strengthens security posture and user trust
+    success_metrics:
+      - 100% of offline data is encrypted with AES‑256
+      - No data breaches reported
+    dependencies:
+      - USER_STORY-0008
+    assumptions:
+      - Device supports secure storage APIs

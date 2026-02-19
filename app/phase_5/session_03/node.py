@@ -112,6 +112,13 @@ class BaseNode:
         
         return output_tokens
     
+
+    def _remove_tool_messages(self, state: State):
+        for message in state["messages"]:
+            if isinstance(message, ToolMessage):
+                RemoveMessage(message.id)
+
+    
     def _yaml_string_with_fence_to_json(self, yaml_string: str) -> dict:
         try:
             cleaned = re.sub(r"^```yaml\s*|\s*```$", "", yaml_string.strip(), flags=re.MULTILINE)
@@ -143,14 +150,12 @@ class BaseNode:
 
 class SystemRequirement(BaseNode):
     def __init__(self, agent_tools: List):
-        goal = load_yaml("app/phase_5/problem.yaml")
-        user_story = load_yaml("app/phase_5/user_stories.yaml")
+        user_stories = load_yaml("app/docs/user_stories.yaml")
 
         prompt_path = Path(STEP_PATH) / "prompts/func_nonfunc.md"
-        prompt_data = load_file(str(prompt_path)).format(user_story=user_story["user_stories"][USER_STORY_INDEX])
+        prompt_data = load_file(str(prompt_path)).format(user_story_count=len(user_stories["user_stories"]))
         
-        super().__init__(agent_tools, True, prompt_data, Model.Nvidia.gpt_oss_20b)
-        self.node_logger.debug(user_story["user_stories"][USER_STORY_INDEX])
+        super().__init__(agent_tools, True, prompt_data, Model.Nvidia.gpt_oss_20b.bind_tools(agent_tools))
         
 
     def __call__(self, state: State) -> State:
@@ -171,8 +176,18 @@ class SystemRequirement(BaseNode):
 
             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
 
-            if isinstance(state["messages"][-1], ToolMessage):
-                RemoveMessage(state["messages"][-1].id)
+            
+            for message in state["messages"]:
+                if isinstance(message, ToolMessage):
+                    RemoveMessage(message.id)
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
 
             resp_json = self._yaml_string_with_fence_to_json(response.content)
             self.node_logger.debug(resp_json)
@@ -214,9 +229,9 @@ class SystemDocument(BaseNode):
         prompt_data = load_file(str(prompt_path))
         super().__init__(
             agent_tools, False, prompt_data,
-            model=Model.Groq.gpt_oss_20b
+            model=Model.Groq.gpt_oss_20b.bind_tools(tools=agent_tools)
         )
-        self.user_story = load_yaml("app/phase_5/user_stories.yaml")
+        self.user_story = load_yaml("app/docs/user_stories.yaml")
         self.func = load_yaml("app/phase_5/func_nonfunc.yaml")
 
     def __call__(self, state: State) -> State:
@@ -224,13 +239,23 @@ class SystemDocument(BaseNode):
             self._log_section_header("User Story Doc Generator")
 
             response = self.model_chain.invoke({
-                "context": state["messages"],
-                "user_story": self.user_story["user_stories"][USER_STORY_INDEX],
-                "fr_num": len(self.func["functional_requirements"]),
-                "nfr_num": len(self.func["non_functional_requirements"])
+                "conversation": state["messages"]
             })
             self.node_logger.debug(response.content)
             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+
+            for message in state["messages"]:
+                if isinstance(message, ToolMessage):
+                    RemoveMessage(message.id)
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
 
             resp_json = self._yaml_string_with_fence_to_json(response.content)
             self.node_logger.debug(resp_json)

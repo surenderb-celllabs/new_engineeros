@@ -34,7 +34,7 @@ class BaseNode:
         ):
         self.node_logger = ColoredLogger(name=self.__class__.__name__)
         self.agent_tools = agent_tools
-        self.model = model or Model.Groq.gpt_oss_20b
+        self.model = model or Model.Nvidia.gpt_oss_20b
 
         if system_prompt:
             self.prompt = [SystemMessage(content=prompt_data)]
@@ -145,14 +145,17 @@ class ProductRequirement(BaseNode):
             # self.node_logger.warning(state["messages"])
             
             # Log input tokens
-            input_tokens = self._log_input_tokens(state["messages"])
-            self.node_logger.warning(f"Input Tokens Uses: {input_tokens}")
+            # input_tokens = self._log_input_tokens(state["messages"])
+            # self.node_logger.warning(f"Input Tokens Uses: {input_tokens}")
 
             response = self.model_chain.invoke(
                 self.prompt + state["messages"]
             )
             self.node_logger.debug(response.tool_calls)
             self.node_logger.debug(response.content)
+
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
 
             if isinstance(state["messages"][-1], ToolMessage):
                 RemoveMessage(state["messages"][-1].id)
@@ -168,17 +171,17 @@ class ProductRequirement(BaseNode):
                 }
             
             # Log output tokens
-            output_tokens = self._log_output_tokens(response)
-            self.node_logger.warning(f"Output Tokens Uses: {output_tokens}")
+            # output_tokens = self._log_output_tokens(response)
+            # self.node_logger.warning(f"Output Tokens Uses: {output_tokens}")
             
-            self._write_message_on_writer_stream(resp_json["question"])
-            self._write_options_on_writer_stream(resp_json["suggestions"])
+            self._write_message_on_writer_stream(resp_json["ba_message"])
+            # self._write_options_on_writer_stream(resp_json["suggestions"])
 
             convo_end = resp_json["convo_end"]
             resp_json.pop("convo_end")
 
             return {
-                "messages": [AIMessage(content=json.dumps(resp_json["question"]))],
+                "messages": [AIMessage(content=json.dumps(resp_json["ba_message"]))],
                 "resp_type": ResponseType.MESSAGE.value,
                 "convo_end": convo_end,
             }
