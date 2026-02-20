@@ -33,6 +33,19 @@ class IdeaExpansion:
             "architecture_doc", 
             node.ArchitectureDocument(self.agent_tools)
         )
+
+        self.graph_builder.add_node(
+            "test_diagram", node.ArchitectureTestDiagram(self.agent_tools)
+        )
+        self.graph_builder.add_node(
+            "test_diagram_1", node.ArchitectureTestDiagram1(self.agent_tools)
+        )
+        self.graph_builder.add_node(
+            "test_diagram_2", node.ArchitectureTestDiagram2(self.agent_tools)
+        )
+        self.graph_builder.add_node(
+            "test_diagram_3", node.ArchitectureTestDiagram3(self.agent_tools)
+        )
         
         self.graph_builder.add_node(
             "tool_node",
@@ -45,22 +58,25 @@ class IdeaExpansion:
 
         
         # Start flow
-        self.graph_builder.add_edge(START, "architecture_convo")
+        # self.graph_builder.add_edge(START, "architecture_convo")
         
-        # Conditional edge: Check conversation phase and completion
-        self.graph_builder.add_conditional_edges(
-            "architecture_convo", 
-            self._should_proceed_to_document
-        )
+        # # Conditional edge: Check conversation phase and completion
+        # self.graph_builder.add_conditional_edges(
+        #     "architecture_convo", 
+        #     self._should_proceed_to_document
+        # )
 
-        self.graph_builder.add_edge("tool_node", "architecture_convo")
+        # self.graph_builder.add_edge("tool_node", "architecture_convo")
 
         
         
-        # Final edge to END
-        self.graph_builder.add_conditional_edges("architecture_doc", self._should_proceed_to_document_1)
-        self.graph_builder.add_edge("tool_node_1", "architecture_doc")
+        # # Final edge to END
+        # self.graph_builder.add_conditional_edges("architecture_doc", self._should_proceed_to_document_1)
+        # self.graph_builder.add_edge("tool_node_1", "architecture_doc")
     
+        self.graph_builder.add_edge(START, "test_diagram_3")
+        self.graph_builder.add_edge("test_diagram_3", END)
+
 
     def compile(self):
         checkpointer = InMemorySaver()

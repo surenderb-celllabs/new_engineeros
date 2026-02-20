@@ -21,35 +21,35 @@ vector_store = Chroma(
 
 
 
-files = {
-    "func_nonfunc.yaml": "/home/surender/surender/celllabs/new_engineeros/app/phase_5/func_nonfunc.yaml",
-    "problem.yaml": "/home/surender/surender/celllabs/new_engineeros/app/phase_5/problem.yaml",
-    "user_stories.yaml": "/home/surender/surender/celllabs/new_engineeros/app/phase_5/user_stories.yaml"
-}
+# files = {
+#     "func_nonfunc.yaml": "/home/surender/surender/celllabs/new_engineeros/app/phase_5/func_nonfunc.yaml",
+#     "problem.yaml": "/home/surender/surender/celllabs/new_engineeros/app/phase_5/problem.yaml",
+#     "user_stories.yaml": "/home/surender/surender/celllabs/new_engineeros/app/phase_5/user_stories.yaml"
+# }
 
-for i in list(files.keys()):
-    from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from utils.file_management import load_yaml
-    from langchain_core.documents import Document
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 500,
-        chunk_overlap = 50,
-        separators=["\n\n", "\n", "."]
-    )
-    chunks = text_splitter.split_text(str(load_yaml(files[i])))
-    document = []
-    for j, chunks in enumerate(chunks):
-        document.append(Document(
-            page_content=chunks,
-            metadata = {
-                "title": i,
-                "chunk_id": j
-            }
-        ))
+# for i in list(files.keys()):
+#     from langchain_text_splitters import RecursiveCharacterTextSplitter
+#     from utils.file_management import load_yaml
+#     from langchain_core.documents import Document
+#     text_splitter = RecursiveCharacterTextSplitter(
+#         chunk_size = 500,
+#         chunk_overlap = 50,
+#         separators=["\n\n", "\n", "."]
+#     )
+#     chunks = text_splitter.split_text(str(load_yaml(files[i])))
+#     document = []
+#     for j, chunks in enumerate(chunks):
+#         document.append(Document(
+#             page_content=chunks,
+#             metadata = {
+#                 "title": i,
+#                 "chunk_id": j
+#             }
+#         ))
     
-    if len(document) > 0:
-        vector_store.add_documents(documents=document)
-        print("Added File to the Vector DB")
+#     if len(document) > 0:
+#         vector_store.add_documents(documents=document)
+#         print("Added File to the Vector DB")
 
 
 
