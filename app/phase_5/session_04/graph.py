@@ -22,60 +22,72 @@ class IdeaExpansion:
 
 
     def _build(self):
-        # Node 1: Conversation for Problem Statement & Solution
-        self.graph_builder.add_node(
-            "architecture_convo", 
-            node.ArchitectureRequirement(self.agent_tools)
-        )
-        
-        # Node 2: Generate Goals from Conversation
-        self.graph_builder.add_node(
-            "architecture_doc", 
-            node.ArchitectureDocument(self.agent_tools)
-        )
+        self.graph_builder.add_node("step_1", node.ArchitectureStep1(agent_tools=self.agent_tools))
+        self.graph_builder.add_node("step_21", node.ArchitectureStep21(agent_tools=self.agent_tools))
+        self.graph_builder.add_node("step_22", node.ArchitectureStep22(agent_tools=self.agent_tools))
+        self.graph_builder.add_node("step_23", node.ArchitectureStep23(agent_tools=self.agent_tools))
+        self.graph_builder.add_node("step_24", node.ArchitectureStep24(agent_tools=self.agent_tools))
 
-        self.graph_builder.add_node(
-            "test_diagram", node.ArchitectureTestDiagram(self.agent_tools)
-        )
-        self.graph_builder.add_node(
-            "test_diagram_1", node.ArchitectureTestDiagram1(self.agent_tools)
-        )
-        self.graph_builder.add_node(
-            "test_diagram_2", node.ArchitectureTestDiagram2(self.agent_tools)
-        )
-        self.graph_builder.add_node(
-            "test_diagram_3", node.ArchitectureTestDiagram3(self.agent_tools)
-        )
+
+        self.graph_builder.add_edge(START, "step_24")
+        self.graph_builder.add_edge("step_24", END)
+
+
+    # def _build(self):
+    #     # Node 1: Conversation for Problem Statement & Solution
+    #     self.graph_builder.add_node(
+    #         "architecture_convo", 
+    #         node.ArchitectureRequirement(self.agent_tools)
+    #     )
         
-        self.graph_builder.add_node(
-            "tool_node",
-            ToolNode(tools=self.agent_tools)
-        )
-        self.graph_builder.add_node(
-            "tool_node_1",
-            ToolNode(tools=self.agent_tools)
-        )
+    #     # Node 2: Generate Goals from Conversation
+    #     self.graph_builder.add_node(
+    #         "architecture_doc", 
+    #         node.ArchitectureDocument(self.agent_tools)
+    #     )
+
+    #     self.graph_builder.add_node(
+    #         "test_diagram", node.ArchitectureTestDiagram(self.agent_tools)
+    #     )
+    #     self.graph_builder.add_node(
+    #         "test_diagram_1", node.ArchitectureTestDiagram1(self.agent_tools)
+    #     )
+    #     self.graph_builder.add_node(
+    #         "test_diagram_2", node.ArchitectureTestDiagram2(self.agent_tools)
+    #     )
+    #     self.graph_builder.add_node(
+    #         "test_diagram_3", node.ArchitectureTestDiagram3(self.agent_tools)
+    #     )
+        
+    #     self.graph_builder.add_node(
+    #         "tool_node",
+    #         ToolNode(tools=self.agent_tools)
+    #     )
+    #     self.graph_builder.add_node(
+    #         "tool_node_1",
+    #         ToolNode(tools=self.agent_tools)
+    #     )
 
         
-        # Start flow
-        # self.graph_builder.add_edge(START, "architecture_convo")
+    #     # Start flow
+    #     # self.graph_builder.add_edge(START, "architecture_convo")
         
-        # # Conditional edge: Check conversation phase and completion
-        # self.graph_builder.add_conditional_edges(
-        #     "architecture_convo", 
-        #     self._should_proceed_to_document
-        # )
+    #     # # Conditional edge: Check conversation phase and completion
+    #     # self.graph_builder.add_conditional_edges(
+    #     #     "architecture_convo", 
+    #     #     self._should_proceed_to_document
+    #     # )
 
-        # self.graph_builder.add_edge("tool_node", "architecture_convo")
+    #     # self.graph_builder.add_edge("tool_node", "architecture_convo")
 
         
         
-        # # Final edge to END
-        # self.graph_builder.add_conditional_edges("architecture_doc", self._should_proceed_to_document_1)
-        # self.graph_builder.add_edge("tool_node_1", "architecture_doc")
+    #     # # Final edge to END
+    #     # self.graph_builder.add_conditional_edges("architecture_doc", self._should_proceed_to_document_1)
+    #     # self.graph_builder.add_edge("tool_node_1", "architecture_doc")
     
-        self.graph_builder.add_edge(START, "test_diagram_3")
-        self.graph_builder.add_edge("test_diagram_3", END)
+    #     self.graph_builder.add_edge(START, "test_diagram_3")
+    #     self.graph_builder.add_edge("test_diagram_3", END)
 
 
     def compile(self):

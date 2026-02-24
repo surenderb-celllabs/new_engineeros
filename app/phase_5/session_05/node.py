@@ -1,0 +1,380 @@
+from typing import List, Dict, Any, Optional
+from pathlib import Path
+import re, yaml, json
+
+from app import ColoredLogger, Model, load_file, log_error
+from app.phase_5.session_05 import STEP_PATH, State, ResponseType
+from utils.file_management import load_yaml, load_md
+
+from langchain_core.prompts import PromptTemplate
+from langchain_core.messages import (
+    AIMessage,
+    SystemMessage,
+    ToolMessage,
+    RemoveMessage
+)
+from langgraph.config import get_stream_writer
+from langchain_core.tools import tool
+
+
+
+USER_STORY_INDEX = 37
+
+def count_tokens(text: str) -> int:
+    """Estimate token count for a string."""
+    return len(text.split()) // 4 * 3  # Rough estimate
+
+
+
+
+class BaseNode:
+    """Base class containing common methods for all node classes."""
+    
+    def __init__(self, 
+                 agent_tools: List, 
+                 system_prompt: bool,
+                 prompt_data: str,
+                 model = None, 
+        ):
+        self.node_logger = ColoredLogger(name=self.__class__.__name__)
+        self.agent_tools = agent_tools
+        self.model = model or Model.Nvidia.gpt_oss_20b
+        self.system_prompt = system_prompt
+        self._build_chain(prompt_data)
+
+    def _build_chain(self, prompt_data: str):
+        """(Re)build prompt + model chain at runtime"""
+        if self.system_prompt:
+            self.prompt = [SystemMessage(content=prompt_data)]
+            self.model_chain = self.model
+        else:
+            self.prompt = PromptTemplate(template=prompt_data)
+            self.model_chain = self.prompt | self.model
+        
+        # self.node_logger.debug("Build Chain Successful")
+
+    def _log_section_header(self, title: str) -> None:
+        """Log a formatted section header."""
+        self.node_logger.debug(f"{'=' * 80}")
+        self.node_logger.debug(f"{title:^80}")
+        self.node_logger.debug(f"{'=' * 80}")
+    
+    def _log_separator(self) -> None:
+        """Log a separator line."""
+        self.node_logger.debug("-" * 80)
+    
+    def _log_input_tokens(self, messages: List) -> int:
+        """Log input tokens from messages and return token count."""
+        # self._log_section_header("INPUT TOKENS")
+        total_input_tokens = 0
+        
+        # Count system prompt tokens
+        system_token_count = count_tokens(str(self.prompt))
+        total_input_tokens += system_token_count
+        # self.node_logger.debug(f"System Prompt Tokens: {system_token_count}")
+        
+        # Count message tokens
+        for i, msg in enumerate(messages):
+            msg_content = getattr(msg, 'content', str(msg))
+            msg_token_count = count_tokens(msg_content)
+            total_input_tokens += msg_token_count
+            msg_type = type(msg).__name__
+            self.node_logger.debug(f"Message {i+1} [{msg_type}] Tokens: {msg_token_count}")
+        
+        # self.node_logger.debug(f"{'=' * 40}")
+        # self.node_logger.debug(f"TOTAL INPUT TOKENS: {total_input_tokens}")
+        # self._log_separator()
+        
+        return total_input_tokens
+    
+    def _log_output_tokens(self, response: AIMessage) -> int:
+        """Log output tokens from response and return token count."""
+        # self._log_section_header("OUTPUT TOKENS")
+        
+        # Try to get token usage from response metadata (LangChain)
+        output_tokens = 0
+        if hasattr(response, 'usage_metadata') and response.usage_metadata:
+            output_tokens = response.usage_metadata.get('output_tokens', 0)
+            # self.node_logger.debug(f"Model Reported Output Tokens: {output_tokens}")
+        
+        # Fallback to estimation
+        if output_tokens == 0 and hasattr(response, 'content'):
+            output_tokens = count_tokens(response.content)
+            # self.node_logger.debug(f"Estimated Output Tokens: {output_tokens}")
+        
+        # Log tool calls if any
+        if hasattr(response, 'tool_calls') and response.tool_calls:
+            tool_call_tokens = count_tokens(str(response.tool_calls))
+            self.node_logger.debug(f"Tool Calls Tokens: {tool_call_tokens}")
+            output_tokens += tool_call_tokens
+        
+        # self.node_logger.debug(f"{'=' * 40}")
+        # self.node_logger.debug(f"TOTAL OUTPUT TOKENS: {output_tokens}")
+        # self._log_separator()
+        
+        return output_tokens
+    
+    def _yaml_string_with_fence_to_json(self, yaml_string: str) -> dict:
+        try:
+            cleaned = re.sub(r"^```yaml\s*|\s*```$", "", yaml_string.strip(), flags=re.MULTILINE)
+            return yaml.safe_load(cleaned)
+        except Exception as e:
+            self.node_logger.error(f"[_yaml_string_with_fence_to_json]: {e}")
+
+    def _yaml_string_with_fence_to_json_str(self, yaml_string: str) -> str:
+        data = self._yaml_string_with_fence_to_json(yaml_string)
+        return json.dumps(data, indent=None, ensure_ascii=False)
+    
+    def _write_message_on_writer_stream(self, message: str) -> None:
+        """Stream the response on to the custom value"""
+        writer = get_stream_writer()
+        writer({
+            "type": "ai_response",
+            "response": message 
+        })
+
+    def _write_options_on_writer_stream(self, message: str) -> None:
+        """Stream the response on to the custom value"""
+        writer = get_stream_writer()
+        writer({
+            "type": ResponseType.ANSWER_SUGGESTION.value,
+            "response": message 
+        })
+
+
+
+class TechnologyStackConvo(BaseNode):
+    def __init__(self, agent_tools: List):
+        func_non_func_data = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
+        user_stories = self._simplified_user_stories("app/docs/user_stories.yaml")
+        architecture = "\n".join([
+            load_md("app/docs/arch_1.md"),
+            load_md("app/docs/arch_21.md"),
+            load_md("app/docs/arch_22.md")
+        ])
+
+        prompt_path = Path(STEP_PATH) / "prompts/tech_stack_convo.md"
+        prompt_data = load_file(str(prompt_path)).format(
+            func_nonfunc_reqr=func_non_func_data,
+            architecture=architecture,
+            user_stories=user_stories
+        ) 
+
+
+        super().__init__(agent_tools, True, prompt_data, 
+                         Model.Nvidia.gpt_oss_20b)
+        
+
+    def __call__(self, state: State) -> State:
+        try:
+            # self.node_logger.warning(state)
+            
+            self._log_section_header("User Story Analysis")
+
+            response = self.model_chain.invoke(
+                self.prompt + state["messages"]
+            )
+            self.node_logger.debug(response.tool_calls)
+            self.node_logger.debug(response.content)
+
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+            
+            for message in state["messages"]:
+                if isinstance(message, ToolMessage):
+                    RemoveMessage(message.id)
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False, 
+
+                }
+            
+
+            resp_json = self._yaml_string_with_fence_to_json(response.content)
+            self.node_logger.debug(resp_json)
+            
+            if resp_json == None:
+                return {
+                    "messages": [AIMessage(content="")],
+                    "resp_type": ResponseType.NONE.value,
+                    "convo_end": False, 
+
+                }
+            
+
+            convo_end = resp_json["convo_end"]
+            resp_json.pop("convo_end")
+
+            return {
+                "messages": [AIMessage(content=json.dumps(resp_json))],
+                "resp_type": ResponseType.MESSAGE.value,
+                "convo_end": convo_end, 
+            }
+        
+        except Exception as e:
+            self.node_logger.error(e)
+            return {
+                "messages": "",
+                "resp_type": ResponseType.ERROR.value,
+                "convo_end": False, 
+            }
+
+
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+
+class TechnologyStackDocument(BaseNode):
+    def __init__(self, agent_tools: List):
+        self.func_non_func_data = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
+        self.user_stories = self._simplified_user_stories("app/docs/user_stories.yaml")
+        self.architecture = "\n".join([
+            load_md("app/docs/arch_1.md"),
+            load_md("app/docs/arch_21.md"),
+            load_md("app/docs/arch_22.md")
+        ])
+
+        prompt_path = Path(STEP_PATH) / "prompts/tech_stack_doc.md"
+        prompt_data = load_file(str(prompt_path))
+
+
+        super().__init__(agent_tools, False, prompt_data, 
+                         Model.Groq.gpt_oss_20b)
+        
+
+
+
+    def __call__(self, state: State) -> State:
+        try:
+            self._log_section_header("User Story Doc Generator")
+
+            response = self.model_chain.invoke({
+                "problem_statement": self._simplified_problem_sol("app/docs/problem.yaml"),
+                "conversation": state["messages"],
+                "func_nonfunc_reqr": self.func_non_func_data,
+                "architecture": self.architecture,
+                "user_stories": self.user_stories
+            })
+            self.node_logger.debug(response.content)
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+
+            for message in state["messages"]:
+                if isinstance(message, ToolMessage):
+                    RemoveMessage(message.id)
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False, 
+                }
+            
+
+            resp_json = self._yaml_string_with_fence_to_json(response.content)
+            self.node_logger.debug(resp_json)
+
+            # self._log_input_tokens(state["messages"])
+            # self._log_output_tokens(response=response)
+
+
+            return {
+                "messages": [AIMessage(content=json.dumps(resp_json))],
+                "resp_type": ResponseType.APPROVAL.value,
+                "convo_end": True,
+                "start_convo_index": len(state["messages"]),
+                
+                "total_fr": state["total_frs"],
+                "total_nfr": state["total_nfrs"],
+
+            }
+
+
+
+        except Exception as e:
+            self.node_logger.error(e)
+
+            return {
+                "messages": [],
+                "resp_type": ResponseType.ERROR.value,
+                "convo_end": False,
+            }
+
+
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+    def _simplified_problem_sol(self, path: str) -> str:
+        problem_data = load_yaml(file_name=path)
+        return str({"problem": problem_data["problem_statement"], 
+                    "solution": problem_data["solutions"],
+                    "stakeholders": problem_data["stakeholders"]})
+    
+
+class Tools:
+    def user_story():
+        
+        @tool
+        def get_user_story_based_on_id(user_story_ids: List[str]):
+            """
+            A Tool used to get the user story based on its ids.
+            
+            :param user_story_id: List of User Story Id which are required
+            :type user_story_id: List[str]
+            """
+
+
+            file_path = "app/docs/user_stories.yaml"
+            user_stories_list = load_yaml(file_name=file_path)["user_stories"]
+            output_dict = {}
+
+            print(user_story_ids)
+            for id in user_story_ids:
+                output_dict.update({id:user_stories_list[id]})
+                        
+
+            # print(categories_dict)
+            return output_dict
+    
+
+        return get_user_story_based_on_id
+    

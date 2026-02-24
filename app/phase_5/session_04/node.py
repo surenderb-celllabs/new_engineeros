@@ -4,7 +4,7 @@ import re, yaml, json
 
 from app import ColoredLogger, Model, load_file, log_error
 from app.phase_5.session_04 import STEP_PATH, State, ResponseType
-from utils.file_management import load_yaml
+from utils.file_management import load_yaml, load_md
 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.messages import (
@@ -140,40 +140,33 @@ class BaseNode:
         })
 
 
-
-class ArchitectureRequirement(BaseNode):
+class ArchitectureStep1(BaseNode):
     def __init__(self, agent_tools: List):
-        goal = load_yaml("app/phase_5/problem.yaml")
-        user_story = load_yaml("app/phase_5/user_stories.yaml")
-        func_nonfunc = load_yaml("app/phase_5/func_nonfunc.yaml")
+        self.goal = self._simplified_problem_sol("app/docs/problem.yaml")
+        self.user_story = self._simplified_user_stories("app/docs/user_stories.yaml")
+        self.func_nonfunc = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
 
-        prompt_path = Path(STEP_PATH) / "prompts/architecture_convo.md"
+        prompt_path = Path(STEP_PATH) / "prompts/architecture_step_1.md"
         prompt_data = load_file(str(prompt_path))
         
-        # super().__init__(agent_tools, True, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
-        super().__init__(agent_tools, True, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
+        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
         
 
     def __call__(self, state: State) -> State:
         try:
 
-            self._log_section_header("User Story Analysis")
-            # self.node_logger.warning(state["messages"])
-            
-            # Log input tokens
-            # input_tokens = self._log_input_tokens(state["messages"])
-            # self.node_logger.warning(f"Input Tokens Uses: {input_tokens}")
+            self._log_section_header("Architecture Part 1")
 
-            response = self.model_chain.invoke(
-                self.prompt + state["messages"]
-            )
+            response = self.model_chain.invoke({
+                "problem_solution":self.goal,
+                "user_stories":self.user_story,
+                "func_non_func_requirements":self.func_nonfunc
+            })
             self.node_logger.debug(response.tool_calls)
             self.node_logger.debug(response.content)
 
             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
 
-            if isinstance(state["messages"][-1], ToolMessage):
-                RemoveMessage(state["messages"][-1].id)
 
             if response.tool_calls:
                 return {
@@ -182,30 +175,24 @@ class ArchitectureRequirement(BaseNode):
                 }
             
 
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
+            # resp_json = self._yaml_string_with_fence_to_json(response.content)
+            # self.node_logger.debug(resp_json)
             
-            if resp_json == None:
-                return {
-                    "messages": [AIMessage(content="")],
-                    "resp_type": ResponseType.NONE.value,
-                    "convo_end": False
-                }
+            # if resp_json == None:
+            #     return {
+            #         "messages": [AIMessage(content="")],
+            #         "resp_type": ResponseType.NONE.value,
+            #         "convo_end": False
+            #     }
             
-            # Log output tokens
-            # output_tokens = self._log_output_tokens(response)
-            # self.node_logger.warning(f"Output Tokens Uses: {output_tokens}")
-            
-            # self._write_message_on_writer_stream(resp_json["question"])
-            # self._write_options_on_writer_stream(resp_json["suggestions"])
 
-            convo_end = resp_json["convo_end"]
-            resp_json.pop("convo_end")
+            # convo_end = resp_json["convo_end"]
+            # resp_json.pop("convo_end")
 
             return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
+                "messages": [AIMessage(content=json.dumps(response.content))],
                 "resp_type": ResponseType.MESSAGE.value,
-                "convo_end": convo_end
+                "convo_end": True
             }
         
         except Exception as e:
@@ -216,246 +203,744 @@ class ArchitectureRequirement(BaseNode):
                 "convo_end": False
             }
 
-class ArchitectureDocument(BaseNode):
+
+    def _simplified_problem_sol(self, path: str) -> str:
+        problem_data = load_yaml(file_name=path)
+        return str({"problem": problem_data["problem_statement"], 
+                    "solution": problem_data["solutions"],
+                    "stakeholders": problem_data["stakeholders"]})
+    
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+
+class ArchitectureStep21(BaseNode):
     def __init__(self, agent_tools: List):
-        prompt_path = Path(STEP_PATH) / "prompts/architecture_doc.md"
+        self.goal = self._simplified_problem_sol("app/docs/problem.yaml")
+        self.user_story = self._simplified_user_stories("app/docs/user_stories.yaml")
+        self.func_nonfunc = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
+        self.archi_1 = load_md("app/docs/arch_1.md")
+
+        prompt_path = Path(STEP_PATH) / "prompts/architecture_step_21.md"
         prompt_data = load_file(str(prompt_path))
-        # super().__init__(
-        #     agent_tools, False, prompt_data,
-        #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
-        # )
-        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
+        
+        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+        
 
     def __call__(self, state: State) -> State:
         try:
-            self._log_section_header("User Story Doc Generator")
+
+            self._log_section_header("Architecture Part 1")
 
             response = self.model_chain.invoke({
-                "conversation": state["messages"]
+                "problem_solution":self.goal,
+                "user_stories":self.user_story,
+                "func_non_func_requirements":self.func_nonfunc,
+                "system_context_document": self.archi_1
             })
+            self.node_logger.debug(response.tool_calls)
             self.node_logger.debug(response.content)
+
             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
 
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
 
-            # self._log_input_tokens(state["messages"])
-            # self._log_output_tokens(response=response)
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
+
+            # resp_json = self._yaml_string_with_fence_to_json(response.content)
+            # self.node_logger.debug(resp_json)
+            
+            # if resp_json == None:
+            #     return {
+            #         "messages": [AIMessage(content="")],
+            #         "resp_type": ResponseType.NONE.value,
+            #         "convo_end": False
+            #     }
+            
+
+            # convo_end = resp_json["convo_end"]
+            # resp_json.pop("convo_end")
 
             return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
-                "resp_type": ResponseType.APPROVAL.value,
-                "convo_end": True,
-                "start_convo_index": len(state["messages"]),
-                
-                "goals": resp_json,
-                "current_index": 0,
+                "messages": [AIMessage(content=response.content)],
+                "resp_type": ResponseType.MESSAGE.value,
+                "convo_end": True
             }
-
-
-
+        
         except Exception as e:
             self.node_logger.error(e)
+            return {
+                "messages": "",
+                "resp_type": ResponseType.ERROR.value,
+                "convo_end": False
+            }
+
+
+    def _simplified_problem_sol(self, path: str) -> str:
+        problem_data = load_yaml(file_name=path)
+        return str({"problem": problem_data["problem_statement"], 
+                    "solution": problem_data["solutions"],
+                    "stakeholders": problem_data["stakeholders"]})
+    
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+
+class ArchitectureStep22(BaseNode):
+    def __init__(self, agent_tools: List):
+        self.goal = self._simplified_problem_sol("app/docs/problem.yaml")
+        self.user_story = self._simplified_user_stories("app/docs/user_stories.yaml")
+        self.func_nonfunc = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
+        self.archi_1 = load_md("app/docs/arch_1.md")
+        self.archi_21 = load_md("app/docs/arch_21.md")
+
+        prompt_path = Path(STEP_PATH) / "prompts/architecture_step_22.md"
+        prompt_data = load_file(str(prompt_path))
+        
+        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+        
+
+    def __call__(self, state: State) -> State:
+        try:
+
+            self._log_section_header("Architecture Part 1")
+
+            response = self.model_chain.invoke({
+                "problem_solution":self.goal,
+                "user_stories":self.user_story,
+                "func_non_func_requirements":self.func_nonfunc,
+                "system_context_document": self.archi_1,
+                "system_container_intro": self.archi_21
+            })
+            self.node_logger.debug(response.tool_calls)
+            self.node_logger.debug(response.content)
+
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
+
+            # resp_json = self._yaml_string_with_fence_to_json(response.content)
+            # self.node_logger.debug(resp_json)
+            
+            # if resp_json == None:
+            #     return {
+            #         "messages": [AIMessage(content="")],
+            #         "resp_type": ResponseType.NONE.value,
+            #         "convo_end": False
+            #     }
+            
+
+            # convo_end = resp_json["convo_end"]
+            # resp_json.pop("convo_end")
 
             return {
-                "messages": [],
-                "resp_type": ResponseType.ERROR.value,
-                "convo_end": False,
+                "messages": [AIMessage(content=response.content)],
+                "resp_type": ResponseType.MESSAGE.value,
+                "convo_end": True
             }
+        
+        except Exception as e:
+            self.node_logger.error(e)
+            return {
+                "messages": "",
+                "resp_type": ResponseType.ERROR.value,
+                "convo_end": False
+            }
+
+
+    def _simplified_problem_sol(self, path: str) -> str:
+        problem_data = load_yaml(file_name=path)
+        return str({"problem": problem_data["problem_statement"], 
+                    "solution": problem_data["solutions"],
+                    "stakeholders": problem_data["stakeholders"]})
+    
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+
+class ArchitectureStep23(BaseNode):
+    def __init__(self, agent_tools: List):
+        self.goal = self._simplified_problem_sol("app/docs/problem.yaml")
+        self.user_story = self._simplified_user_stories("app/docs/user_stories.yaml")
+        self.func_nonfunc = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
+        self.archi_1 = load_md("app/docs/arch_1.md")
+        self.archi_21 = load_md("app/docs/arch_21.md")
+        self.archi_22 = load_md("app/docs/arch_22.md")
+
+        prompt_path = Path(STEP_PATH) / "prompts/architecture_step_23.md"
+        prompt_data = load_file(str(prompt_path))
+        
+        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+        
+
+    def __call__(self, state: State) -> State:
+        try:
+
+            self._log_section_header("Architecture Part 1")
+
+            response = self.model_chain.invoke({
+                "problem_solution":self.goal,
+                "user_stories":self.user_story,
+                "func_non_func_requirements":self.func_nonfunc,
+                "system_context_document": self.archi_1,
+                "system_container_intro": self.archi_21,
+                "system_container_structure": self.archi_22
+            })
+            self.node_logger.debug(response.tool_calls)
+            self.node_logger.debug(response.content)
+
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
+
+            # resp_json = self._yaml_string_with_fence_to_json(response.content)
+            # self.node_logger.debug(resp_json)
+            
+            # if resp_json == None:
+            #     return {
+            #         "messages": [AIMessage(content="")],
+            #         "resp_type": ResponseType.NONE.value,
+            #         "convo_end": False
+            #     }
+            
+
+            # convo_end = resp_json["convo_end"]
+            # resp_json.pop("convo_end")
+
+            return {
+                "messages": [AIMessage(content=response.content)],
+                "resp_type": ResponseType.MESSAGE.value,
+                "convo_end": True
+            }
+        
+        except Exception as e:
+            self.node_logger.error(e)
+            return {
+                "messages": "",
+                "resp_type": ResponseType.ERROR.value,
+                "convo_end": False
+            }
+
+
+    def _simplified_problem_sol(self, path: str) -> str:
+        problem_data = load_yaml(file_name=path)
+        return str({"problem": problem_data["problem_statement"], 
+                    "solution": problem_data["solutions"],
+                    "stakeholders": problem_data["stakeholders"]})
+    
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+class ArchitectureStep24(BaseNode):
+    def __init__(self, agent_tools: List):
+        self.goal = self._simplified_problem_sol("app/docs/problem.yaml")
+        self.user_story = self._simplified_user_stories("app/docs/user_stories.yaml")
+        self.func_nonfunc = self._simplified_func_nonfunc("app/docs/func_nonfunc.yaml")
+        self.archi_1 = load_md("app/docs/arch_1.md")
+        self.archi_21 = load_md("app/docs/arch_21.md")
+        self.archi_22 = load_md("app/docs/arch_22.md")
+
+        prompt_path = Path(STEP_PATH) / "prompts/architecture_step_24.md"
+        prompt_data = load_file(str(prompt_path))
+        
+        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+        
+
+    def __call__(self, state: State) -> State:
+        try:
+
+            self._log_section_header("Architecture Part 1")
+
+            response = self.model_chain.invoke({
+                "problem_solution":self.goal,
+                "user_stories":self.user_story,
+                "func_non_func_requirements":self.func_nonfunc,
+                "system_context_document": self.archi_1,
+                "system_container_intro": self.archi_21,
+                "system_container_structure": self.archi_22
+            })
+            self.node_logger.debug(response.response_metadata)
+            self.node_logger.debug(response.tool_calls)
+            self.node_logger.debug(response.content)
+
+            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+
+            if response.tool_calls:
+                return {
+                    "messages": [response],
+                    "convo_end": False
+                }
+            
+
+            # resp_json = self._yaml_string_with_fence_to_json(response.content)
+            # self.node_logger.debug(resp_json)
+            
+            # if resp_json == None:
+            #     return {
+            #         "messages": [AIMessage(content="")],
+            #         "resp_type": ResponseType.NONE.value,
+            #         "convo_end": False
+            #     }
+            
+
+            # convo_end = resp_json["convo_end"]
+            # resp_json.pop("convo_end")
+
+            return {
+                "messages": [AIMessage(content=response.content)],
+                "resp_type": ResponseType.MESSAGE.value,
+                "convo_end": True
+            }
+        
+        except Exception as e:
+            self.node_logger.error(e)
+            return {
+                "messages": "",
+                "resp_type": ResponseType.ERROR.value,
+                "convo_end": False
+            }
+
+
+    def _simplified_problem_sol(self, path: str) -> str:
+        problem_data = load_yaml(file_name=path)
+        return str({"problem": problem_data["problem_statement"], 
+                    "solution": problem_data["solutions"],
+                    "stakeholders": problem_data["stakeholders"]})
+    
+    def _simplified_user_stories(self, path: str) -> str:
+        user_stories = load_yaml(file_name=path)["user_stories"]
+        return_dict = {}
+
+        for key, value in user_stories.items():
+            return_dict.update({key: f"As a {value['as_a']}, i want to {value["i_want"]}. So that {value["so_that"]}. \n Business value: {value["business_value"]} \n Success Metrix: {value["success_metrics"]}"})
+        return return_dict
+
+    def _simplified_func_nonfunc(self, path: str) -> str:
+        func_nonfunc = load_yaml(file_name=path)
+        func_dict = {}
+        non_func_dict = {}
+        
+        for key, value in func_nonfunc["functional_requirements"].items():
+            func_dict.update({key: f"Description: {value["description"]}, acceptance_criteria: {value["acceptance_criteria"]}"})
+
+        for key, value in func_nonfunc["non_functional_requirements"].items():
+            non_func_dict.update({key: f"Description: {value["description"]}"})
+        
+        return str({"functional_requirement": func_dict, "non_functional_requirement": non_func_dict})
+
+
+
+
+
+
+
+
+
+
+# class ArchitectureRequirement(BaseNode):
+#     def __init__(self, agent_tools: List):
+#         goal = load_yaml("app/phase_5/problem.yaml")
+#         user_story = load_yaml("app/phase_5/user_stories.yaml")
+#         func_nonfunc = load_yaml("app/phase_5/func_nonfunc.yaml")
+
+#         prompt_path = Path(STEP_PATH) / "prompts/architecture_convo.md"
+#         prompt_data = load_file(str(prompt_path))
+        
+#         # super().__init__(agent_tools, True, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
+#         super().__init__(agent_tools, True, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
+        
+
+#     def __call__(self, state: State) -> State:
+#         try:
+
+#             self._log_section_header("User Story Analysis")
+#             # self.node_logger.warning(state["messages"])
+            
+#             # Log input tokens
+#             # input_tokens = self._log_input_tokens(state["messages"])
+#             # self.node_logger.warning(f"Input Tokens Uses: {input_tokens}")
+
+#             response = self.model_chain.invoke(
+#                 self.prompt + state["messages"]
+#             )
+#             self.node_logger.debug(response.tool_calls)
+#             self.node_logger.debug(response.content)
+
+#             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+#             if isinstance(state["messages"][-1], ToolMessage):
+#                 RemoveMessage(state["messages"][-1].id)
+
+#             if response.tool_calls:
+#                 return {
+#                     "messages": [response],
+#                     "convo_end": False
+#                 }
+            
+
+#             resp_json = self._yaml_string_with_fence_to_json(response.content)
+#             self.node_logger.debug(resp_json)
+            
+#             if resp_json == None:
+#                 return {
+#                     "messages": [AIMessage(content="")],
+#                     "resp_type": ResponseType.NONE.value,
+#                     "convo_end": False
+#                 }
+            
+#             # Log output tokens
+#             # output_tokens = self._log_output_tokens(response)
+#             # self.node_logger.warning(f"Output Tokens Uses: {output_tokens}")
+            
+#             # self._write_message_on_writer_stream(resp_json["question"])
+#             # self._write_options_on_writer_stream(resp_json["suggestions"])
+
+#             convo_end = resp_json["convo_end"]
+#             resp_json.pop("convo_end")
+
+#             return {
+#                 "messages": [AIMessage(content=json.dumps(resp_json))],
+#                 "resp_type": ResponseType.MESSAGE.value,
+#                 "convo_end": convo_end
+#             }
+        
+#         except Exception as e:
+#             self.node_logger.error(e)
+#             return {
+#                 "messages": "",
+#                 "resp_type": ResponseType.ERROR.value,
+#                 "convo_end": False
+#             }
+
+
+# class ArchitectureDocument(BaseNode):
+#     def __init__(self, agent_tools: List):
+#         prompt_path = Path(STEP_PATH) / "prompts/architecture_doc.md"
+#         prompt_data = load_file(str(prompt_path))
+#         # super().__init__(
+#         #     agent_tools, False, prompt_data,
+#         #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
+#         # )
+#         super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
+
+#     def __call__(self, state: State) -> State:
+#         try:
+#             self._log_section_header("User Story Doc Generator")
+
+#             response = self.model_chain.invoke({
+#                 "conversation": state["messages"]
+#             })
+#             self.node_logger.debug(response.content)
+#             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+#             resp_json = self._yaml_string_with_fence_to_json(response.content)
+#             self.node_logger.debug(resp_json)
+
+#             # self._log_input_tokens(state["messages"])
+#             # self._log_output_tokens(response=response)
+
+#             return {
+#                 "messages": [AIMessage(content=json.dumps(resp_json))],
+#                 "resp_type": ResponseType.APPROVAL.value,
+#                 "convo_end": True,
+#                 "start_convo_index": len(state["messages"]),
+                
+#                 "goals": resp_json,
+#                 "current_index": 0,
+#             }
+
+
+
+#         except Exception as e:
+#             self.node_logger.error(e)
+
+#             return {
+#                 "messages": [],
+#                 "resp_type": ResponseType.ERROR.value,
+#                 "convo_end": False,
+#             }
 
  
+# class ArchitectureTestDiagram(BaseNode):
+#     def __init__(self, agent_tools: List):
+#         prompt_path = Path(STEP_PATH) / "prompts/architecture_system.md"
+#         prompt_data = load_file(str(prompt_path))
+#         # super().__init__(
+#         #     agent_tools, False, prompt_data,
+#         #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
+#         # )
+#         super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+#         self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
 
-class ArchitectureTestDiagram(BaseNode):
-    def __init__(self, agent_tools: List):
-        prompt_path = Path(STEP_PATH) / "prompts/architecture_system.md"
-        prompt_data = load_file(str(prompt_path))
-        # super().__init__(
-        #     agent_tools, False, prompt_data,
-        #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
-        # )
-        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
-        self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
+#     def __call__(self, state: State) -> State:
+#         try:
+#             self._log_section_header("User Story Doc Generator")
 
-    def __call__(self, state: State) -> State:
-        try:
-            self._log_section_header("User Story Doc Generator")
+#             response = self.model_chain.invoke({
+#                 "func_non_func_requirements": self.functional_requirements
+#             })
+#             self.node_logger.debug(response.content)
+#             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
 
-            response = self.model_chain.invoke({
-                "func_non_func_requirements": self.functional_requirements
-            })
-            self.node_logger.debug(response.content)
-            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+#             resp_json = self._yaml_string_with_fence_to_json(response.content)
+#             self.node_logger.debug(resp_json)
 
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
+#             # self._log_input_tokens(state["messages"])
+#             # self._log_output_tokens(response=response)
 
-            # self._log_input_tokens(state["messages"])
-            # self._log_output_tokens(response=response)
-
-            return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
-                "resp_type": ResponseType.APPROVAL.value,
-                "convo_end": True,
-            }
-
-
-
-        except Exception as e:
-            self.node_logger.error(e)
-
-            return {
-                "messages": [],
-                "resp_type": ResponseType.ERROR.value,
-                "convo_end": False,
-            }
-
-class ArchitectureTestDiagram1(BaseNode):
-    def __init__(self, agent_tools: List):
-        prompt_path = Path(STEP_PATH) / "prompts/architecture_system_1.md"
-        prompt_data = load_file(str(prompt_path))
-        # super().__init__(
-        #     agent_tools, False, prompt_data,
-        #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
-        # )
-        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
-        self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
-        self.system_context_document = load_file("app/phase_5/architect_1.md")
-
-    def __call__(self, state: State) -> State:
-        try:
-            self._log_section_header("User Story Doc Generator")
-
-            response = self.model_chain.invoke({
-                "func_non_func_requirements": self.functional_requirements,
-                "system_context_document": self.system_context_document
-            })
-            self.node_logger.warning(response)
-            self.node_logger.debug(response.content)
-            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
-
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
-
-            # self._log_input_tokens(state["messages"])
-            # self._log_output_tokens(response=response)
-
-            return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
-                "resp_type": ResponseType.APPROVAL.value,
-                "convo_end": True,
-            }
+#             return {
+#                 "messages": [AIMessage(content=json.dumps(resp_json))],
+#                 "resp_type": ResponseType.APPROVAL.value,
+#                 "convo_end": True,
+#             }
 
 
 
-        except Exception as e:
-            self.node_logger.error(e)
+#         except Exception as e:
+#             self.node_logger.error(e)
 
-            return {
-                "messages": [],
-                "resp_type": ResponseType.ERROR.value,
-                "convo_end": False,
-            }
+#             return {
+#                 "messages": [],
+#                 "resp_type": ResponseType.ERROR.value,
+#                 "convo_end": False,
+#             }
 
+# class ArchitectureTestDiagram1(BaseNode):
+#     def __init__(self, agent_tools: List):
+#         prompt_path = Path(STEP_PATH) / "prompts/architecture_system_1.md"
+#         prompt_data = load_file(str(prompt_path))
+#         # super().__init__(
+#         #     agent_tools, False, prompt_data,
+#         #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
+#         # )
+#         super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+#         self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
+#         self.system_context_document = load_file("app/phase_5/architect_1.md")
 
-class ArchitectureTestDiagram2(BaseNode):
-    def __init__(self, agent_tools: List):
-        prompt_path = Path(STEP_PATH) / "prompts/architecture_system_2.md"
-        prompt_data = load_file(str(prompt_path))
-        # super().__init__(
-        #     agent_tools, False, prompt_data,
-        #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
-        # )
-        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
-        self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
-        self.system_context_document = load_file("app/phase_5/architect_1.md")
-        self.system_container = load_file("app/phase_5/architect_2.md")
+#     def __call__(self, state: State) -> State:
+#         try:
+#             self._log_section_header("User Story Doc Generator")
 
-    def __call__(self, state: State) -> State:
-        try:
-            self._log_section_header("User Story Doc Generator")
+#             response = self.model_chain.invoke({
+#                 "func_non_func_requirements": self.functional_requirements,
+#                 "system_context_document": self.system_context_document
+#             })
+#             self.node_logger.warning(response)
+#             self.node_logger.debug(response.content)
+#             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
 
-            response = self.model_chain.invoke({
-                "func_non_func_requirements": self.functional_requirements,
-                "system_context_document": self.system_context_document,
-                "container_document": self.system_container
-            })
-            self.node_logger.warning(response)
-            self.node_logger.debug(response.content)
-            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+#             resp_json = self._yaml_string_with_fence_to_json(response.content)
+#             self.node_logger.debug(resp_json)
 
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
+#             # self._log_input_tokens(state["messages"])
+#             # self._log_output_tokens(response=response)
 
-            # self._log_input_tokens(state["messages"])
-            # self._log_output_tokens(response=response)
-
-            return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
-                "resp_type": ResponseType.APPROVAL.value,
-                "convo_end": True,
-            }
+#             return {
+#                 "messages": [AIMessage(content=json.dumps(resp_json))],
+#                 "resp_type": ResponseType.APPROVAL.value,
+#                 "convo_end": True,
+#             }
 
 
 
-        except Exception as e:
-            self.node_logger.error(e)
+#         except Exception as e:
+#             self.node_logger.error(e)
 
-            return {
-                "messages": [],
-                "resp_type": ResponseType.ERROR.value,
-                "convo_end": False,
-            }
-
-class ArchitectureTestDiagram3(BaseNode):
-    def __init__(self, agent_tools: List):
-        prompt_path = Path(STEP_PATH) / "prompts/architecture_system_3.md"
-        prompt_data = load_file(str(prompt_path))
-        # super().__init__(
-        #     agent_tools, False, prompt_data,
-        #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
-        # )
-        super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
-        self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
-        self.system_context_document = load_file("app/phase_5/architect_1.md")
-        self.system_container = load_file("app/phase_5/architect_2.md")
-        self.system_component = load_file("app/phase_5/architect_3.md")
-
-    def __call__(self, state: State) -> State:
-        try:
-            self._log_section_header("User Story Doc Generator")
-
-            response = self.model_chain.invoke({
-                "func_non_func_requirements": self.functional_requirements,
-                "system_context_document": self.system_context_document,
-                "container_document": self.system_container,
-                "component_document": self.system_component
-            })
-            self.node_logger.warning(response)
-            self.node_logger.debug(response.content)
-            self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
-
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
-
-            # self._log_input_tokens(state["messages"])
-            # self._log_output_tokens(response=response)
-
-            return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
-                "resp_type": ResponseType.APPROVAL.value,
-                "convo_end": True,
-            }
+#             return {
+#                 "messages": [],
+#                 "resp_type": ResponseType.ERROR.value,
+#                 "convo_end": False,
+#             }
 
 
+# class ArchitectureTestDiagram2(BaseNode):
+#     def __init__(self, agent_tools: List):
+#         prompt_path = Path(STEP_PATH) / "prompts/architecture_system_2.md"
+#         prompt_data = load_file(str(prompt_path))
+#         # super().__init__(
+#         #     agent_tools, False, prompt_data,
+#         #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
+#         # )
+#         super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+#         self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
+#         self.system_context_document = load_file("app/phase_5/architect_1.md")
+#         self.system_container = load_file("app/phase_5/architect_2.md")
 
-        except Exception as e:
-            self.node_logger.error(e)
+#     def __call__(self, state: State) -> State:
+#         try:
+#             self._log_section_header("User Story Doc Generator")
 
-            return {
-                "messages": [],
-                "resp_type": ResponseType.ERROR.value,
-                "convo_end": False,
-            }
+#             response = self.model_chain.invoke({
+#                 "func_non_func_requirements": self.functional_requirements,
+#                 "system_context_document": self.system_context_document,
+#                 "container_document": self.system_container
+#             })
+#             self.node_logger.warning(response)
+#             self.node_logger.debug(response.content)
+#             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+#             resp_json = self._yaml_string_with_fence_to_json(response.content)
+#             self.node_logger.debug(resp_json)
+
+#             # self._log_input_tokens(state["messages"])
+#             # self._log_output_tokens(response=response)
+
+#             return {
+#                 "messages": [AIMessage(content=json.dumps(resp_json))],
+#                 "resp_type": ResponseType.APPROVAL.value,
+#                 "convo_end": True,
+#             }
+
+
+
+#         except Exception as e:
+#             self.node_logger.error(e)
+
+#             return {
+#                 "messages": [],
+#                 "resp_type": ResponseType.ERROR.value,
+#                 "convo_end": False,
+#             }
+
+# class ArchitectureTestDiagram3(BaseNode):
+#     def __init__(self, agent_tools: List):
+#         prompt_path = Path(STEP_PATH) / "prompts/architecture_system_3.md"
+#         prompt_data = load_file(str(prompt_path))
+#         # super().__init__(
+#         #     agent_tools, False, prompt_data,
+#         #     model=Model.Groq.gpt_oss_120b.bind_tools(tools=agent_tools)
+#         # )
+#         super().__init__(agent_tools, False, prompt_data, Model.Groq.gpt_oss_20b)
+#         self.functional_requirements = load_yaml("app/phase_5/func_nonfunc.yaml")
+#         self.system_context_document = load_file("app/phase_5/architect_1.md")
+#         self.system_container = load_file("app/phase_5/architect_2.md")
+#         self.system_component = load_file("app/phase_5/architect_3.md")
+
+#     def __call__(self, state: State) -> State:
+#         try:
+#             self._log_section_header("User Story Doc Generator")
+
+#             response = self.model_chain.invoke({
+#                 "func_non_func_requirements": self.functional_requirements,
+#                 "system_context_document": self.system_context_document,
+#                 "container_document": self.system_container,
+#                 "component_document": self.system_component
+#             })
+#             self.node_logger.warning(response)
+#             self.node_logger.debug(response.content)
+#             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
+
+#             resp_json = self._yaml_string_with_fence_to_json(response.content)
+#             self.node_logger.debug(resp_json)
+
+#             # self._log_input_tokens(state["messages"])
+#             # self._log_output_tokens(response=response)
+
+#             return {
+#                 "messages": [AIMessage(content=json.dumps(resp_json))],
+#                 "resp_type": ResponseType.APPROVAL.value,
+#                 "convo_end": True,
+#             }
+
+
+
+#         except Exception as e:
+#             self.node_logger.error(e)
+
+#             return {
+#                 "messages": [],
+#                 "resp_type": ResponseType.ERROR.value,
+#                 "convo_end": False,
+#             }
 
 
 

@@ -1,0 +1,421 @@
+Patient Portal & Scheduling Service 
+
+Architecture Document  —  System & Container View 
+
+ 
+
+1.  System Description 
+
+The Patient Portal & Scheduling Service is a web-based platform that lets patients view, book, reschedule, and cancel medical appointments. 
+
+ 
+
+When a patient visits the portal they authenticate with a passwordless flow — a magic link is emailed or texted, or a biometric prompt is shown on a supported device. The portal then obtains a short-lived OAuth 2.0 access token from an external identity provider, establishes a session, and immediately shows the patient a dashboard with their upcoming appointments. 
+
+ 
+
+From the dashboard the patient can: Book a new appointment — the portal shows real-time available slots for a chosen provider and specialty, lets the patient pick a slot, and confirms the booking. Reschedule an existing appointment — the portal presents a calendar, performs a real-time availability check, and updates the appointment if the slot is still free. Cancel an appointment — the portal asks for confirmation, updates the status, and releases the slot for other patients. 
+
+ 
+
+Every action is logged in an immutable audit trail that retains entries for 24 months (or longer for compliance). The portal also sends reminder notifications (email, SMS, or push) before scheduled appointments and records patient responses. 
+
+ 
+
+2.  People & Actors 
+
+Actor 
+
+Type 
+
+Role 
+
+Patient 
+
+End User 
+
+Logs in, views appointments, books / reschedules / cancels their own appointments. 
+
+Clinic Scheduler 
+
+Staff 
+
+Creates, modifies, and cancels appointments on behalf of patients. 
+
+Clinic Administrator 
+
+Staff 
+
+Configures reminder templates, manages scheduling rules, and views compliance reports. 
+
+System Administrator 
+
+Staff 
+
+Maintains the platform, monitors uptime, and manages infrastructure. 
+
+ 
+
+3.  External Systems 
+
+The portal integrates with the following external systems that sit outside the system boundary: 
+
+ 
+
+External System 
+
+Purpose 
+
+OAuth 2.0 Provider 
+
+Issues short-lived access tokens used to authenticate users into the portal. 
+
+Email / SMS Gateway 
+
+Delivers magic links, MFA codes, and appointment reminder messages. 
+
+Scheduling API 
+
+Supplies real-time slot availability and accepts booking, reschedule, and cancellation requests. 
+
+EHR System 
+
+Stores patient records and appointment status; pushes updates to the portal. 
+
+Billing System 
+
+Receives appointment data for invoicing and syncs claim status back to the portal. 
+
+Notification Service 
+
+Sends push, email, and SMS reminders and tracks delivery status. 
+
+Analytics Service 
+
+Aggregates usage metrics, no-show rates, and generates reports. 
+
+Monitoring Service 
+
+Provides health checks, uptime metrics, and alerts for the portal. 
+
+ 
+
+4.  System Context Diagram  (Level 1) 
+
+The diagram below shows the system in its environment — the actors who use it and the external systems it depends on. 
+
+ 
+
+Mermaid source (render at mermaid.live): 
+
+ 
+
+graph TD 
+
+  Patient["Patient [Person]"] 
+
+  Scheduler["Clinic Scheduler [Person]"] 
+
+  Admin["Clinic Administrator [Person]"] 
+
+  SysAdmin["System Administrator [Person]"] 
+
+ 
+
+  OAuth["OAuth 2.0 Provider [External]"] 
+
+  EmailSMS["Email/SMS Gateway [External]"] 
+
+  SchedulingAPI["Scheduling API [External]"] 
+
+  EHR["EHR System [External]"] 
+
+  Billing["Billing System [External]"] 
+
+  Notification["Notification Service [External]"] 
+
+  Analytics["Analytics Service [External]"] 
+
+  Monitoring["Monitoring Service [External]"] 
+
+ 
+
+  Portal["Patient Portal & Scheduling Service [Software System]"] 
+
+ 
+
+  Patient -- Login --> Portal 
+
+  Scheduler -- View/Modify appointments --> Portal 
+
+  Admin -- Configure & report --> Portal 
+
+  SysAdmin -- Maintain & monitor --> Monitoring 
+
+  Portal -- Request token --> OAuth 
+
+  Portal -- Send magic link/MFA --> EmailSMS 
+
+  Portal -- Slot availability & bookings --> SchedulingAPI 
+
+  Portal -- Sync appointment status --> EHR 
+
+  Portal -- Sync billing data --> Billing 
+
+  Portal -- Send reminders --> Notification 
+
+  Portal -- Generate reports --> Analytics 
+
+  Portal -- Emit audit events --> Monitoring 
+
+ 
+
+5.  Container Overview  (Level 2) 
+
+The system is composed of five internal containers. Each container is an independently deployable unit with a distinct responsibility. Tech-stack decisions are deferred. 
+
+ 
+
+Container 
+
+Responsibility 
+
+Frontend SPA 
+
+The single-page web application that patients, schedulers, and administrators use to interact with the system. It handles all UI rendering, navigation, and user flows. 
+
+Auth Service 
+
+Manages the entire authentication lifecycle: magic-link generation, MFA, OAuth token acquisition, session creation, idle-session expiry, and rate-limiting of login attempts. 
+
+Appointment Service 
+
+Orchestrates all appointment actions — booking, rescheduling, and cancellation. It enforces business rules (conflict checks, no-show windows, reschedule windows), coordinates with external systems, and publishes audit events for every state change. 
+
+Notification Service 
+
+Schedules and dispatches appointment reminders (push, email, SMS) and records delivery status and patient responses. It reacts to appointment events so it can send confirmations and cancellation notices. 
+
+Audit Log Service 
+
+Accepts immutable log events from all other services and persists them in an append-only store. Provides a read-only query interface for compliance and reporting purposes. 
+
+ 
+
+6.  Container Diagram  (Level 2) 
+
+The diagram below shows the five internal containers, how users and administrators reach them, and how each container communicates with external systems. 
+
+ 
+
+Mermaid source (render at mermaid.live): 
+
+ 
+
+graph TD 
+
+  Patient["Patient [Person]"] 
+
+  Scheduler["Clinic Scheduler [Person]"] 
+
+  Admin["Clinic Administrator [Person]"] 
+
+ 
+
+  subgraph Boundary["Patient Portal & Scheduling Service"] 
+
+    SPA["Frontend SPA"] 
+
+    AuthSvc["Auth Service"] 
+
+    ApptSvc["Appointment Service"] 
+
+    NotifSvc["Notification Service"] 
+
+    AuditSvc["Audit Log Service"] 
+
+  end 
+
+ 
+
+  OAuth["OAuth 2.0 Provider [External]"] 
+
+  EmailSMS["Email/SMS Gateway [External]"] 
+
+  SchedulingAPI["Scheduling API [External]"] 
+
+  EHR["EHR System [External]"] 
+
+  Billing["Billing System [External]"] 
+
+  Monitoring["Monitoring Service [External]"] 
+
+ 
+
+  Patient --> SPA 
+
+  Scheduler --> SPA 
+
+  Admin --> SPA 
+
+  SPA --> AuthSvc 
+
+  SPA --> ApptSvc 
+
+  AuthSvc --> OAuth 
+
+  AuthSvc --> EmailSMS 
+
+  ApptSvc --> SchedulingAPI 
+
+  ApptSvc --> EHR 
+
+  ApptSvc --> Billing 
+
+  ApptSvc --> NotifSvc 
+
+  NotifSvc --> EmailSMS 
+
+  ApptSvc --> AuditSvc 
+
+  AuthSvc --> AuditSvc 
+
+  NotifSvc --> AuditSvc 
+
+  AuditSvc --> Monitoring 
+
+ 
+
+7.  Key Interactions 
+
+The table below summarises the primary flows between actors, internal containers, and external systems. 
+
+ 
+
+From 
+
+To 
+
+Description 
+
+Patient / Scheduler / Admin 
+
+→ Frontend SPA 
+
+Authenticate, view dashboard, and perform appointment actions through the browser UI. 
+
+Frontend SPA 
+
+→ Auth Service 
+
+Submit login credentials; receive session cookie. 
+
+Auth Service 
+
+→ OAuth 2.0 Provider 
+
+Exchange credentials for a short-lived access token. 
+
+Auth Service 
+
+→ Email/SMS Gateway 
+
+Dispatch magic links and MFA codes. 
+
+Frontend SPA 
+
+→ Appointment Service 
+
+Request slot availability; submit book, reschedule, or cancel actions. 
+
+Appointment Service 
+
+→ Scheduling API 
+
+Query real-time slot availability; commit or release bookings. 
+
+Appointment Service 
+
+→ EHR System 
+
+Sync appointment status changes. 
+
+Appointment Service 
+
+→ Billing System 
+
+Push appointment data for invoicing. 
+
+Appointment Service 
+
+→ Notification Service 
+
+Trigger confirmation and cancellation notifications. 
+
+Notification Service 
+
+→ Email/SMS Gateway 
+
+Dispatch reminder messages. 
+
+All Services 
+
+→ Audit Log Service 
+
+Emit immutable audit events for every state change. 
+
+System Administrator 
+
+→ Monitoring Service 
+
+Monitor health, uptime, and alerts. 
+
+ 
+
+8.  Security & Compliance Principles 
+
+The following security and compliance principles apply across the entire system. Implementation details (specific libraries, configurations) are out of scope at this stage. 
+
+ 
+
+Concern 
+
+Requirement 
+
+Data in Transit 
+
+All communication between the browser, internal services, and external systems uses TLS 1.3. 
+
+Data at Rest 
+
+All stored data (appointments, user records, audit logs) is encrypted with AES-256. 
+
+Authentication 
+
+Passwordless: magic link or biometric prompt. Short-lived OAuth 2.0 tokens. MFA codes expire within 5 minutes. Idle sessions expire after 30 minutes. 
+
+Authorization 
+
+Role-based access control (RBAC) ensures patients can only access their own records; schedulers and administrators have scoped permissions. 
+
+Audit Trail 
+
+Every action is logged in an immutable, tamper-evident audit store. Entries are retained for a minimum of 24 months (or longer for regulatory compliance). 
+
+ 
+
+9.  Deferred Decisions 
+
+The following topics are explicitly out of scope for this document and will be addressed in subsequent design artefacts: 
+
+ 
+
+Technology stack (languages, frameworks, cloud provider, databases, message brokers) 
+
+Data models and schema design 
+
+API contracts and route definitions 
+
+Deployment topology and infrastructure configuration 
+
+Detailed component design within each container (Level 3 / 4) 
