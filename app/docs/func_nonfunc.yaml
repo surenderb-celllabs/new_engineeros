@@ -1,0 +1,1809 @@
+
+functional_requirements: 
+
+  FR-0001:
+    description: |
+      The system shall allow a trip owner to create a trip with a unique name,
+      start/end dates, optional description, and optional version tag
+      (user‑supplied or default “v1”). The trip creation must be atomic and
+      persist all trip metadata in the data store.
+    priority: High
+    related_usecase:
+      - USER_STORY-0001
+    acceptance_criteria:
+      - The trip appears in the owner’s trip list immediately after creation.
+      - Duplicate trip names for the same user are rejected with a clear error.
+      - The created trip’s version tag is stored and displayed in the UI.
+    edge_cases:
+      - Attempting to create a trip with a past end date – should fail validation.
+      - Creating a trip while offline – should queue and sync upon reconnect.
+    dependencies:
+      - []
+    derived_from:
+      - GOAL-001
+
+  FR-0002:
+    description: |
+      The system shall support editing of an existing trip’s metadata
+      (name, dates, description, version tag) while preserving change history.
+    priority: High
+    related_usecase:
+      - USER_STORY-0001
+    acceptance_criteria:
+      - Updated fields are reflected in the trip detail view within 2 s.
+      - A change history record is created for every edit action.
+    edge_cases:
+      - Editing a trip’s name to a duplicate within the same account – should be rejected.
+      - Editing while the trip is being viewed on another device – should merge or conflict‑resolve.
+    dependencies:
+      - FR-0001
+    derived_from:
+      - GOAL-001
+
+  FR-0003:
+    description: |
+      The system shall allow a trip owner to delete a trip, which cascades
+      deletion of all associated components (itinerary items, expenses,
+      media, memories) after user confirmation.
+    priority: High
+    related_usecase:
+      - USER_STORY-0001
+    acceptance_criteria:
+      - Deleted trip and all child records are permanently removed from the database.
+      - The owner’s trip list updates within 2 s to reflect the deletion.
+    edge_cases:
+      - Attempting to delete a trip that is currently being edited on another device – prompt for confirmation.
+      - Deleting a trip with pending offline changes – must sync deletion first.
+    dependencies:
+      - FR-0001
+    derived_from:
+      - GOAL-001
+
+  FR-0004:
+    description: |
+      The system shall allow a trip owner to create, edit, and delete an expense
+      record, including amount, currency, date, description, and optional
+      media attachment.
+    priority: High
+    related_usecase:
+      - USER_STORY-0004
+    acceptance_criteria:
+      - Expense appears in the trip’s expense list immediately after creation.
+      - Editing an expense updates all related split calculations and notifications.
+      - Deleting an expense removes it from the trip and updates balances.
+    edge_cases:
+      - Entering an expense amount of 0 – should be rejected.
+      - Editing an expense while offline – should queue and sync.
+    dependencies:
+      - FR-0001
+    derived_from:
+      - GOAL-001
+
+  FR-0005:
+    description: |
+      The system shall calculate expense splits among selected buddies using
+      one of the following modes: equal, percentage, share count, or custom
+      amounts, and display each buddy’s due amount in real time.
+    priority: High
+    related_usecase:
+      - USER_STORY-0004
+    acceptance_criteria:
+      - Splits are correctly calculated and displayed within 1 s of expense creation.
+      - Changing a split mode updates all buddy balances immediately.
+    edge_cases:
+      - Percentage splits that sum to less than 100 % – remaining amount is assigned to the owner.
+      - Custom amounts that do not sum to the total expense – validation error.
+    dependencies:
+      - FR-0004
+    derived_from:
+      - GOAL-001
+
+  FR-0006:
+    description: |
+      The system shall allow attaching any image format photo to an expense,
+      with a cumulative media size limit of 250 MB per trip. The upload
+      must be validated for type and size before persistence.
+    priority: High
+    related_usecase:
+      - USER_STORY-0004
+    acceptance_criteria:
+      - Photo uploads succeed if the total trip media size remains ≤250 MB.
+      - Unsupported file types (e.g., .exe) are rejected with an error message.
+    edge_cases:
+      - Uploading a photo that would push the trip media total over 250 MB – should be rejected.
+      - Uploading a photo while offline – queued and uploaded on reconnection.
+    dependencies:
+      - FR-0001
+    derived_from:
+      - GOAL-001
+
+  FR-0007:
+    description: |
+      The system shall provide an automatic expense categorization heuristic
+      that suggests a category based on merchant name or amount thresholds,
+      but requires the user to confirm or override the category. Manual
+      overrides are logged.
+    priority: High
+    related_usecase:
+      - USER_STORY-0004
+      - USER_STORY-0006
+    acceptance_criteria:
+      - A category suggestion is displayed within 1 s of expense entry.
+      - The user can confirm the suggested category or enter a custom one.
+      - Every manual override is recorded in the audit log.
+    edge_cases:
+      - Merchant name with no match – default to “Uncategorized” until user enters.
+      - Amount thresholds that overlap – heuristic must prioritize higher threshold.
+    dependencies:
+      - FR-0004
+    derived_from:
+      - GOAL-001
+
+  FR-0008:
+    description: |
+      The system shall maintain an audit trail for every change to trip
+      metadata, expense records, and media attachments, including
+      timestamp, user, and before/after values.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0001
+      - USER_STORY-0004
+      - USER_STORY-0006
+    acceptance_criteria:
+      - Audit records are immutable and accessible via a secure API.
+      - Each audit entry contains a unique identifier, action type, and
+        JSON diff of the affected fields.
+    edge_cases:
+      - Bulk deletion of expenses – each deletion must generate its own audit entry.
+      - Deleting a trip while offline – audit entries queued and persisted on sync.
+    dependencies:
+      - []
+    derived_from:
+      - GOAL-001
+
+  FR-0009:
+    description: |
+      The system shall send push notifications and optional email alerts
+      to selected buddies when an expense is created or when their split
+      balance changes. Notifications must include expense details
+      and a link to the trip view.
+    priority: High
+    related_usecase:
+      - USER_STORY-0004
+    acceptance_criteria:
+      - Notifications are delivered within 5 s of the event.
+      - Email contains a clear subject, body with expense details, and a CTA link.
+    edge_cases:
+      - Buddy has notifications disabled – system must respect preference.
+      - Duplicate notifications for the same event – system must deduplicate.
+    dependencies:
+      - FR-0004
+    derived_from:
+      - GOAL-001
+
+  FR-0010:
+    description: |
+      The system shall generate a signed, time‑limited token (JWT) that encodes the tripId, a unique pendingInviteId, and an expiration claim (24 h) and expose it via a shareable link and QR code. The link must be clickable on mobile and desktop browsers and trigger the invitation flow.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0002
+    acceptance_criteria:
+      - The generated URL contains a valid JWT with claims tripId, pendingInviteId, exp and is signed with the server’s private key.
+      - Scanning the QR code reproduces the same URL.
+      - The URL is accepted by the mobile app and web client and returns a 200 OK within 1 s.
+    edge_cases:
+      - Link accessed after 24 h: system returns “expired”.
+      - Invalid or tampered token: system rejects with 401 Unauthorized.
+    dependencies:
+      - FR-0010
+    derived_from:
+      - GOAL-0001  # “Provide a single, intuitive mobile experience”
+
+  FR-0011:
+    description: |
+      The system shall support a self‑service join flow that automatically assigns the requested role (view‑only or edit) to the user after they authenticate or complete the sign‑up wizard, without requiring manual approval by the traveler.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0002
+      - USER_STORY-0013
+    acceptance_criteria:
+      - If the user already has an account, clicking the link prompts sign‑in; upon successful authentication the role is applied instantly.
+      - If the user does not have an account, the link opens the sign‑up wizard; after registration the role is applied immediately.
+      - The role assignment is persisted in the permissions table and visible on all devices within 30 s.
+    edge_cases:
+      - User cancels sign‑up: the pending invite remains in “pending” state.
+      - User already has the same role: system shows “already added” and offers role change.
+    dependencies:
+      - FR-0009
+    derived_from:
+      - GOAL-0001
+
+  FR-0012:
+    description: |
+      The system shall provide a per‑trip permission picker UI that allows the traveler to assign or modify view‑only or edit roles for each buddy, and to revoke or change roles at any time, with changes reflected in real time across all devices.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0002
+      - USER_STORY-0013
+    acceptance_criteria:
+      - Traveler can toggle a buddy’s role in the UI; the change triggers an API call that updates the database and pushes a real‑time event.
+      - All connected clients receive the event within 30 s and update the UI accordingly.
+      - Revocation removes all data visibility and edit capability immediately.
+    edge_cases:
+      - Traveler revokes role while buddy is offline: role is revoked upon next sync.
+      - Traveler assigns the same role again: system ignores duplicate update.
+    dependencies:
+      - FR-0010
+    derived_from:
+      - GOAL-0001
+
+  FR-0013:
+    description: |
+      The system shall enforce view‑only access by disabling all edit controls and rejecting any edit API requests from view‑only users, ensuring data consistency across the application.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0003
+      - USER_STORY-0013
+    acceptance_criteria:
+      - UI elements for adding, editing or deleting itinerary items, media, or expenses are hidden or disabled for view‑only buddies.
+      - Any API request to modify trip data from a view‑only session returns 403 Forbidden.
+    edge_cases:
+      - Cached data: the UI must refresh the data after revocation to prevent stale edits.
+      - Network latency: the client must handle 403 responses gracefully and inform the user.
+    dependencies:
+      - FR-0011
+    derived_from:
+      - GOAL-0001
+
+  FR-0014:
+    description: |
+      The system shall allow view‑only buddies to see all expense details, including split amounts, but must prevent them from altering any split percentages or amounts.
+    priority: High
+    related_usecase:
+      - USER_STORY-0005
+      - USER_STORY-0013
+    acceptance_criteria:
+      - View‑only buddies can load expense entries and see the split breakdown within 5 s.
+      - Attempts to modify split percentages result in a 403 Forbidden response.
+    edge_cases:
+      - Traveler changes an expense after view‑only buddy has loaded it: the UI must refresh to reflect the new split.
+    dependencies:
+      - FR-0012
+    derived_from:
+      - GOAL-0001
+
+  FR-0015:
+    description: |
+      The system must schedule AI‑generated daily summaries at 14:00, 20:00, and 23:59
+      local time, automatically adjusting for daylight‑saving changes and the user’s
+      time‑zone offset stored in the profile.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - The scheduler triggers an AI summary job at the three specified local times
+        for a test user in a time‑zone that switches from DST to standard time
+        during the test period.
+      - The system logs the scheduled trigger time and the user’s time‑zone offset.
+    edge_cases:
+      - DST transition occurs exactly at 14:00 or 20:00 – the job must run at the
+        new offset.
+      - User changes time‑zone mid‑day – the next trigger uses the new offset.
+    dependencies:
+      - FR-0016
+      - FR-0017
+      - FR-0018
+    derived_from:
+      - GOAL-002  # AI daily summarization
+
+  FR-0016:
+    description: |
+      For each scheduled run, the system must aggregate all travel and spend logs
+      recorded from midnight to the trigger time for the 14:00 and 20:00 jobs,
+      and from midnight to 23:59 for the end‑of‑day job.
+    priority: High
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - Aggregated payload contains all logs with timestamps between 00:00 and
+        14:00 for the 14:00 job, 00:00–20:00 for the 20:00 job, and 00:00–23:59
+        for the 23:59 job.
+      - No logs older than midnight are included.
+    edge_cases:
+      - No new logs since the last summary – the payload still contains a
+        “No new activity” indicator.
+      - Logs spanning multiple days – only the current day’s logs are included.
+    dependencies:
+      - FR-0015
+    derived_from:
+      - GOAL-002
+
+  FR-0017:
+    description: |
+      The system must send the aggregated payload to the AI service, await a
+      response within 30 seconds, and persist the returned summary. If the AI
+      call fails, the system must retry every hour up to 6 attempts; after the
+      sixth failure a concise stub (“No activity today”) is stored instead.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - Successful AI call returns a summary stored in the user profile
+        within 30 seconds of the trigger.
+      - On failure, the system schedules a retry 1 hour later; after 6 attempts
+        it stores a stub summary.
+    edge_cases:
+      - AI service latency > 30 seconds – treated as a failure and retried.
+      - Network partition – retries continue until the partition resolves
+        or max attempts reached.
+    dependencies:
+      - FR-0016
+      - FR-0018
+    derived_from:
+      - GOAL-002
+
+  FR-0018:
+    description: |
+      Every generated summary must begin with a session header:
+      “You had a great session today, [Name]! Duration: X hrs.” The header
+      appears only if a session was completed that day; otherwise no AI call
+      is made and no summary is produced.
+    priority: High
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - When a session exists, the first paragraph of the stored summary starts
+        with the exact header format and includes the correct duration.
+      - When no session exists, the system does not invoke the AI service and
+        no summary record is created.
+    edge_cases:
+      - Session duration is less than 1 minute – header still shows “0 hrs”.
+      - Session spans midnight – the session is counted for the day it ends.
+    dependencies:
+      - FR-0015
+      - FR-0017
+    derived_from:
+      - GOAL-002
+
+  FR-0019:
+    description: |
+      If the user’s last session ended more than 48 hours ago, the system must
+      skip the 14:00 and 20:00 summaries and generate only the 23:59
+      end‑of‑day summary. If any session summary (14:00 or 20:00) is missed,
+      the 23:59 summary still runs each day and takes priority.
+    priority: High
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - When the last session ends >48 hrs before 14:00, only the 23:59 job runs
+        and 14:00/20:00 jobs are not scheduled.
+      - If a 14:00 or 20:00 job fails, the 23:59 job still runs the next day.
+    edge_cases:
+      - User logs a session after 48 hrs but before 14:00 – the 14:00 job runs.
+      - User logs a session at 23:58 – 23:59 job still runs normally.
+    dependencies:
+      - FR-0015
+      - FR-0017
+    derived_from:
+      - GOAL-002
+
+  FR-0020:
+    description: |
+      Upon successful AI summary generation, the system must deliver a push
+      notification to the user’s device and optionally an email, containing a
+      link to view the full summary.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - A push notification is received within 5 seconds of summary persistence.
+      - The email contains a correctly formatted link and is sent within 10 seconds.
+    edge_cases:
+      - Device offline for >48 hrs – the push is queued and delivered when online.
+      - User unsubscribed from email notifications – only push is sent.
+    dependencies:
+      - FR-0017
+    derived_from:
+      - GOAL-005  # Engagement
+
+  FR-0021:
+    description: |
+      The system must log all AI call failures, retry attempts, and final outcomes,
+      and expose a status endpoint for monitoring.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - Each failure is logged with timestamp, error code, and retry count.
+      - The status endpoint returns the current retry status for a given job.
+    edge_cases:
+      - Continuous failures – the status endpoint shows max retries reached.
+      - Partial failures (e.g., network timeout) – logged separately from
+        application errors.
+    dependencies:
+      - FR-0017
+    derived_from:
+      - GOAL-004  # Reduce manual effort
+
+  FR-0022:
+    description: |
+      The system must retain session and summary data only for 30 days unless a
+      longer retention period is required by law; data must be irreversibly
+      deleted thereafter.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0007
+    acceptance_criteria:
+      - A background job deletes records older than 30 days.
+      - Deletion is verified by audit logs and cannot be recovered.
+    edge_cases:
+      - User requests deletion before 30 days – data is deleted immediately.
+      - Legal hold requests – retention period extends to the required duration.
+    dependencies:
+      - FR-0015
+    derived_from:
+      - GOAL-004
+
+  FR-0023:
+    description: |
+      The system shall allow users to select the export format from the options:
+      * PDF
+      * ZIP archive of images
+      * PDF + ZIP archive
+    priority: High
+    related_usecase:
+      - USER_STORY-0008
+    acceptance_criteria:
+      - The export UI presents the three format options to the user.
+      - Selecting a format initiates the export process and returns a success message.
+      - The resulting file(s) match the selected format (PDF file, ZIP file, or both).
+    edge_cases:
+      - User selects a format but has no media to export; the system should still generate a PDF with placeholders.
+      - User attempts to export while offline; the system queues the request and retries when online.
+    dependencies:
+      - []
+    derived_from:
+      - Goal-001
+
+  FR-0024:
+    description: |
+      The system shall allow users to choose which content to include in the export:
+      * All trip content
+      * Only itinerary
+      * Custom date ranges
+      * Expenses (totals)
+      * Expense shares
+    priority: High
+    related_usecase:
+      - USER_STORY-0008
+    acceptance_criteria:
+      - The export UI presents the content selection options.
+      - The system includes only the selected content in the generated export.
+      - Selecting a custom date range correctly filters the itinerary, expenses, and media.
+    edge_cases:
+      - User selects a date range with no data; the system should produce an empty PDF with a notice.
+      - User selects overlapping date ranges; the system should merge data without duplication.
+    dependencies:
+      - FR-0015
+    derived_from:
+      - Goal-001
+
+  FR-0025:
+    description: |
+      The exported PDF (or ZIP) shall contain:
+      * Itinerary text
+      * Trip expenses
+      * Expense share breakdowns
+      * Media thumbnails
+      * AI‑generated summary
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0008
+    acceptance_criteria:
+      - The PDF contains a section for itinerary with all dates and activities.
+      - The PDF contains a detailed expenses table with categories and totals.
+      - The PDF shows a breakdown of shared expenses per participant.
+      - Each media item in the export is represented by a thumbnail linked to the full media.
+      - The AI summary appears at the end of the document and summarizes key moments and cost insights.
+    edge_cases:
+      - Media files are missing or corrupted; the system should skip them and log a warning.
+      - AI summary generation fails; the system should display a fallback message.
+    dependencies:
+      - FR-0015
+      - FR-0016
+    derived_from:
+      - Goal-001
+
+  FR-0026:
+    description: |
+      The system shall allow custom branding to be added to the PDF header and footer.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0008
+    acceptance_criteria:
+      - Users can upload a branding image or logo that appears in the PDF header.
+      - Users can set footer text that appears on every page of the PDF.
+      - The branding does not overlap or obscure PDF content.
+    edge_cases:
+      - Uploaded image is larger than the header area; the system scales it proportionally.
+      - Footer text exceeds page width; the system truncates or wraps text appropriately.
+    dependencies:
+      - FR-0017
+    derived_from:
+      - Goal-001
+
+  FR-0027:
+    description: |
+      The system shall provide two delivery methods for the export:
+      * A downloadable link that returns the file immediately.
+      * A shareable link that expires after a configurable period (default 7 days).
+    priority: High
+    related_usecase:
+      - USER_STORY-0008
+    acceptance_criteria:
+      - Clicking the download link initiates a file download in the browser.
+      - Clicking the share link opens a page that allows the recipient to download the file.
+      - The share link expires after the configured time and returns a 404 error thereafter.
+      - No security authentication is required to access the download or share link.
+    edge_cases:
+      - User clicks the share link after expiration; the system displays an expiration notice.
+      - The download link is clicked multiple times; the system allows multiple downloads without error.
+    dependencies:
+      - FR-0015
+    derived_from:
+      - Goal-001
+
+  FR-0028:
+    description: |
+      The system shall allow travelers to create, read, update, and delete
+      all trip‑related data (itinerary, expenses, media, notes, etc.) while
+      offline, persisting every change locally until a successful sync.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - All CRUD operations performed offline must be reflected in the
+        local data store immediately and survive app restarts.
+      - A local change made while offline must be visible to the user
+        without any server round‑trip.
+    edge_cases:
+      - Creating a trip with no title or with extremely long text fields.
+      - Deleting a trip that has pending local changes.
+    dependencies:
+      - []
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0029:
+    description: |
+      The local persistence layer shall guarantee 100 % durability of
+      offline changes until they are successfully synced to the backend.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - After an app restart, all offline changes must still be present
+        and unaltered.
+      - No data loss occurs even if the device is rebooted during an
+        offline session.
+    edge_cases:
+      - Device runs out of storage space during a large media import.
+      - Application crash immediately after a write operation.
+    dependencies:
+      - [FR-0023]
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0030:
+    description: |
+      When a trip is edited on multiple devices before a sync, the system
+      shall automatically attempt a merge of changes. Any conflicts that
+      cannot be resolved automatically must be presented to the trip
+      owner for manual resolution via a merge dialog.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - Conflicting changes are detected based on a version vector.
+      - Automatic merge succeeds when no field conflicts exist.
+      - "For conflicting fields, a UI dialog appears with options:
+        * Keep local changes
+        * Accept server version
+        * Merge manually"
+      - The chosen resolution is persisted and synced.
+    edge_cases:
+      - Simultaneous edits on more than two devices.
+      - Conflict resolution chosen while offline.
+    dependencies:
+      - [FR-0023]
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0031:
+    description: |
+      The application shall trigger a background sync 15 minutes after
+      reconnection to an active network or when the user performs a
+      manual pull‑to‑refresh on the home page. No battery‑based throttling
+      is required.
+    priority: High
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - A sync attempt starts automatically 15 min after network
+        availability resumes.
+      - Pull‑to‑refresh initiates an immediate sync regardless of
+        network status.
+      - The sync process completes within 5 minutes of initiation.
+    edge_cases:
+      - Network drops mid‑sync.
+      - User manually triggers sync while another sync is in progress.
+    dependencies:
+      - [FR-0025]
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0032:
+    description: |
+      Each sync packet shall include a cryptographic checksum. The
+      server shall validate the checksum and, upon mismatch, resume
+      sync from the last verified packet.
+    priority: High
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - A SHA‑256 checksum is computed for every sync payload.
+      - Server responds with a status indicating success or checksum
+        failure.
+      - On checksum failure, the client retries from the last
+        acknowledged packet without data duplication.
+    edge_cases:
+      - Packet corruption during transmission.
+      - Large payloads split across multiple packets.
+    dependencies:
+      - [FR-0026]
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0033:
+    description: |
+      The system shall allow unlimited local storage for offline trip
+      data; no hard cap shall be imposed.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - User can continue to add trips, photos, and expenses until the
+        device’s storage is exhausted.
+      - No errors or warnings appear due to storage limits.
+    edge_cases:
+      - Device reaches 0 % free space.
+    dependencies:
+      - []
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0034:
+    description: |
+      The application shall provide a user interface for conflict
+      resolution that displays conflicting fields, the local and remote
+      values, and allows the trip owner to choose or manually merge.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0009
+    acceptance_criteria:
+      - Conflict dialog lists all conflicting fields with clear
+        context.
+      - User can select one of the provided options or edit the value
+        manually.
+      - The chosen resolution is stored locally and synchronized.
+    edge_cases:
+      - Conflict dialog appears while the app is in the background.
+      - User dismisses the dialog without making a choice.
+    dependencies:
+      - [FR-0025]
+    derived_from:
+      - USER_STORY-0009
+      - GOAL-0001
+
+  FR-0035:
+    description: |
+      Detect duplicate expense or media entries within a 10‑second window of creation
+      and present users with options to merge or keep the entries separate.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0010
+    acceptance_criteria:
+      - When a new expense or media record is created, the system must compare it
+        against all existing records created within the last 10 seconds.
+      - If the amount differs by ≤5 %, the timestamp differs by ≤10 s, and the
+        location differs by ≤50 m (or is missing), the system must flag the record
+        as a duplicate candidate.
+      - The UI must display a “Duplicates” panel listing all flagged sets with
+        “Merge” and “Keep Separately” options.
+      - Selecting “Merge” automatically populates all shared fields, keeps the
+        most recent attachment, and records the merge action in the audit log.
+      - Selecting “Keep Separately” records the decision in the audit log and
+        leaves both records unchanged.
+    edge_cases:
+      - Records with missing location data are still compared using amount and
+        timestamp only.
+      - Different media types are only flagged if the content similarity score
+        exceeds 80 %.
+      - Duplicate detection runs as a background job; if the job fails, a
+        notification is sent to an administrator.
+    dependencies:
+      - FR-0037
+    derived_from:
+      - GOAL-001
+
+  FR-0036:
+    description: |
+      Store all timestamps in UTC internally and display them in the itinerary
+      view converted to the itinerary’s local time zone, with an optional raw
+      UTC toggle.
+    priority: High
+    related_usecase:
+      - USER_STORY-0011
+    acceptance_criteria:
+      - All incoming timestamps are converted to UTC before persistence.
+      - The itinerary UI shows timestamps in the itinerary’s time zone
+        (derived from the itinerary’s location metadata).
+      - A toggle button allows users to switch between local time and raw UTC.
+      - New entries with timestamps deviating more than 2 hrs from the device’s
+        current time are rejected and prompt the user to confirm a manual
+        adjustment.
+      - Legacy records with non‑UTC timestamps are migrated to UTC while
+        preserving the original offset.
+    edge_cases:
+      - Entries created while the device is offline are timestamped using the
+        device’s last known UTC time and flagged for manual review upon
+        reconnection.
+      - Time zone changes (e.g., DST) are handled by re‑calculating local
+        display times on each view render.
+    dependencies:
+      - FR-0039
+    derived_from:
+      - GOAL-001
+
+  FR-0037:
+    description: |
+      Maintain an audit trail for all duplicate detection decisions and
+      timestamp validations, capturing user identity, action, and timestamps.
+    priority: High
+    related_usecase:
+      - USER_STORY-0010
+      - USER_STORY-0011
+    acceptance_criteria:
+      - Every merge, keep‑separate, and timestamp‑validation event is logged with
+        the actor’s user ID, action type, original and resulting record IDs,
+        and UTC timestamps.
+      - Audit logs are immutable and accessible only to users with the
+        “Admin” role.
+      - The audit trail is exportable in CSV format for compliance reviews.
+    edge_cases:
+      - System failures during logging are retried up to 3 times before
+        escalating to an admin alert.
+    dependencies:
+      - FR-0035
+      - FR-0036
+    derived_from:
+      - GOAL-001
+
+  FR-0038:
+    description: |
+      Allow administrators to force merge or block duplicates through a
+      privileged console.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0010
+    acceptance_criteria:
+      - Admins can view a list of flagged duplicates and select “Force Merge”
+        or “Block Duplicate”.
+      - The system records the admin action in the audit log with a reason
+        field.
+      - Non‑admin users cannot access this console or override duplicate
+        decisions.
+    edge_cases:
+      - If an admin attempts to merge records that have been modified by
+        another user concurrently, the system presents a conflict resolution
+        dialog.
+    dependencies:
+      - FR-0035
+      - FR-0037
+    derived_from:
+      - GOAL-001
+
+  FR-0039:
+    description: |
+      Perform a one‑time migration of all legacy timestamp data to UTC
+      while preserving the original offset for historical accuracy.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0011
+    acceptance_criteria:
+      - All legacy records are scanned and converted to UTC in bulk.
+      - Migration logs record the number of records processed, success
+        count, and any failures.
+      - Post‑migration, the system verifies that all timestamps are UTC
+        and that display conversions yield the correct local times.
+    edge_cases:
+      - Records lacking explicit offset information are assumed to be in the
+        device’s local time zone at the time of creation.
+    dependencies:
+      - FR-0036
+    derived_from:
+      - GOAL-001
+
+  FR-0040:
+    description: Detect corruption of media files at upload and on load using format and checksum validation.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - Media files of supported types must pass a checksum test within 1 s of upload or load.
+      - Corrupted files must be flagged and prevented from being displayed or stored.
+    edge_cases:
+      - Extremely large files that exceed memory limits should trigger a graceful error instead of a crash.
+      - Network interruptions during upload must not falsely flag a file as corrupted.
+    dependencies:
+      - []
+    derived_from:
+      - GOAL-001
+
+  FR-0041:
+    description: Present an error dialog within 2 seconds of corruption detection.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - Modal dialog appears in less than 2 s after corruption is detected.
+      - Dialog contains the message “This media file is corrupted.” and two actionable buttons: Retry and Remove.
+    edge_cases:
+      - If the UI is already busy (e.g., during a batch upload), the dialog should still appear without blocking the main thread.
+    dependencies:
+      - FR-0040
+    derived_from:
+      - GOAL-001
+
+  FR-0042:
+    description: Allow the user to retry uploading a corrupted media file by re‑selecting it from the device.
+    priority: High
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - After clicking Retry, the user can select a file and the system re‑validates it within 1 s.
+      - If the retry succeeds, the media is added to the gallery; if it fails again, the error dialog re‑appears.
+    edge_cases:
+      - Retry while offline should queue the upload and automatically retry upon reconnection.
+    dependencies:
+      - FR-0040
+      - FR-0041
+    derived_from:
+      - GOAL-001
+
+  FR-0043:
+    description: Allow the owning user to permanently remove a corrupted media file from the local gallery and backend storage.
+    priority: High
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - Clicking Remove deletes the file from the device cache and the media repository within 2 s.
+      - No references to the file remain in any trip metadata.
+    edge_cases:
+      - If the file is part of a shared album, only the owner can delete; other users retain a placeholder.
+    dependencies:
+      - FR-0040
+      - FR-0041
+    derived_from:
+      - GOAL-001
+
+  FR-0044:
+    description: Log corruption events with file name, timestamp, validation result, and user ID for support analytics.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - A log entry is created in the central audit store each time a file is flagged as corrupted.
+      - Log entries are searchable by file name and user ID within 5 s.
+    edge_cases:
+      - Logs must not contain raw media data or sensitive user information beyond the required identifiers.
+    dependencies:
+      - FR-0040
+    derived_from:
+      - GOAL-001
+
+  FR-0045:
+    description: Enforce ownership‑based removal rights only the user who uploaded the file may remove it.
+    priority: High
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - The Remove button is disabled for any user who is not the uploader.
+    edge_cases:
+      - If a user is granted temporary edit rights via a shared trip, they can remove the file only if they are the original owner.
+    dependencies:
+      - FR-0043
+    derived_from:
+      - GOAL-001
+
+  FR-0046:
+    description: Support all media types defined in the system (image, video, audio) and reject unsupported formats immediately.
+    priority: High
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - Uploading an unsupported format results in an error dialog within 1 s.
+      - Supported formats are listed in the system configuration and can be updated without code changes.
+    edge_cases:
+      - Files with correct extensions but corrupted MIME types must still be rejected.
+    dependencies:
+      - FR-0040
+    derived_from:
+      - GOAL-001
+
+  FR-0047:
+    description: Ensure the error dialog is fully accessible ARIA labels, focus trap, and sufficient color contrast.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - Screen readers announce “Error: This media file is corrupted.” when the dialog appears.
+      - Focus is trapped within the dialog until it is dismissed.
+      - Contrast ratio of text to background meets WCAG 2.1 AA (≥ 4.5:1 for normal text).
+    edge_cases:
+      - On low‑bandwidth devices, the dialog should still be reachable via keyboard navigation.
+    dependencies:
+      - FR-0041
+    derived_from:
+      - GOAL-001
+
+  FR-0048:
+    description: Keep the UI responsive during corruption detection and error dialog presentation.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - The main thread remains responsive; the user can scroll and interact with other parts of the app while the dialog is active.
+    edge_cases:
+      - On devices with limited CPU, heavy validation should be off‑loaded to a background thread.
+    dependencies:
+      - FR-0040
+      - FR-0041
+    derived_from:
+      - GOAL-001
+
+  FR-0049:
+    description: Provide analytics on corruption rates and user actions (retry/remove) for continuous improvement.
+    priority: Medium
+    related_usecase:
+      - USER_STORY-0012
+    acceptance_criteria:
+      - The system records the number of corrupted files per trip and the percentage of retries that succeed.
+      - Reports are available in the admin dashboard within 30 s of the event.
+    edge_cases:
+      - If a user deletes a file before the analytics snapshot, the action should still be counted.
+    dependencies:
+      - FR-0044
+    derived_from:
+      - GOAL-001
+
+  FR-0050:
+    description: |
+      Encrypt all trip data stored in the database using AES‑256 at rest,
+      ensuring that each table or column containing PII is protected by
+      column‑level encryption or transparent data encryption (TDE).
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0014
+    acceptance_criteria:
+      - "All rows in the trip, expense, media, itinerary, and user tables are encrypted with AES‑256 before persisting to disk."
+      - "Encryption keys are not stored in application code or in the database itself; they are fetched from an external KMS."
+      - "A database audit log records each encryption/decryption operation with a timestamp and user identifier."
+    edge_cases:
+      - "Data migration scripts must re‑encrypt existing plaintext data without data loss."
+      - "During a key rotation, read/write operations should continue to succeed without error."
+    dependencies:
+      - FR-0052
+    derived_from:
+      - GOAL-001
+
+  FR-0051:
+    description: |
+      Secure all network traffic between clients, API gateways, and internal services
+      using TLS 1.3, ensuring that all endpoints enforce certificate validation and
+      reject connections with self‑signed or expired certificates.
+    priority: Critical
+    related_usecase:
+      - USER_STORY-0014
+    acceptance_criteria:
+      - "Every public API endpoint returns an HTTP 426 status if a client attempts to connect over TLS 1.2 or lower."
+      - "All internal microservice calls are made over TLS 1.3 with mutual authentication."
+      - "TLS certificates are issued by a trusted CA and rotated every 90 days."
+    edge_cases:
+      - "Fallback to HTTP is not allowed; any attempt to downgrade must be logged and blocked."
+      - "If a TLS handshake fails due to certificate revocation, the request is retried up to two times before returning an error."
+    dependencies:
+      - FR-0052
+    derived_from:
+      - GOAL-001
+
+  FR-0052:
+    description: |
+      Integrate with an external key‑management service (AWS KMS, Azure Key Vault, or GCP KMS)
+      to store and rotate encryption keys automatically on a quarterly basis, with
+      role‑based access controls for developers, operations, and production workloads.
+    priority: High
+    related_usecase:
+      - USER_STORY-0014
+    acceptance_criteria:
+      - "A key rotation job runs automatically every 90 days and updates the database encryption key without downtime."
+      - "Only users with the 'KeyAdmin' role can trigger a manual rotation."
+      - "All key access events are logged with user ID, timestamp, and action."
+    edge_cases:
+      - "If the KMS service is temporarily unavailable, the system must retry the key fetch operation for up to 5 minutes."
+      - "During a key rotation, any in‑flight database connections must continue to use the old key until they are refreshed."
+    dependencies:
+      - FR-0050
+    derived_from:
+      - GOAL-001
+
+  FR-0053:
+    description: |
+      Provide comprehensive audit logging for all key‑management operations,
+      including encryption/decryption requests, key rotations, and key access.
+    priority: High
+    related_usecase:
+      - USER_STORY-0014
+    acceptance_criteria:
+      - "Audit logs contain fields: event_type, key_id, user_id, timestamp, operation_success, and optional error_message."
+      - "Logs are immutable and stored in a tamper‑evident storage (e.g., append‑only file or log service)."
+      - "An automated report is generated monthly summarizing key usage and rotations."
+    edge_cases:
+      - "If the audit log storage reaches its retention limit, older entries are archived to a secure archival service."
+      - "Any attempt to delete or modify audit logs triggers an alert to the security team."
+    dependencies:
+      - FR-0052
+    derived_from:
+      - GOAL-001
+
+  FR-0054:
+    description: |
+      Generate compliance‑ready reports that demonstrate the encryption status
+      of all trip data and the integrity of key‑management operations, aligned
+      with GDPR, PCI‑DSS, and ISO 27001 requirements.
+    priority: High
+    related_usecase:
+      - USER_STORY-0014
+    acceptance_criteria:
+      - "Monthly compliance reports are automatically exported to a secure S3 bucket and emailed to the compliance officer."
+      - "Each report includes a proof of encryption (e.g., hash of encrypted data) and a key‑rotation log."
+      - "The system can produce an audit trail that meets the 1‑year retention requirement."
+    edge_cases:
+      - "If the reporting service fails, a retry mechanism attempts to regenerate the report up to 3 times."
+      - "The report generation must not impact the performance of daily user operations."
+    dependencies:
+      - FR-0053
+    derived_from:
+      - GOAL-001
+
+
+
+
+
+
+
+
+
+
+non_functional_requirements: 
+  
+  NFR-0001:
+    description: |
+      The system shall provide a CRUD response time of ≤2 seconds for 95 % of
+      requests and ≤5 seconds for 99 % of requests, measured under peak load.
+    related_fr:
+      - FR-0001
+      - FR-0004
+      - FR-0006
+      - FR-0008
+    measurement:
+      - 95 % of CRUD responses <2 s (verified via load testing).
+      - 99 % of CRUD responses <5 s (verified via load testing).
+
+  NFR-0002:
+    description: |
+      The system shall maintain an uptime of 99.9 % over a 12‑month period,
+      excluding scheduled maintenance windows of ≤2 hours per month.
+    related_fr:
+      - FR-0001
+      - FR-0004
+      - FR-0006
+      - FR-0008
+    measurement:
+      - Uptime monitored by an external APM; alerts raised if SLA breached.
+
+  NFR-0003:
+    description: |
+      All data at rest shall be encrypted using AES‑256, and all data in
+      transit shall use TLS 1.3.
+    related_fr:
+      - FR-0001
+      - FR-0004
+      - FR-0006
+      - FR-0008
+    measurement:
+      - Database encryption verified via audit logs.
+      - TLS handshake verified with automated security scans.
+
+  NFR-0004:
+    description: |
+      The system shall scale to support up to 10 k concurrent trips,
+      1 M active users, and a media storage capacity of 10 TB,
+      with automatic tiering to cheaper storage after 30 days of age.
+    related_fr:
+      - FR-0001
+      - FR-0004
+      - FR-0006
+    measurement:
+      - Capacity tests simulate 10 k concurrent trips and 1 M users.
+      - Media storage tests confirm 10 TB usage and tiering triggers.
+
+  NFR-0005:
+    description: |
+      The user interface shall be mobile‑first, responsive, and
+      support offline data creation and synchronization.
+    related_fr:
+      - FR-0001
+      - FR-0004
+    measurement:
+      - Usability tests with 10 target users on iOS 14+, Android 11+.
+      - Offline sync latency ≤5 min after reconnection (verified by integration tests).
+
+  NFR-0006:
+    description: |
+      The system shall comply with GDPR and CCPA, providing data
+      subject rights (access, deletion, portability) and a
+      retention policy that automatically deletes trip data after 5 years
+      unless the user requests retention.
+    related_fr:
+      - FR-0001
+      - FR-0004
+      - FR-0008
+    measurement:
+      - Legal audit confirms data subject rights are functional.
+      - Retention policy enforced by background job logs.
+
+  NFR-0007:
+    description: |
+      The system architecture shall be modular, with clear API versioning
+      and backward compatibility guarantees for at least 2 major releases.
+    related_fr:
+      - FR-0001
+      - FR-0004
+      - FR-0006
+    measurement:
+      - API versioning documented; unit tests cover 2.x and 3.x compatibility.
+
+  NFR-0008:
+    description: |
+      The audit trail shall be tamper‑evident, stored in a separate immutable
+      log store, and accessible only to authorized admin roles.
+    related_fr:
+      - FR-0008
+    measurement:
+      - Audit logs are write‑once, append‑only; integrity checksums verified.
+      - Access control tests ensure only admin roles can query audit data.
+
+  NFR-0009:
+    description: |
+      The system shall enforce a cumulative media size limit of 250 MB per trip.
+    related_fr:
+      - FR-0006
+    measurement:
+      - Upload API rejects any addition that would exceed the 250 MB quota.
+
+  NFR-0010:
+    description: |
+      API response time for invitation generation and revocation must be less than 1 second under normal load.
+    related_fr:
+      - FR-0009
+      - FR-0010
+      - FR-0011
+    measurement:
+      - Target: <1 s
+      - Verification: Load testing with 1 k concurrent requests, measuring median response time.
+
+  NFR-0011:
+    description: |
+      Real‑time push notifications for permission changes must be delivered within 200 ms to all connected clients.
+    related_fr:
+      - FR-0011
+    measurement:
+      - Target: <200 ms latency
+      - Verification: Instrumentation of WebSocket/FCM delivery timestamps.
+
+  NFR-0012:
+    description: |
+      The invitation API and WebSocket endpoints shall have a 99.9 % uptime SLA.
+    related_fr:
+      - FR-0009
+      - FR-0011
+    measurement:
+      - Target: 99.9 % uptime
+      - Verification: Monitoring via uptime checks and incident logs.
+
+  NFR-0013:
+    description: |
+      All invitation tokens must be signed using RSA‑2048 JWT and stored encrypted at rest; communications must be over HTTPS.
+    related_fr:
+      - FR-0009
+      - FR-0010
+    measurement:
+      - Verification: Code audit and penetration testing to confirm JWT signing and encryption.
+
+  NFR-0014:
+    description: |
+      The system must capture explicit consent for storing personal data in compliance with GDPR and CCPA, with opt‑out options.
+    related_fr:
+      - FR-0010
+    measurement:
+      - Target: Consent recorded in the user profile before any personal data is stored.
+      - Verification: Audit logs and user consent history.
+
+  NFR-0015:
+    description: |
+      The system shall scale to handle at least 5 k invitations per day and support up to 10 k concurrent link clicks without degradation.
+    related_fr:
+      - FR-0009
+      - FR-0010
+    measurement:
+      - Target: 5 k invites/day, 10 k concurrent clicks.
+      - Verification: Load simulation and Redis key‑space monitoring.
+
+  NFR-0016:
+    description: |
+      All UI components for invitation, permission assignment, and view‑only access must meet WCAG 2.1 AA accessibility standards.
+    related_fr:
+      - FR-0011
+      - FR-0012
+    measurement:
+      - Target: WCAG 2.1 AA compliance.
+      - Verification: Automated accessibility scans (axe, Lighthouse) and manual review.
+
+  NFR-0017:
+    description: |
+      The architecture shall be modular, with separate micro‑services for invitation handling, permission management, and real‑time updates to promote maintainability and ease future feature extensions.
+    related_fr:
+      - FR-0009
+      - FR-0010
+      - FR-0011
+    measurement:
+      - Verification: Codebase structure, service boundaries, and documentation.
+
+  NFR-0018:
+    description: |
+      The AI summary generation process must complete within 30 seconds of the
+      scheduled trigger time, from payload creation to persistence of the
+      summary.
+    related_fr:
+      - FR-0015
+      - FR-0017
+    measurement:
+      - Target: ≤30 s
+      - Verification: System logs timestamp at trigger and at persistence; difference ≤30 s in 99.5 % of runs.
+  
+  NFR-0019:
+    description: |
+      The scheduling and delivery service must be available 99.9 % of the time,
+      measured over a 30‑day rolling window.
+    related_fr:
+      - FR-0015
+      - FR-0016
+      - FR-0017
+      - FR-0018
+      - FR-0019
+    measurement:
+      - Target: 99.9 % uptime
+      - Verification: Uptime monitoring dashboards and incident reports.
+
+  NFR-0020:
+    description: |
+      All data transmitted to the AI service must be encrypted in transit using
+      TLS 1.3, and all data at rest must be encrypted using AES‑256.
+    related_fr:
+      - FR-0017
+      - FR-0016
+    measurement:
+      - Target: TLS 1.3 only, AES‑256 encryption for all stored data
+      - Verification: Security audit logs and penetration testing reports.
+  
+  NFR-0021:
+    description: |
+      The system must scale to support up to 10 million daily active users,
+      with a peak concurrent load of 100 000 requests per second during
+      travel season peaks.
+    related_fr:
+      - FR-0015
+      - FR-0016
+      - FR-0017
+    measurement:
+      - Target: 10 M DAU, 100 k QPS peak
+      - Verification: Load‑testing results and auto‑scaling metrics.
+  
+  NFR-0022:
+    description: |
+      The system must comply with GDPR, CCPA, and other applicable data
+      protection regulations, including providing a 24‑hour deletion window
+      upon user request.
+    related_fr:
+      - FR-0022
+    measurement:
+      - Target: 100 % compliance with GDPR/CCPA
+      - Verification: Legal audit and user deletion logs.
+  
+  NFR-0023:
+    description: |
+      The codebase must maintain an 80 % unit‑test coverage and be built with
+      continuous integration and continuous deployment pipelines.
+    related_fr:
+      - FR-0015
+      - FR-0016
+      - FR-0017
+      - FR-0018
+      - FR-0019
+      - FR-0020
+      - FR-0021
+      - FR-0022
+    measurement:
+      - Target: ≥80 % coverage
+      - Verification: CI pipeline reports and code review metrics.
+  
+  NFR-0024:
+    description: |
+      The generated summary must be viewable within 5 seconds on the mobile
+      application after the push notification is received.
+    related_fr:
+      - FR-0017
+      - FR-0018
+    measurement:
+      - Target: ≤5 s load time
+      - Verification: Performance monitoring and end‑to‑end tests.
+
+  NFR-0025:
+    description: |
+      Performance: Export generation must complete within 2 minutes for trips up to 30 days.
+    related_fr:
+      - FR-0015
+      - FR-0017
+    measurement:
+      - Target: < 120 seconds
+      - Verification: Load testing with 30‑day trips; time measured from request to file ready.
+  
+  NFR-0026:
+    description: |
+      Availability: The export service must be available 99.9% of the time.
+    related_fr:
+      - FR-0015
+      - FR-0016
+      - FR-0017
+      - FR-0018
+      - FR-0019
+    measurement:
+      - Target: 99.9% uptime per month
+      - Verification: Uptime monitoring dashboards, incident reports.
+  
+  NFR-0027:
+    description: |
+      Scalability: The export service must support up to 500 concurrent export requests without degradation.
+    related_fr:
+      - FR-0015
+    measurement:
+      - Target: 500 concurrent requests, response time < 120 seconds
+      - Verification: Stress testing with concurrent load generators.
+  
+  NFR-0028:
+    description: |
+      Usability: The exported PDF must render correctly in standard PDF readers (Adobe Reader, Chrome, Edge, Safari).
+    related_fr:
+      - FR-0017
+    measurement:
+      - Target: 100% pass rate on rendering tests across supported readers
+      - Verification: Automated rendering tests, manual QA on multiple browsers.
+  
+  NFR-0029:
+    description: |
+      Maintainability: The export module codebase must achieve at least 80% unit test coverage.
+    related_fr:
+      - FR-0015
+      - FR-0016
+      - FR-0017
+      - FR-0018
+      - FR-0019
+    measurement:
+      - Target: ≥ 80% coverage
+      - Verification: Code coverage reports from CI pipeline.
+
+  NFR-0030:
+    description: |
+      The application shall provide high‑performance offline
+      operations: local reads and writes must complete in <200 ms,
+      and background sync triggers must start within 5 s of the trigger
+      event.
+    related_fr:
+      - FR-0023
+      - FR-0024
+      - FR-0026
+      - FR-0027
+    measurement:
+      - Target: <200 ms for local CRUD operations
+      - Verification: Instrumented unit tests and performance benchmarks on target devices.
+      - Target: <5 s for sync trigger initiation
+      - Verification: Integration tests simulating network reconnection and pull‑to‑refresh.
+
+  NFR-0031:
+    description: |
+      The sync service shall have an uptime of 99.95 % over a 12‑month
+      period, ensuring reliable data delivery for offline users.
+    related_fr:
+      - FR-0026
+      - FR-0027
+    measurement:
+      - Target: 99.95 % availability
+      - Verification: Cloud monitoring dashboards and SLA reports.
+
+  NFR-0032:
+    description: |
+      Security must meet industry standards: local data encrypted
+      using AES‑256, sync traffic protected with TLS 1.3, and the
+      application must comply with GDPR and CCPA regulations.
+    related_fr:
+      - FR-0023
+      - FR-0024
+      - FR-0025
+      - FR-0026
+      - FR-0027
+    measurement:
+      - Target: AES‑256 encryption for all local storage
+      - Verification: Static code analysis and penetration testing.
+      - Target: TLS 1.3 for all network traffic
+      - Verification: Network traffic inspection.
+      - Target: GDPR/CCPA compliance documentation
+      - Verification: Legal review and audit reports.
+
+  NFR-0033:
+    description: |
+      The system shall scale to support 1 million concurrent offline
+      users, with an anticipated data growth of ~100 MB per user per
+      year.
+    related_fr:
+      - FR-0028
+    measurement:
+      - Target: 1 M concurrent offline sessions
+      - Verification: Load testing and capacity planning.
+      - Target: 100 MB/user/year data growth
+      - Verification: Historical data analysis and projections.
+
+  NFR-0034:
+    description: |
+      The offline UI must be accessible: compliant with WCAG 2.1 AA,
+      fully operable via screen readers, and support low‑vision modes.
+    related_fr:
+      - FR-0023
+      - FR-0025
+      - FR-0029
+    measurement:
+      - Target: WCAG 2.1 AA compliance
+      - Verification: Accessibility audit tools and manual testing.
+      - Target: Screen‑reader compatibility
+      - Verification: VoiceOver/TalkBack testing.
+
+  NFR-0035:
+    description: |
+      The codebase shall be maintainable: modular architecture,
+      comprehensive automated tests for sync logic, and clear logging
+      for debugging.
+    related_fr:
+      - FR-0023
+      - FR-0024
+      - FR-0025
+      - FR-0026
+      - FR-0027
+      - FR-0029
+    measurement:
+      - Target: 80 % code coverage for sync module
+      - Verification: CI pipeline test reports.
+      - Target: Structured logging for sync failures
+      - Verification: Log aggregation and alerting.
+
+  NFR-0036:
+    description: |
+      End‑to‑end UI response time for duplicate detection and merge actions
+      must not exceed 2 seconds under normal load.
+    related_fr:
+      - FR-0035
+      - FR-0038
+    measurement:
+      - Target: ≤2 s for 95 % of UI interactions.
+      - Verification: Load testing with 10 k concurrent users using automated UI test scripts.
+
+  NFR-0037:
+    description: |
+      Availability of the duplicate detection service must be 99.9 % during
+      business hours (9 AM‑6 PM UTC) and 99.5 % overall.
+    related_fr:
+      - FR-0035
+      - FR-0038
+    measurement:
+      - Target: 99.9 % uptime between 9 AM‑6 PM UTC; 99.5 % overall.
+      - Verification: SLA monitoring with alerting thresholds and quarterly uptime reports.
+
+  NFR-0038:
+    description: |
+      All data in transit and at rest must be encrypted using AES‑256 and
+      TLS 1.3 respectively.
+    related_fr:
+      - FR-0036
+      - FR-0037
+    measurement:
+      - Target: AES‑256 encryption for all database tables and TLS 1.3 for all HTTPS endpoints.
+      - Verification: Security audit logs and penetration test certificates.
+
+  NFR-0039:
+    description: |
+      The system must support scaling to 50 k concurrent users with a 10×
+      growth projection over the next two years using cloud autoscaling and
+      database sharding.
+    related_fr:
+      - FR-0035
+      - FR-0036
+    measurement:
+      - Target: 50 k concurrent users with 99.9 % response time.
+      - Verification: Stress testing and infrastructure cost modeling.
+
+  NFR-0040:
+    description: |
+      The UI must meet WCAG 2.1 AA accessibility standards, including
+      screen‑reader compatibility and color contrast ratios.
+    related_fr:
+      - FR-0035
+      - FR-0036
+    measurement:
+      - Target: WCAG 2.1 AA compliance.
+      - Verification: Automated accessibility tests and manual screen‑reader testing.
+
+  NFR-0041:
+    description: |
+      GDPR and CCPA compliance must be maintained, including data‑subject
+      access requests, data deletion, and privacy‑by‑design logging.
+    related_fr:
+      - FR-0037
+      - FR-0039
+    measurement:
+      - Target: 100 % compliance with GDPR and CCPA requirements.
+      - Verification: Annual compliance audit and data‑subject request handling metrics.
+
+  NFR-0042:
+    description: |
+      The codebase must be maintainable with a maximum technical debt
+      score of 15 % and automated unit‑test coverage of ≥80 %.
+    related_fr:
+      - FR-0035
+      - FR-0036
+      - FR-0037
+      - FR-0038
+      - FR-0039
+    measurement:
+      - Target: Technical debt score ≤15 %; unit‑test coverage ≥80 %.
+      - Verification: Static code analysis and CI pipeline test coverage reports.
+
+  NFR-0043:
+    description: The error dialog must launch within 2 seconds of corruption detection.
+    related_fr:
+      - FR-0041
+    measurement:
+      - Launch latency < 2 s (average, 95th percentile < 3 s)
+      - Verified via automated UI performance tests.
+
+  NFR-0044:
+    description: Media service uptime must be 99.9 % over any 30‑day period.
+    related_fr:
+      - FR-0040
+      - FR-0041
+      - FR-0042
+      - FR-0043
+      - FR-0044
+      - FR-0045
+    measurement:
+      - Uptime ≥ 99.9 % measured by health‑check logs.
+      - Verified via monitoring dashboards and SLA reports.
+
+  NFR-0045:
+    description: All media data must be encrypted at rest using AES‑256 and transmitted over TLS 1.3.
+    related_fr:
+      - FR-0040
+      - FR-0044
+      - FR-0045
+    measurement:
+      - 100 % of media files stored encrypted; all API endpoints use TLS 1.3.
+      - Verified via penetration testing and audit logs.
+
+  NFR-0046:
+    description: The system must support concurrent uploads from up to 10,000 users without performance degradation.
+    related_fr:
+      - FR-0040
+      - FR-0042
+    measurement:
+      - Load test with 10,000 concurrent upload sessions shows < 2 s average latency.
+      - Verified via synthetic load tests.
+
+  NFR-0047:
+    description: GDPR and CCPA compliance for user media right to access, rectify, and delete data.
+    related_fr:
+      - FR-0044
+      - FR-0045
+    measurement:
+      - Audit logs confirm that deletion requests are honored within 48 h.
+      - Verified via compliance audit.
+
+  NFR-0048:
+    description: The error dialog must meet WCAG 2.1 AA accessibility standards.
+    related_fr:
+      - FR-0041
+      - FR-0047
+    measurement:
+      - Pass automated accessibility checks (axe, Lighthouse) with no violations.
+      - Verified via automated accessibility testing.
+
+  NFR-0049:
+    description: Error handling code must have ≥ 80 % unit test coverage.
+    related_fr:
+      - FR-0040
+      - FR-0041
+      - FR-0042
+      - FR-0043
+      - FR-0044
+    measurement:
+      - Code coverage reports show ≥ 80 % coverage for error‑handling modules.
+      - Verified via CI pipeline.
+
+  NFR-0050:
+    description: Retry attempts must succeed in ≥ 99.9 % of cases when network conditions are normal.
+    related_fr:
+      - FR-0042
+    measurement:
+      - Retry success rate ≥ 99.9 % measured over 1 M retry attempts in staging.
+      - Verified via automated integration tests.
+
+  NFR-0051:
+    description: Log retention policy must keep corruption logs for 30 days and allow full-text search.
+    related_fr:
+      - FR-0044
+    measurement:
+      - Logs retained for 30 days; search latency < 2 s for queries.
+      - Verified via log management system (e.g., ELK stack).
+
+  NFR-0052:
+    description: Corruption detection accuracy must be ≥ 99.5 % for supported media types.
+    related_fr:
+      - FR-0040
+      - FR-0046
+    measurement:
+      - Detection accuracy measured against a ground‑truth dataset of corrupted/clean files.
+      - Verified via regression tests.
+
+  NFR-0053:
+    description: The error dialog must capture focus and provide ARIA labels for screen readers.
+    related_fr:
+      - FR-0041
+      - FR-0047
+    measurement:
+      - ARIA compliance score ≥ 90 % in automated tests.
+      - Verified via accessibility audit.
+
+  NFR-0054:
+    description: Media validation must complete within 1 second on average for typical file sizes.
+    related_fr:
+      - FR-0040
+    measurement:
+      - Average validation latency < 1 s measured in performance tests.
+      - Verified via profiling tools.
+
+  NFR-0055:
+    description: Logs must not contain raw media data or any PII beyond the required identifiers.
+    related_fr:
+      - FR-0044
+    measurement:
+      - Manual code review and automated scanning confirm absence of sensitive data in logs.
+      - Verified via security audit.
+
+  NFR-0056:
+    description: |
+      Encryption operations must not degrade API response times beyond 2 seconds
+      for any endpoint that involves encryption or decryption.
+    related_fr:
+      - FR-0050
+      - FR-0051
+    measurement:
+      - "Average response time for encrypted API calls ≤ 2.0 seconds."
+      - "Measured using automated load tests with 10,000 QPS and monitored via Prometheus."
+
+  NFR-0057:
+    description: |
+      Key‑management service availability must meet a 99.99% uptime SLA
+      to ensure uninterrupted encryption operations.
+    related_fr:
+      - FR-0052
+    measurement:
+      - "KMS uptime ≥ 99.99% per calendar month."
+      - "Measured via uptime monitoring and KMS health checks."
+
+  NFR-0058:
+    description: |
+      Audit logs must be retained for at least one year and exported monthly
+      to a secure, tamper‑evident repository.
+    related_fr:
+      - FR-0053
+    measurement:
+      - "Audit log retention period = 365 days."
+      - "Monthly export occurs within 24 hours of the month’s end."
+      - "Logs are stored in an immutable object store (e.g., S3 Glacier)."
+
+  NFR-0059:
+    description: |
+      The encryption solution must satisfy GDPR, PCI‑DSS, and ISO 27001
+      compliance requirements for data protection.
+    related_fr:
+      - FR-0050
+      - FR-0051
+      - FR-0052
+      - FR-0053
+      - FR-0054
+    measurement:
+      - "GDPR: All personal data is encrypted at rest and in transit."
+      - "PCI‑DSS: Encryption keys are stored in a PCI‑DSS‑compliant KMS."
+      - "ISO 27001: Key rotation and audit logging meet ISO 27001 control A.10.1.3."
+
+  NFR-0060:
+    description: |
+      The system must scale to support at least 10,000 requests per second
+      for encrypted API endpoints without exceeding the 2‑second response time target.
+    related_fr:
+      - FR-0050
+      - FR-0051
+    measurement:
+      - "Throughput ≥ 10,000 QPS."
+      - "Measured via synthetic load testing and auto‑scaling metrics."
+
+  NFR-0061:
+    description: |
+      Key‑rotation and encryption configuration must be fully automated,
+      requiring no manual intervention once the initial setup is complete.
+    related_fr:
+      - FR-0052
+    measurement:
+      - "Zero manual key‑rotation events logged in the past 12 months."
+      - "CI/CD pipeline triggers a key rotation job on schedule and verifies success."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

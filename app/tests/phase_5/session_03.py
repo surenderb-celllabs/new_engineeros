@@ -7,6 +7,7 @@ from langchain_ollama.embeddings import OllamaEmbeddings
 
 # from langchain_community.vectorstores import Chroma
 from langchain_chroma import Chroma
+from utils.file_management import load_yaml
 
 from app import ColoredLogger
 logger = ColoredLogger(name="STEP-001")
@@ -17,7 +18,43 @@ vector_store = Chroma(
     embedding_function=embeddings,
     persist_directory="./new_chroma_db"
 )
-graph = g.IdeaExpansion(vector_store=vector_store).compile()
+
+# in_state: State = {
+#     "messages": [HumanMessage(content="hi")],
+#     "convo_end": False
+# }
+# graph.invoke(in_state, config=config)
+
+path = "app/docs/user_stories.yaml"
+user_stories_list = load_yaml(file_name=path)["user_stories"]
+categories_dict = {}
+for story in user_stories_list:
+    if not user_stories_list[story]["category"] in categories_dict:
+        categories_dict[user_stories_list[story]["category"]] = []
+
+    categories_dict[user_stories_list[story]["category"]].append(story)
+# print(list(categories_dict.keys()))
+# print(categories_dict)
+
+categories = [
+    'Core Functionality', 'Access Control', 'AI Features', 'Export Functionality', 
+    'Offline Functionality', 'Data Integrity', 'Error Handling', 'Security'
+]
+
+
+category_index = 7
+
+
+fn_data = load_yaml("app/docs/func_nonfunc.yaml")
+# print(len(fn_data["functional_requirements"]), len(fn_data["non_functional_requirements"]))
+
+
+
+
+graph = g.IdeaExpansion(
+    vector_store=vector_store, 
+    user_stories_ids=categories_dict[categories[category_index]]
+).compile()
 checkpointer = InMemorySaver()
 
 pointer = InMemorySaver()
@@ -28,17 +65,17 @@ config = {
     "configurable": {"thread_id": "1"}
 }
 
-in_state: State = {
-    "messages": [HumanMessage(content="hi")],
-    "convo_end": False
-}
-graph.invoke(in_state, config=config)
-
 while True:
     input_msg = input("User: ")
     in_state: State = {
         "messages": [HumanMessage(content=input_msg)],
-        "convo_end": False
+        "convo_end": False,
+
+        "us_ids": categories_dict[categories[category_index]],
+        "us_category": categories[category_index],
+
+        "total_frs": len(fn_data["functional_requirements"])+1,
+        "total_nfrs": len(fn_data["non_functional_requirements"])+1
     }
     # graph.invoke(input=in_state, config=config)
 

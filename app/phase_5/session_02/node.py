@@ -145,30 +145,22 @@ class UserStoryRequirement(BaseNode):
         prompt_path = Path(STEP_PATH) / "prompts/user_story.md"
         prompt_data = load_file(str(prompt_path)).format(total_goals=len(goal["goals"]))
         
-        super().__init__(agent_tools, True, prompt_data, Model.Nvidia.gpt_oss_20b.bind_tools(agent_tools))
+        super().__init__(agent_tools, True, prompt_data, Model.Groq.gpt_oss_20b.bind_tools(agent_tools))
         
 
     def __call__(self, state: State) -> State:
         try:
 
             self._log_section_header("User Story Analysis")
-            # self.node_logger.warning(state["messages"])
-            
-            # Log input tokens
-            # input_tokens = self._log_input_tokens(state["messages"])
-            # self.node_logger.warning(f"Input Tokens Uses: {input_tokens}")
 
             response = self.model_chain.invoke(
                 self.prompt + state["messages"]
             )
-            self.node_logger.debug(response.tool_calls)
-            self.node_logger.debug(response.content)
+            self.node_logger.debug(f"Reason: {response.response_metadata}")
+            self.node_logger.debug(f"Tool Call: {response.tool_calls}")
+            self.node_logger.info(response.content)
 
             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
-
-            if isinstance(state["messages"][-1], ToolMessage):
-                RemoveMessage(state["messages"][-1].id)
-
 
             if response.tool_calls:
                 return {
@@ -187,13 +179,6 @@ class UserStoryRequirement(BaseNode):
                     "convo_end": False
                 }
             
-            # Log output tokens
-            # output_tokens = self._log_output_tokens(response)
-            # self.node_logger.warning(f"Output Tokens Uses: {output_tokens}")
-            
-            # self._write_message_on_writer_stream(resp_json["question"])
-            # self._write_options_on_writer_stream(resp_json["suggestions"])
-
             convo_end = resp_json["convo_end"]
             resp_json.pop("convo_end")
 
@@ -241,8 +226,6 @@ class UserStoryDocument(BaseNode):
             resp_json = self._yaml_string_with_fence_to_json(response.content)
             self.node_logger.debug(resp_json)
 
-            # self._log_input_tokens(state["messages"])
-            # self._log_output_tokens(response=response)
 
             return {
                 "messages": [AIMessage(content=json.dumps(resp_json))],

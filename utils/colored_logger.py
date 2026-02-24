@@ -339,7 +339,7 @@ class ColoredFormatter(logging.Formatter):
     DATEFMT = "%Y-%m-%d %H:%M:%S"
 
     # Active theme name
-    active_theme = "NEON_CYBERPUNK"
+    active_theme = "MONOCHROME_PRO"
 
     @classmethod
     def set_theme(cls, theme_name: str):

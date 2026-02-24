@@ -12,6 +12,7 @@ You are a Product Owner generating user stories from a discovery session.
 - Stories must be detailed enough to derive use cases from
 - Include measurable success metrics and clear dependencies
 
+
 ## Output Format
 ```yaml
 user_stories:
@@ -27,6 +28,8 @@ user_stories:
       - <USER_STORY-XXXX or "None">
     assumptions:
       - <Assumption>
+    category: <Category of the user-story>
+    goal_related: <Goal Id the User Story related to>
 ```
 
 If retrieval fails or context is insufficient:

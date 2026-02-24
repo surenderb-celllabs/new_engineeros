@@ -1,286 +1,214 @@
-
 user_stories:
-  - user_story_id: USER_STORY-0001
-    title: Capture media and receipts quickly in a timeline entry
-    as_a: Traveler (Solo, Group, Business)
-    i_want: A single tap “Add entry” that opens a camera, voice recorder, or receipt scanner
-    so_that: I can preserve memories and expenses without switching apps or spreadsheets
-    business_value: Reduces friction in the capture phase, increasing overall app usage and data quality
+  USER_STORY-0001:
+    title: Trip Creation & Management
+    as_a: Traveler (trip owner)
+    i_want: create, edit, and delete a trip and its components (itinerary, expenses, media, memories)
+    so_that: I can fully control the trip data without relying on third‑party tools
+    business_value: Eliminates context switching and manual duplication, reducing daily effort by 45 minutes
     success_metrics:
-      - 80% of logged trips contain at least one media entry captured via the app
-      - Avg. entry creation time ≤ 2 minutes
+      - 100% of trips created in the app are fully editable by the Traveler
+      - 95% of trips can be deleted without error
     dependencies:
       - None
     assumptions:
-      - User has a smartphone with camera and microphone
-      - App has permission to access device storage and camera
+      - Traveler has a valid account and is authenticated
+    category: Core Functionality
 
-  - user_story_id: USER_STORY-0002
-    title: Auto‑tag and auto‑categorise captured content
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The system to automatically attach a timestamp, location, and expense category when I capture media or a receipt
-    so_that: I don’t need to manually tag or categorize, saving time and reducing errors
-    business_value: Improves data consistency and speeds up subsequent reconciliation
+  USER_STORY-0002:
+    title: Buddy Invitation & Permission Setting
+    as_a: Traveler
+    i_want: invite buddies and assign view‑only or edit permissions on a per‑trip basis
+    so_that: I can control who can contribute to the trip while keeping the data secure
+    business_value: Enables collaborative planning without compromising data integrity
     success_metrics:
-      - 95% of expense entries auto‑categorised within 15 minutes of capture
-      - 70% of trips complete split wizard within 15 minutes of trip end
+      - 100% of invited buddies receive a notification within 2 minutes
+      - Permissions are reflected on all devices within 30 seconds
     dependencies:
-      - USER_STORY-0001
+      - USER_STORY-0001return story
+            
     assumptions:
-      - Device has GPS or network-based location services
-      - OCR engine can read receipts in supported formats
+      - Buddy has a valid device and network connectivity
+    category: Access Control
 
-  - user_story_id: USER_STORY-0003
-    title: Detect and handle duplicate receipts or media
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The app to warn me when a new receipt or photo matches an existing one
-    so_that: I can keep my data clean and avoid double‑counting expenses
-    business_value: Maintains data integrity, essential for accurate reporting
+  USER_STORY-0003:
+    title: Buddy View‑Only Access
+    as_a: Buddy
+    i_want: view all trip data (itinerary, expenses, media, memories) but not edit
+    so_that: I can stay informed about the trip without altering shared information
+    business_value: Maintains data consistency while allowing full transparency
     success_metrics:
-      - Duplicate detection accuracy ≥ 90%
-      - Users resolve duplicates in ≤ 1 minute per instance
+      - 100% of view‑only buddies can load all trip data within 5 seconds
+      - No edit actions are permitted for view‑only users
     dependencies:
       - USER_STORY-0002
     assumptions:
-      - Duplicate detection uses file hash or OCR text comparison
+      - Buddy is logged into the same account or invited via link
+    category: Access Control
 
-  - user_story_id: USER_STORY-0004
-    title: AI‑generated itinerary suggestions pre‑trip
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The app to propose a day‑by‑day itinerary based on destination, dates, budget, and preferences
-    so_that: I can plan my trip efficiently before I leave
-    business_value: Enhances user engagement and positions the app as a comprehensive travel companion
+  USER_STORY-0004:
+    title: Expense Logging with Media Attachment
+    as_a: Traveler
+    i_want: log an expense, attach a photo, and split the bill among selected buddies
+    so_that: I can record costs accurately and distribute payments in real time
+    business_value: Reduces manual bookkeeping and errors in group expenses
     success_metrics:
-      - 60% of users accept at least one AI suggestion per day
-      - 40% of itineraries are edited and saved for future use
+      - 99% of expenses are logged within 10 seconds
+      - Split amounts are calculated automatically and displayed to all involved parties
     dependencies:
       - USER_STORY-0001
+      - USER_STORY-0002
     assumptions:
-      - The app contains an internal attraction database
-      - No external APIs are used
+      - Device camera or photo library is accessible
+    category: Core Functionality
 
-  - user_story_id: USER_STORY-0005
-    title: Edit itinerary during the trip and log changes for all group members
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The ability to modify the shared itinerary on the fly, with a change log visible to everyone
-    so_that: All participants stay on the same plan and can see updates in real time
-    business_value: Supports dynamic travel planning and improves collaboration for group travelers
+  USER_STORY-0005:
+    title: Buddy Expense Visibility
+    as_a: Buddy
+    i_want: view the split amount and details of each expense logged by the Traveler
+    so_that: I can understand my financial obligations without editing the data
+    business_value: Ensures transparency and trust among group members
     success_metrics:
-      - All itinerary edits are reflected across devices within 5 seconds
-      - Group members view change log entries with ≥ 90% satisfaction
+      - 100% of expense details are visible to view‑only buddies
+      - No edit actions are allowed for buddies on expense entries
     dependencies:
       - USER_STORY-0004
     assumptions:
-      - Group members have the app installed and are online or will sync later
+      - Buddy has been granted view‑only access
+    category: Access Control
 
-  - user_story_id: USER_STORY-0006
-    title: Auto‑generate daily and trip summaries
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The app to create a concise summary of each day and the entire trip, including media, key events, and expenses
-    so_that: I can quickly review and share my journey without manual editing
-    business_value: Drives content sharing and keeps users engaged long after the trip
+  USER_STORY-0006:
+    title: Automatic Expense Categorization
+    as_a: Traveler
+    i_want: the system to auto‑categorize expenses based on merchant or amount
+    so_that: I can quickly review spend categories without manual tagging
+    business_value: Improves data analysis and reduces entry time
     success_metrics:
-      - 75% of daily summaries rated ≥ 4/5 on a satisfaction scale
-      - 50% of trip summaries are shared publicly or with friends
-      - Avg. read time ≤ 1 minute
+      - 90% of expenses are correctly categorized on first entry
+      - Manual override is available and logged
+    dependencies:
+      - USER_STORY-0004
+    assumptions:
+      - System has access to a merchant database or rule engine
+    category: Core Functionality
+
+  USER_STORY-0007:
+    title: Daily AI Summary Generation
+    as_a: Traveler
+    i_want: receive an AI‑generated summary at the end of each day
+    so_that: I can quickly review key moments, spend, and receive itinerary suggestions
+    business_value: Enhances user satisfaction and encourages daily engagement
+    success_metrics:
+      - Summary is generated and displayed within 30 seconds of day‑end
+      - 95% of travelers open the summary within 24 hours
     dependencies:
       - USER_STORY-0001
       - USER_STORY-0004
     assumptions:
-      - Summarization engine can process mixed media (text, images, audio)
+      - AI service is available and responsive
+    category: AI Features
 
-  - user_story_id: USER_STORY-0007
-    title: Export summaries as link, image, or PDF
-    as_a: Traveler (Solo, Group, Business)
-    i_want: A one‑click export that produces a shareable link, a snapshot image, or a PDF of the summary
-    so_that: I can send it via email, social media, or internal communication tools
-    business_value: Simplifies sharing and encourages external visibility of the app’s value
+  USER_STORY-0008:
+    title: Trip Export to PDF and Images
+    as_a: Traveler
+    i_want: export the entire trip (itinerary, expenses, media, AI summary) as a PDF or set of images
+    so_that: I can share the trip with friends or keep a backup
+    business_value: Provides tangible deliverables and facilitates sharing
     success_metrics:
-      - 90% of exported files open correctly on target devices
-      - 70% of exported summaries are shared within 24 hours of trip end
-    dependencies:
-      - USER_STORY-0006
-    assumptions:
-      - The app can generate PDFs and images locally
-
-  - user_story_id: USER_STORY-0008
-    title: Capture entries offline and sync later
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The ability to record media, receipts, and notes while offline, with automatic sync when connectivity returns
-    so_that: I never lose data, even in remote locations
-    business_value: Increases reliability and user trust in challenging environments
-    success_metrics:
-      - 95% of captured entries sync within 24 hours of connectivity
-      - Sync error rate < 1%
-      - No data loss reported during offline periods
+      - Export completes within 2 minutes for trips up to 30 days
+      - PDF is viewable on standard PDF readers with all data intact
     dependencies:
       - USER_STORY-0001
     assumptions:
-      - Device supports local storage up to 10 GB per trip
-      - Background sync service complies with platform guidelines
+      - User has sufficient device storage for export
+    category: Export Functionality
 
-  - user_story_id: USER_STORY-0009
-    title: View captured entries offline
-    as_a: Traveler (Solo, Group, Business)
-    i_want: To browse and review my trip timeline and media even without internet
-    so_that: I can reflect on my journey anytime, anywhere
-    business_value: Enhances user experience by providing continuous access to data
+  USER_STORY-0009:
+    title: Offline Data Creation & Sync
+    as_a: Traveler
+    i_want: create and edit trip data while offline and sync automatically when online
+    so_that: I can work during flights or remote areas without losing information
+    business_value: Improves usability in low‑connectivity scenarios
     success_metrics:
-      - Offline view latency ≤ 2 seconds
-      - User satisfaction with offline experience ≥ 80%
-    dependencies:
-      - USER_STORY-0008
-    assumptions:
-      - All captured media are stored locally until sync
-
-  - user_story_id: USER_STORY-0010
-    title: Set visibility per entry (public, friends, private)
-    as_a: Traveler (Solo, Group, Business)
-    i_want: To toggle the privacy setting for each timeline entry at capture or later
-    so_that: I control who can see my memories and expenses
-    business_value: Protects user privacy and encourages sharing within trusted circles
-    success_metrics:
-      - 90% of users set visibility preferences for ≥ 50% of entries
-      - 70% of shared content follows user‑defined settings
+      - 100% of offline changes are persisted locally
+      - Sync completes within 5 minutes after reconnection
+      - No data loss or duplication after sync
     dependencies:
       - USER_STORY-0001
     assumptions:
-      - Backend supports role‑based access control
+      - Device supports local storage and background sync
+    category: Offline Functionality
 
-  - user_story_id: USER_STORY-0011
-    title: Share selected entries with specific friends
-    as_a: Traveler (Solo, Group, Business)
-    i_want: To choose friends from my contact list and share individual entries or entire trip summaries with them
-    so_that: I can share moments privately without exposing them to everyone
-    business_value: Facilitates personal sharing while respecting privacy preferences
+  USER_STORY-0010:
+    title: Duplicate Entry Detection
+    as_a: Traveler
+    i_want: the system to detect duplicate expenses or media and merge or flag them
+    so_that: I avoid clutter and maintain accurate records
+    business_value: Enhances data quality and reduces manual cleanup
     success_metrics:
-      - 80% of share actions complete successfully
-      - 70% of shared content is shared according to user‑defined settings
-    dependencies:
-      - USER_STORY-0010
-    assumptions:
-      - The app can resolve friend lists and maintain secure links
-
-  - user_story_id: USER_STORY-0012
-    title: Export expense report as PDF for business users
-    as_a: Business User
-    i_want: A simple export of the expense reconciliation into a PDF that I can attach to internal emails
-    so_that: I can meet corporate reporting requirements without leaving the app
-    business_value: Provides a business‑ready artifact, increasing adoption among corporate travelers
-    success_metrics:
-      - Exported PDF is accepted by corporate accounting systems ≥ 80% of the time
-      - Users complete export within 5 minutes of trip end
-    dependencies:
-      - USER_STORY-0003 (expense reconciliation)
-      - USER_STORY-0006 (summary generation)
-    assumptions:
-      - The PDF format adheres to corporate standards
-
-  - user_story_id: USER_STORY-0013
-    title: Log changes to itinerary for audit
-    as_a: Traveler (Solo, Group, Business)
-    i_want: A history log that records every edit to the itinerary, including who made the change and when
-    so_that: I can review the evolution of the plan and maintain transparency
-    business_value: Supports accountability for group travelers and audit trails for business users
-    success_metrics:
-      - Log entries are visible to all participants within 5 seconds
-      - Users can revert to any previous version with ≥ 95% success
-    dependencies:
-      - USER_STORY-0005
-    assumptions:
-      - The app maintains a versioned data store for itineraries
-
-  - user_story_id: USER_STORY-0014
-    title: Notify user of potential privacy violations
-    as_a: Traveler (Solo, Group, Business)
-    i_want: A warning if I attempt to share an entry that is set to private with a public link
-    so_that: I avoid accidental disclosure of sensitive content
-    business_value: Reduces privacy incidents and support tickets
-    success_metrics:
-      - 90% of accidental public share attempts are intercepted
-      - Privacy‑related support tickets < 5% of total tickets
-    dependencies:
-      - USER_STORY-0010
-    assumptions:
-      - The app can detect visibility settings before sharing actions
-
-  - user_story_id: USER_STORY-0015
-    title: Maintain offline sync queue integrity
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The app to queue all offline changes and ensure they are applied in order when back online
-    so_that: My data remains consistent across devices
-    business_value: Prevents data corruption and user frustration
-    success_metrics:
-      - 99% of queued changes are applied correctly after sync
-      - No duplicate entries appear after sync
-    dependencies:
-      - USER_STORY-0008
-    assumptions:
-      - Network connectivity returns within 48 hours for most users
-
-  - user_story_id: USER_STORY-0016
-    title: Provide quick access to expense split wizard after trip end
-    as_a: Traveler (Solo, Group, Business)
-    i_want: The app to automatically launch the split wizard within 5 minutes of trip completion
-    so_that: I can finalize expenses promptly and avoid backlog
-    business_value: Improves completion rates for expense reconciliation
-    success_metrics:
-      - 70% of trips complete split wizard within 15 minutes of trip end
-    dependencies:
-      - USER_STORY-0003
-    assumptions:
-      - Trip end is detected via user action or GPS cessation
-
-  - user_story_id: USER_STORY-0017
-    title: Allow manual override of AI itinerary suggestions
-    as_a: Traveler (Solo, Group, Business)
-    i_want: To edit or delete AI‑generated itinerary items without affecting the overall plan
-    so_that: I can tailor the plan to my real‑time needs
-    business_value: Increases user control and satisfaction
-    success_metrics:
-      - 60% of users make at least one manual edit per trip
+      - 95% of duplicate entries are detected within 10 seconds of creation
+      - User is prompted to confirm merge or keep both entries
     dependencies:
       - USER_STORY-0004
     assumptions:
-      - The UI supports drag‑and‑drop and inline editing
+      - System can compare metadata (timestamp, location, amount)
+    category: Data Integrity
 
-  - user_story_id: USER_STORY-0018
-    title: Provide summary preview before export
-    as_a: Traveler (Solo, Group, Business)
-    i_want: A preview of the daily or trip summary with editable text fields
-    so_that: I can correct typos or add personal notes before sharing
-    business_value: Enhances quality of shared content and reduces post‑share edits
+  USER_STORY-0011:
+    title: Time‑Zone Aware Timestamps
+    as_a: Traveler
+    i_want: all timestamps stored in UTC and displayed in the local time of the itinerary location
+    so_that: I can accurately track events across multiple zones
+    business_value: Prevents confusion and ensures correct scheduling
     success_metrics:
-      - 85% of users edit the preview before final export
+      - 100% of displayed times match the local time zone of the itinerary entry
+      - No user reports of time‑zone errors
     dependencies:
-      - USER_STORY-0006
+      - USER_STORY-0001
     assumptions:
-      - The app can render a formatted preview of the summary
+      - Device provides accurate time‑zone information
+    category: Data Integrity
 
-  - user_story_id: USER_STORY-0019
-    title: Log all privacy setting changes for compliance audit
-    as_a: Business User
-    i_want: A record of every privacy setting change with timestamp and user ID
-    so_that: I can demonstrate compliance with corporate data‑protection policies
-    business_value: Meets regulatory requirements and reduces audit risk
+  USER_STORY-0012:
+    title: Corrupted Media Handling
+    as_a: Traveler
+    i_want: the app to detect corrupted media files and offer retry or removal
+    so_that: I can maintain a clean media gallery without crashes
+    business_value: Improves app stability and user confidence
     success_metrics:
-      - Audit logs are retained for 12 months
-      - Log integrity verified with ≥ 99% accuracy
+      - 100% of corrupted files trigger an error dialog within 2 seconds
+      - Users can successfully retry or delete the file in 80% of cases
     dependencies:
-      - USER_STORY-0010
+      - USER_STORY-0004
     assumptions:
-      - The backend stores audit logs in a tamper‑evident manner
+      - Media validation logic is implemented
+    category: Error Handling
 
-  - user_story_id: USER_STORY-0020
-    title: Ensure data encryption at rest for offline storage
-    as_a: Traveler (Solo, Group, Business)
-    i_want: All locally stored media and entries to be encrypted on device
-    so_that: My data remains protected even if the device is lost or stolen
-    business_value: Strengthens security posture and user trust
+  USER_STORY-0013:
+    title: Permission Revocation
+    as_a: Traveler
+    i_want: revoke a buddy’s permissions at any time
+    so_that: I can control access if a buddy leaves or changes role
+    business_value: Maintains security and data ownership
     success_metrics:
-      - 100% of offline data is encrypted with AES‑256
-      - No data breaches reported
+      - Permission changes propagate to all devices within 30 seconds
+      - Revoked buddy can no longer view or edit trip data
     dependencies:
-      - USER_STORY-0008
+      - USER_STORY-0002
     assumptions:
-      - Device supports secure storage APIs
+      - Buddy has an active session
+    category: Access Control
+
+  USER_STORY-0014:
+    title: Data Encryption
+    as_a: System
+    i_want: all trip data encrypted at rest and in transit
+    so_that: user privacy and compliance requirements are met
+    business_value: Protects sensitive financial and personal information
+    success_metrics:
+      - 100% of data stored in the database is encrypted with AES‑256
+      - All API traffic uses TLS 1.3
+    dependencies:
+      - None
+    assumptions:
+      - Underlying infrastructure supports encryption
+    category: Security

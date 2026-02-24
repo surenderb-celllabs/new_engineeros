@@ -7,6 +7,7 @@ from app.tools import vectordb, google
 from langgraph.graph import StateGraph, START,END
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.prebuilt import ToolNode, tools_condition
+from langchain_core.messages import ToolMessage, RemoveMessage
         
 
 
@@ -33,10 +34,16 @@ class IdeaExpansion:
             "PROBLEM_DOCUMENT", 
             node.ProblemDocument(self.agent_tools)
         )
+
+        self.graph_builder.add_node(
+            "TOOL_MSG_REMOVER",
+            self._remove_tool_messages
+        )
         
         
         # Start flow
-        self.graph_builder.add_edge(START, "PROBLEM_SOLUTION_CONVO")
+        self.graph_builder.add_edge(START, "TOOL_MSG_REMOVER")
+        self.graph_builder.add_edge("TOOL_MSG_REMOVER", "PROBLEM_SOLUTION_CONVO")
         
         # Conditional edge: Check conversation phase and completion
         self.graph_builder.add_conditional_edges(
@@ -53,6 +60,14 @@ class IdeaExpansion:
         checkpointer = InMemorySaver()
         return self.graph_builder.compile(checkpointer=checkpointer)
     
+
+    def _remove_tool_messages(self, state: State) -> State:
+        for msg in state["messages"]:
+            if isinstance(msg, ToolMessage):
+                RemoveMessage(msg.id)
+
+        return state
+
 
     def _should_proceed_to_document(self, state: State) -> str:
         """

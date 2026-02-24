@@ -32,10 +32,20 @@ class State(TypedDict):
     convo_end: bool
     
     # Conversation tracking
-    conversation_phase: str
-    start_convo_index: int
+    user_stories_category_list: List[str]
+    user_story_category_topics: Dict
+    user_story_category: str
+    user_story_category_total: int
+    user_story_category_current: int
+    user_stories: Dict
 
-    current_index: int
+
+    # Use these
+    us_ids: List[str]
+    us_category: str
+
+    total_frs: int
+    total_nfrs: int
 
     
 

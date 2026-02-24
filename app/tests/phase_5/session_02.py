@@ -45,14 +45,9 @@ while True:
         # logger.info(f"The mode is {mode}")
         # logger.error(f"The chunks are {chunks}")
 
-        logger.warning(f"AI: {meta["messages"][-1].content}")
+        # logger.warning(f"AI: {meta["messages"][-1].content}")
 
     # logger.error(meta)
-
-
-# {"product_name": "SmartMed Scheduler", "domain": "HealthTech", "description": "An AI-powered platform that automatically schedules patient appointments, sends reminders, and optimizes doctor availability based on historical patterns and patient preferences."}
-# {"product_name":"FinSight Ledger","domain":"FinTech","description":"An AI-driven personal finance platform that categorizes transactions, forecasts cash flow, and provides real-time spending insights and savings recommendations."}
-
 
 
 

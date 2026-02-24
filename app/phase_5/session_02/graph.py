@@ -8,7 +8,10 @@ from langgraph.graph import StateGraph, START,END
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.prebuilt import ToolNode, tools_condition
 from langchain_core.messages import AIMessage
-        
+from langchain_core.messages import ToolMessage, RemoveMessage
+
+from app import ColoredLogger
+logger = ColoredLogger("Graph")
 
 
 class IdeaExpansion:
@@ -36,10 +39,17 @@ class IdeaExpansion:
             "USER_STORY_DOC", 
             node.UserStoryDocument(self.agent_tools)
         )
+        self.graph_builder.add_node(
+            "TOOL_MSG_REMOVER",
+            self._remove_tool_messages
+        )
+        
         
         
         # Start flow
-        self.graph_builder.add_edge(START, "USER_STORY_CONVO")
+        self.graph_builder.add_edge(START, "TOOL_MSG_REMOVER")
+        self.graph_builder.add_edge("TOOL_MSG_REMOVER", "USER_STORY_CONVO")
+
         
         # Conditional edge: Check conversation phase and completion
         self.graph_builder.add_conditional_edges(
@@ -61,6 +71,29 @@ class IdeaExpansion:
         checkpointer = InMemorySaver()
         return self.graph_builder.compile(checkpointer=checkpointer)
     
+
+
+    def _remove_tool_messages(self, state: State) -> State:
+        for msg in state["messages"]:
+            if isinstance(msg, ToolMessage):
+                RemoveMessage(msg.id)
+
+        remove_ids = [
+            msg.id
+            for msg in state["messages"]
+            if isinstance(msg, ToolMessage)
+        ]
+
+        return_state = state.copy()
+        return_state["messages"] = [
+            RemoveMessage(msg_id)
+            for msg_id in remove_ids
+        ]
+
+        
+        logger.debug(return_state)
+        return return_state
+
 
     def _should_proceed_to_document(self, state: State) -> str:
         """

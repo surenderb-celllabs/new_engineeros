@@ -4,11 +4,13 @@ import re, yaml, json
 
 from app import ColoredLogger, Model, load_file, log_error
 from app.phase_5.session_03 import STEP_PATH, State, ResponseType
-from utils.file_management import load_yaml
+from utils.file_management import load_yaml, save_json
 
+from langchain_core.tools import tool
 from langchain_core.prompts import PromptTemplate
 from langchain_core.messages import (
     AIMessage,
+    HumanMessage,
     SystemMessage,
     ToolMessage,
     RemoveMessage
@@ -147,26 +149,38 @@ class BaseNode:
         })
 
 
+    def _save_state_message(self, state: State):
+        file_path = "app/phase_5/session_03/convo.json"
+        state_message = {"messages": []}
+        try:
+            for msg in state["messages"]:
+                if isinstance(msg, AIMessage):
+                    state_message["messages"].append({"ai_message": msg.content})
+                elif isinstance(msg, HumanMessage):
+                    state_message["messages"].append({"human_message": msg.content})
+
+            save_json(file_name=file_path, data=state_message)
+        except Exception as e:
+            self.node_logger.error(f"[_save_state_message]: {e}")
+
+
 
 class SystemRequirement(BaseNode):
-    def __init__(self, agent_tools: List):
-        user_stories = load_yaml("app/docs/user_stories.yaml")
+    def __init__(self, agent_tools: List, user_stories_ids: List):
 
         prompt_path = Path(STEP_PATH) / "prompts/func_nonfunc.md"
-        prompt_data = load_file(str(prompt_path)).format(user_story_count=len(user_stories["user_stories"]))
-        
-        super().__init__(agent_tools, True, prompt_data, Model.Nvidia.gpt_oss_20b.bind_tools(agent_tools))
+        prompt_data = load_file(str(prompt_path)).format(user_ids=user_stories_ids) 
+
+        super().__init__(agent_tools, True, prompt_data, 
+                         Model.Nvidia.gpt_oss_20b.bind_tools(agent_tools))
         
 
     def __call__(self, state: State) -> State:
         try:
-
-            self._log_section_header("User Story Analysis")
-            # self.node_logger.warning(state["messages"])
+            # self.node_logger.warning(state)
             
-            # Log input tokens
-            # input_tokens = self._log_input_tokens(state["messages"])
-            # self.node_logger.warning(f"Input Tokens Uses: {input_tokens}")
+            self._save_state_message(state=state)
+            self._log_section_header("User Story Analysis")
 
             response = self.model_chain.invoke(
                 self.prompt + state["messages"]
@@ -185,7 +199,8 @@ class SystemRequirement(BaseNode):
             if response.tool_calls:
                 return {
                     "messages": [response],
-                    "convo_end": False
+                    "convo_end": False, 
+
                 }
             
 
@@ -196,7 +211,8 @@ class SystemRequirement(BaseNode):
                 return {
                     "messages": [AIMessage(content="")],
                     "resp_type": ResponseType.NONE.value,
-                    "convo_end": False
+                    "convo_end": False, 
+
                 }
             
             # Log output tokens
@@ -212,7 +228,7 @@ class SystemRequirement(BaseNode):
             return {
                 "messages": [AIMessage(content=json.dumps(resp_json))],
                 "resp_type": ResponseType.MESSAGE.value,
-                "convo_end": convo_end
+                "convo_end": convo_end, 
             }
         
         except Exception as e:
@@ -220,7 +236,7 @@ class SystemRequirement(BaseNode):
             return {
                 "messages": "",
                 "resp_type": ResponseType.ERROR.value,
-                "convo_end": False
+                "convo_end": False, 
             }
 
 class SystemDocument(BaseNode):
@@ -236,10 +252,14 @@ class SystemDocument(BaseNode):
 
     def __call__(self, state: State) -> State:
         try:
+            self._save_state_message(state=state)
             self._log_section_header("User Story Doc Generator")
 
             response = self.model_chain.invoke({
-                "conversation": state["messages"]
+                "user_ids": state["us_ids"],
+                "conversation": state["messages"],
+                "fr_index": state["total_frs"],
+                "nrf_index": state["total_nfrs"]
             })
             self.node_logger.debug(response.content)
             self.node_logger.warning(f"Input: {response.usage_metadata["input_tokens"]}, Output: {response.usage_metadata["output_tokens"]}, Total: {response.usage_metadata["total_tokens"]}")
@@ -253,7 +273,7 @@ class SystemDocument(BaseNode):
             if response.tool_calls:
                 return {
                     "messages": [response],
-                    "convo_end": False
+                    "convo_end": False, 
                 }
             
 
@@ -263,14 +283,16 @@ class SystemDocument(BaseNode):
             # self._log_input_tokens(state["messages"])
             # self._log_output_tokens(response=response)
 
+
             return {
                 "messages": [AIMessage(content=json.dumps(resp_json))],
                 "resp_type": ResponseType.APPROVAL.value,
                 "convo_end": True,
                 "start_convo_index": len(state["messages"]),
                 
-                "goals": resp_json,
-                "current_index": 0,
+                "total_fr": state["total_frs"],
+                "total_nfr": state["total_nfrs"],
+
             }
 
 
@@ -285,3 +307,34 @@ class SystemDocument(BaseNode):
             }
 
  
+class Tools:
+    def user_story():
+        
+        @tool
+        def get_user_story_based_on_id(user_story_ids: List[str]):
+            """
+            A Tool used to get the user story based on its ids.
+            
+            :param user_story_id: List of User Story Id which are required
+            :type user_story_id: List[str]
+            """
+
+
+            file_path = "app/docs/user_stories.yaml"
+            user_stories_list = load_yaml(file_name=file_path)["user_stories"]
+            output_dict = {}
+
+            print(user_story_ids)
+            for id in user_story_ids:
+                output_dict.update({id:user_stories_list[id]})
+                        
+
+            # print(categories_dict)
+            return output_dict
+    
+
+        return get_user_story_based_on_id
+
+
+# fn = Tools.user_story()
+# print(fn())
