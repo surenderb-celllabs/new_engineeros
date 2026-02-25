@@ -55,17 +55,12 @@ Your goal is to lead a structured yet conversational discussion that covers:
 
 ## SESSION INPUTS (to be provided by the user):
 
-Functional & Non Functional Requirements: {func_nonfunc_reqr}
 Architecture: {architecture}
-User Stories: {user_stories}
 
 ---
 
 ## BEGIN THE SESSION:
-
-Once the inputs above are provided, open the session naturally as if you're starting 
-a video call with the client. Introduce yourself briefly, confirm the agenda, 
-summarize your read of the inputs, and dive into the first topic.
+Summarize whats in the architecture and then move on.
 
 ## Always output the data in the format of 
 ```yaml

@@ -292,15 +292,15 @@ class TechnologyStackDocument(BaseNode):
                 }
             
 
-            resp_json = self._yaml_string_with_fence_to_json(response.content)
-            self.node_logger.debug(resp_json)
+            # resp_json = self._yaml_string_with_fence_to_json(response.content)
+            # self.node_logger.debug(resp_json)
 
             # self._log_input_tokens(state["messages"])
             # self._log_output_tokens(response=response)
 
 
             return {
-                "messages": [AIMessage(content=json.dumps(resp_json))],
+                "messages": [AIMessage(content=response.content)],
                 "resp_type": ResponseType.APPROVAL.value,
                 "convo_end": True,
                 "start_convo_index": len(state["messages"]),
