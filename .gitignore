@@ -1,4 +1,5 @@
 .venv
+.vscode
 __pycache__
 app/tools/tools_doc
 app/tools/save_docs
