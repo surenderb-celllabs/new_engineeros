@@ -27,6 +27,7 @@ def get_db() -> Generator[Session, None, None]:
 def init_db() -> None:
     # Import models so SQLAlchemy metadata is fully populated before create_all.
     from services.api.projects import model as _project_models  # noqa: F401
+    from services.api.sessions import model as _session_models  # noqa: F401
     from services.api.users import model as _user_models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)

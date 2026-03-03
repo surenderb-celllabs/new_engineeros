@@ -1,0 +1,7 @@
+phases:
+  phase_5:
+    - Problem Identification
+    - User Story Identification
+    - Core Functional and Non-Functional Requirements 
+    - Architecture Designing
+    - Tech Stack Decisions

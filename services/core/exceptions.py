@@ -16,3 +16,7 @@ class ResourceNotFoundError(Exception):
 
 class PermissionDeniedError(Exception):
     """Raised when a user does not have permission to access a resource."""
+
+
+class ResourceConflictError(Exception):
+    """Raised when a resource update/create conflicts with existing data."""

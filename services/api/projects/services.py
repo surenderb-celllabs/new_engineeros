@@ -143,6 +143,9 @@ def create_workspace_project(
     )
     project.members.append(current_user)
     project = create_project(db, project)
+    from services.api.sessions.services import initialize_project_workflow
+
+    initialize_project_workflow(db, project.id, current_user.id)
     return _project_to_response(project)
 
 
