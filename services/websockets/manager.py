@@ -1,4 +1,6 @@
 from collections import defaultdict
+import json
+from typing import Any
 
 from fastapi import WebSocket
 from starlette.websockets import WebSocketState
@@ -38,16 +40,23 @@ class ConnectionManager:
             len(room),
         )
 
-    async def broadcast(self, conversation_id: str, message: str) -> None:
+    async def broadcast(self, conversation_id: str, message: Any) -> None:
         sockets = list(self._rooms.get(conversation_id, ()))
         if not sockets:
             self._logger.debug("Broadcast skipped; no sockets for conversation_id=%s", conversation_id)
             return
 
+        if not isinstance(message, str):
+            if isinstance(message, (dict, list)):
+                message = json.dumps(message, ensure_ascii=False)
+            else:
+                message = str(message)
+
         self._logger.debug(
-            "Broadcasting message to room conversation_id=%s recipients=%s",
+            "Broadcasting message to room conversation_id=%s recipients=%s with message: %s",
             conversation_id,
             len(sockets),
+            message
         )
         for socket in sockets:
             await socket.send_text(message)

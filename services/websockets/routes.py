@@ -1,15 +1,16 @@
 import os
+import json
 from importlib import import_module
 from typing import Any
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_ollama.embeddings import OllamaEmbeddings
 from sqlalchemy import select
 from uuid import NAMESPACE_URL, uuid5
 from dotenv import load_dotenv
 
-from services.api.sessions.model import ProjectSessionVersion
+from services.api.sessions.model import ConversationMessage, ConversationState, ProjectSessionVersion
 from services.api.sessions.services import load_phase_session_config
 from services.api.users.crud import get_user_by_email
 from services.core.config import settings
@@ -64,6 +65,107 @@ def _extract_phase_number(phase_key: str, default_index: int) -> int:
         if suffix.isdigit():
             return int(suffix)
     return default_index
+
+
+def _append_conversation_message(
+    *,
+    conversation_id: str,
+    role: str,
+    content: str,
+) -> str:
+    db = SessionLocal()
+    try:
+        state = db.execute(
+            select(ConversationState).where(ConversationState.conversation_id == conversation_id)
+        ).scalar_one_or_none()
+        if state is None:
+            state = ConversationState(conversation_id=conversation_id)
+            db.add(state)
+            db.flush()
+
+        message = ConversationMessage(
+            conversation_id=conversation_id,
+            role=role,
+            content=content,
+            previous_message_id=state.last_message_id,
+            next_message_id=None,
+        )
+        db.add(message)
+        db.flush()
+
+        if state.last_message_id:
+            previous = db.get(ConversationMessage, state.last_message_id)
+            if previous is not None:
+                previous.next_message_id = message.id
+
+        if state.first_message_id is None:
+            state.first_message_id = message.id
+        state.last_message_id = message.id
+        db.commit()
+
+        logger.debug(
+            "Stored conversation message conversation_id=%s role=%s message_id=%s previous_id=%s",
+            conversation_id,
+            role,
+            message.id,
+            message.previous_message_id,
+        )
+        return message.id
+    except Exception:
+        db.rollback()
+        logger.exception(
+            "Failed to store conversation message conversation_id=%s role=%s",
+            conversation_id,
+            role,
+        )
+        raise
+    finally:
+        db.close()
+
+
+def _get_conversation_history(conversation_id: str) -> list[ConversationMessage]:
+    db = SessionLocal()
+    try:
+        state = db.execute(
+            select(ConversationState).where(ConversationState.conversation_id == conversation_id)
+        ).scalar_one_or_none()
+        if state is None or state.last_message_id is None:
+            return []
+
+        history_reverse: list[ConversationMessage] = []
+        cursor_id = state.last_message_id
+        while cursor_id:
+            row = db.get(ConversationMessage, cursor_id)
+            if row is None:
+                break
+            history_reverse.append(row)
+            cursor_id = row.previous_message_id
+
+        return list(reversed(history_reverse))
+    finally:
+        db.close()
+
+
+def _history_payload(conversation_id: str) -> list[dict[str, str]]:
+    rows = _get_conversation_history(conversation_id)
+    payload: list[dict[str, str]] = []
+    for row in rows:
+        if row.role == "ai":
+            payload.append({"ai": row.content})
+        elif row.role == "human":
+            payload.append({"human": row.content})
+    return payload
+
+
+def _history_langchain_messages(conversation_id: str) -> list[Any]:
+    rows = _get_conversation_history(conversation_id)
+    messages: list[Any] = []
+    for row in rows:
+        if row.role == "ai":
+            messages.append(AIMessage(content=row.content))
+        elif row.role == "human":
+            messages.append(HumanMessage(content=row.content))
+    return messages
 
 
 def _derive_phase_session_numbers(row: ProjectSessionVersion) -> tuple[int, int] | None:
@@ -168,10 +270,11 @@ async def _graph_output_from_compiled_graph(
     message: str,
     *,
     conversation_id: str,
-) -> None:
+) -> str:
     logger.debug("Starting graph stream for conversation_id=%s", conversation_id)
+    history_messages = _history_langchain_messages(conversation_id)
     graph_input = {
-        "messages": [HumanMessage(content=message)],
+        "messages": history_messages,
         "convo_end": False,
         "us_ids": [],
         "us_category": "",
@@ -183,26 +286,85 @@ async def _graph_output_from_compiled_graph(
         "configurable": {"thread_id": conversation_id},
     }
 
+    latest_output = ""
+
     async def _run_stream() -> None:
+        nonlocal latest_output
         for mode, chunks, meta in graph.stream(
             input=graph_input,
             config=config,
             subgraphs=True,
-            stream_mode=["custom"],
+            stream_mode=["values", "custom"],
         ):
-            if isinstance(meta, dict) and meta.get("resp_type") == "options":
-                logger.debug("Skipping options response in stream for conversation_id=%s", conversation_id)
-                continue
+            logger.debug(f"[{chunks}]: {meta}")
+            # if chunks == "custom":
+            #     custom_payload = meta if isinstance(meta, dict) else {}
+            #     custom_content = (
+            #         custom_payload.get("response")
+            #         or custom_payload.get("content")
+            #         or custom_payload.get("message")
+            #         or custom_payload.get("ai_message")
+            #         or ""
+            #     )
+            #     if custom_content:
+            #         latest_output = str(custom_content)
+            #         await manager.broadcast(
+            #             conversation_id=conversation_id,
+            #             message=str(custom_payload),
+            #         )
+            #     continue
+
+            # if isinstance(meta, dict) and meta.get("resp_type") == "options":
+            #     logger.debug("Skipping options response in stream for conversation_id=%s", conversation_id)
+            #     continue
+
+            # messages = meta.get("messages") if isinstance(meta, dict) else None
+            # if messages:
+            #     content = getattr(messages[-1], "content", "")
+            #     if content:
+            #         if isinstance(content, (dict, list)):
+            #             latest_output = json.dumps(content, ensure_ascii=False)
+            #         else:
+            #             latest_output = str(content)
+            #         logger.debug("Streaming content chunk for conversation_id=%s", conversation_id)
+            #         await manager.broadcast(
+            #             conversation_id=conversation_id,
+            #             message=latest_output,
+            #         )
+
+            if chunks == "custom":
+                if meta["type"] == "ai_response":
+                    await manager.broadcast(
+                        conversation_id=conversation_id,
+                        message=str({
+                            "resp_type": "message",
+                            "content": meta["response"]
+                        })
+                    )
+                elif meta["type"] == "document":
+                    await manager.broadcast(
+                        conversation_id=conversation_id,
+                        message=str({
+                            "resp_type": "document",
+                            "content": meta["response"]
+                        })
+                    )
 
             messages = meta.get("messages") if isinstance(meta, dict) else None
             if messages:
                 content = getattr(messages[-1], "content", "")
                 if content:
+                    if isinstance(content, (dict, list)):
+                        latest_output = json.dumps(content, ensure_ascii=False)
+                    else:
+                        latest_output = str(content)
                     logger.debug("Streaming content chunk for conversation_id=%s", conversation_id)
-                    await manager.broadcast(conversation_id=conversation_id, message=content)
+
+
 
     await _run_stream()
     logger.debug("Completed graph stream for conversation_id=%s", conversation_id)
+    return latest_output
 
 
 @router.websocket("/conversations/{conversation_id}")
@@ -329,15 +491,28 @@ async def conversation_socket(websocket: WebSocket, conversation_id: str) -> Non
     await manager.connect(conversation_id=conversation_id, websocket=websocket)
     logger.info("WebSocket connected to room conversation_id=%s", conversation_id)
     await websocket.send_text(f"phase: {phase_number}, session: {session_number}")
+    history = _history_payload(conversation_id)
+    await websocket.send_text(json.dumps({"resp_type": "convo_hist", "content": history}, ensure_ascii=False))
     try:
         while True:
             message = await websocket.receive_text()
             logger.debug("Received websocket message for conversation_id=%s", conversation_id)
-            await _graph_output_from_compiled_graph(
+            _append_conversation_message(
+                conversation_id=conversation_id,
+                role="human",
+                content=message,
+            )
+            ai_output = await _graph_output_from_compiled_graph(
                 graph=graph,
                 message=message,
                 conversation_id=conversation_id,
             )
+            if ai_output:
+                _append_conversation_message(
+                    conversation_id=conversation_id,
+                    role="ai",
+                    content=ai_output,
+                )
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected for conversation_id=%s", conversation_id)
         manager.disconnect(conversation_id=conversation_id, websocket=websocket)

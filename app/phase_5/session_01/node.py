@@ -132,6 +132,23 @@ class BaseNode:
             "response": message 
         })
 
+    def _write_documents_on_writer_stream(self, doc_name: str, doc_content: str):
+        writer = get_stream_writer()
+        writer({
+            "type": ResponseType.DOCUMENT.value,
+            "response": {
+                "document_name": doc_name,
+                "document_content": doc_content
+            }
+        })
+
+
+    def _write_approval_on_writer_stream(self, approval_content: str):
+        writer = get_stream_writer()
+        writer({
+            "type": ResponseType.APPROVAL.value,
+            "response": approval_content
+        })
 
 class ProductRequirement(BaseNode):
     def __init__(self, agent_tools: List):
@@ -206,6 +223,8 @@ class ProblemDocument(BaseNode):
             self.node_logger.debug(resp_json)
 
 
+            self._write_documents_on_writer_stream("problem_statement", str(resp_json))
+
 
             return {
                 "messages": [AIMessage(content=json.dumps(resp_json))],
@@ -227,3 +246,5 @@ class ProblemDocument(BaseNode):
                 "convo_end": False,
             }
  
+
+    

@@ -5,6 +5,7 @@ from services.core.database import Base, engine
 
 # Import all models so metadata is complete before drop/create.
 from services.api.projects import model as _project_models  # noqa: F401
+from services.api.sessions import model as _session_models  # noqa: F401
 from services.api.users import model as _user_models  # noqa: F401
 
 

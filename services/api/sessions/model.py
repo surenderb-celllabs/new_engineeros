@@ -46,3 +46,49 @@ class ProjectSessionVersion(Base):
     project: Mapped["Project"] = relationship("Project")
     approved_by: Mapped["User"] = relationship("User", foreign_keys=[approved_by_user_id])
     created_by: Mapped["User"] = relationship("User", foreign_keys=[created_by_user_id])
+
+
+class ConversationState(Base):
+    __tablename__ = "conversation_states"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    conversation_id: Mapped[str] = mapped_column(String(36), nullable=False, unique=True, index=True)
+    first_message_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("conversation_messages.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    last_message_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("conversation_messages.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+
+
+class ConversationMessage(Base):
+    __tablename__ = "conversation_messages"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    conversation_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
+    role: Mapped[str] = mapped_column(String(16), nullable=False, index=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    previous_message_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("conversation_messages.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    next_message_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("conversation_messages.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False)
