@@ -35,24 +35,7 @@ class ProjectSessionVersion(Base):
     session_id: Mapped[str] = mapped_column(String(120), nullable=False, index=True)
     session_title: Mapped[str] = mapped_column(String(240), nullable=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False)
-    conversation_id: Mapped[str] = mapped_column(String(36), nullable=False, default=lambda: str(uuid4()))
-    approval_status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
-    remark: Mapped[str | None] = mapped_column(Text, nullable=True)
-    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    approved_by_user_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
-    created_by_user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False)
-
-    project: Mapped["Project"] = relationship("Project")
-    approved_by: Mapped["User"] = relationship("User", foreign_keys=[approved_by_user_id])
-    created_by: Mapped["User"] = relationship("User", foreign_keys=[created_by_user_id])
-
-
-class ConversationState(Base):
-    __tablename__ = "conversation_states"
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
-    conversation_id: Mapped[str] = mapped_column(String(36), nullable=False, unique=True, index=True)
+    conversation_id: Mapped[str] = mapped_column(String(36), nullable=False, unique=True, index=True, default=lambda: str(uuid4()))
     first_message_id: Mapped[str | None] = mapped_column(
         String(36),
         ForeignKey("conversation_messages.id", ondelete="SET NULL"),
@@ -63,6 +46,12 @@ class ConversationState(Base):
         ForeignKey("conversation_messages.id", ondelete="SET NULL"),
         nullable=True,
     )
+    output: Mapped[str | None] = mapped_column(Text, nullable=True)
+    approval_status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
+    remark: Mapped[str | None] = mapped_column(Text, nullable=True)
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_by_user_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_by_user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -70,6 +59,10 @@ class ConversationState(Base):
         onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
+
+    project: Mapped["Project"] = relationship("Project")
+    approved_by: Mapped["User"] = relationship("User", foreign_keys=[approved_by_user_id])
+    created_by: Mapped["User"] = relationship("User", foreign_keys=[created_by_user_id])
 
 
 class ConversationMessage(Base):

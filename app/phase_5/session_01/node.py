@@ -132,7 +132,7 @@ class BaseNode:
             "response": message 
         })
 
-    def _write_documents_on_writer_stream(self, doc_name: str, doc_content: str):
+    def _write_documents_on_writer_stream(self, doc_name: str, doc_content: dict):
         writer = get_stream_writer()
         writer({
             "type": ResponseType.DOCUMENT.value,
@@ -223,7 +223,7 @@ class ProblemDocument(BaseNode):
             self.node_logger.debug(resp_json)
 
 
-            self._write_documents_on_writer_stream("problem_statement", str(resp_json))
+            self._write_documents_on_writer_stream("problem_statement", resp_json)
 
 
             return {

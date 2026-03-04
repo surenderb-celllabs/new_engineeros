@@ -10,6 +10,7 @@ from services.api.sessions.schema import (
     ProjectDocumentTreeResponse,
     ProjectWorkflowStatusResponse,
     RemarkRequest,
+    SessionRenameRequest,
     SessionVersionCreateRequest,
     SessionDocumentsResponse,
     SessionVersionHistoryResponse,
@@ -28,6 +29,7 @@ from services.api.sessions.services import (
     get_project_document_tree,
     get_project_phase_session_status,
     get_session_version_history,
+    rename_session_title,
     upload_document_file,
 )
 from services.api.users.model import User
@@ -348,6 +350,33 @@ def approve_session_route(
             session_id=session_id,
             version=version,
             remark=payload.remark,
+            current_user=current_user,
+        )
+    except ResourceNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except PermissionDeniedError as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+
+
+@router.patch(
+    "/projects/{project_id}/phases/{phase_id}/sessions/{session_id}/name",
+    response_model=SessionVersionResponse,
+)
+def rename_session_route(
+    project_id: str,
+    phase_id: str,
+    session_id: str,
+    payload: SessionRenameRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        return rename_session_title(
+            db=db,
+            project_id=project_id,
+            phase_id=phase_id,
+            session_id=session_id,
+            session_title=payload.session_title,
             current_user=current_user,
         )
     except ResourceNotFoundError as exc:

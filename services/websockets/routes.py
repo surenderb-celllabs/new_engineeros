@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import UTC, datetime
 from importlib import import_module
 from typing import Any
 
@@ -10,7 +11,7 @@ from sqlalchemy import select
 from uuid import NAMESPACE_URL, uuid5
 from dotenv import load_dotenv
 
-from services.api.sessions.model import ConversationMessage, ConversationState, ProjectSessionVersion
+from services.api.sessions.model import ConversationMessage, ProjectSessionVersion
 from services.api.sessions.services import load_phase_session_config
 from services.api.users.crud import get_user_by_email
 from services.core.config import settings
@@ -75,32 +76,33 @@ def _append_conversation_message(
 ) -> str:
     db = SessionLocal()
     try:
-        state = db.execute(
-            select(ConversationState).where(ConversationState.conversation_id == conversation_id)
+        session_version = db.execute(
+            select(ProjectSessionVersion).where(ProjectSessionVersion.conversation_id == conversation_id)
         ).scalar_one_or_none()
-        if state is None:
-            state = ConversationState(conversation_id=conversation_id)
-            db.add(state)
-            db.flush()
+        if session_version is None:
+            raise ValueError(f"Conversation not found for id '{conversation_id}'")
 
         message = ConversationMessage(
             conversation_id=conversation_id,
             role=role,
             content=content,
-            previous_message_id=state.last_message_id,
+            previous_message_id=session_version.last_message_id,
             next_message_id=None,
         )
         db.add(message)
         db.flush()
 
-        if state.last_message_id:
-            previous = db.get(ConversationMessage, state.last_message_id)
+        if session_version.last_message_id:
+            previous = db.get(ConversationMessage, session_version.last_message_id)
             if previous is not None:
                 previous.next_message_id = message.id
 
-        if state.first_message_id is None:
-            state.first_message_id = message.id
-        state.last_message_id = message.id
+        if session_version.first_message_id is None:
+            session_version.first_message_id = message.id
+        session_version.last_message_id = message.id
+        session_version.updated_at = datetime.now(UTC)
+        if role == "ai":
+            session_version.output = content
         db.commit()
 
         logger.debug(
@@ -123,17 +125,50 @@ def _append_conversation_message(
         db.close()
 
 
+def _update_session_output_json(conversation_id: str, payload: dict[str, Any]) -> None:
+    db = SessionLocal()
+    try:
+        session_version = db.execute(
+            select(ProjectSessionVersion).where(ProjectSessionVersion.conversation_id == conversation_id)
+        ).scalar_one_or_none()
+        if session_version is None:
+            raise ValueError(f"Conversation not found for id '{conversation_id}'")
+
+        existing_output: dict[str, Any] = {}
+        if session_version.output:
+            try:
+                parsed = json.loads(session_version.output)
+                if isinstance(parsed, dict):
+                    existing_output = parsed
+                else:
+                    existing_output = {"output": parsed}
+            except json.JSONDecodeError:
+                existing_output = {"output": session_version.output}
+
+        existing_output.update(payload)
+        session_version.output = json.dumps(existing_output, ensure_ascii=False)
+        session_version.updated_at = datetime.now(UTC)
+        db.commit()
+        logger.debug("Updated session output json for conversation_id=%s", conversation_id)
+    except Exception:
+        db.rollback()
+        logger.exception("Failed to update output json for conversation_id=%s", conversation_id)
+        raise
+    finally:
+        db.close()
+
+
 def _get_conversation_history(conversation_id: str) -> list[ConversationMessage]:
     db = SessionLocal()
     try:
-        state = db.execute(
-            select(ConversationState).where(ConversationState.conversation_id == conversation_id)
+        session_version = db.execute(
+            select(ProjectSessionVersion).where(ProjectSessionVersion.conversation_id == conversation_id)
         ).scalar_one_or_none()
-        if state is None or state.last_message_id is None:
+        if session_version is None or session_version.last_message_id is None:
             return []
 
         history_reverse: list[ConversationMessage] = []
-        cursor_id = state.last_message_id
+        cursor_id = session_version.last_message_id
         while cursor_id:
             row = db.get(ConversationMessage, cursor_id)
             if row is None:
@@ -342,9 +377,16 @@ async def _graph_output_from_compiled_graph(
                         })
                     )
                 elif meta["type"] == "document":
+                    response = meta.get("response") if isinstance(meta, dict) else None
+                    document_content = response.get("document_content") if isinstance(response, dict) else None
+                    if document_content is not None:
+                        _update_session_output_json(
+                            conversation_id=conversation_id,
+                            payload={"document_content": document_content},
+                        )
                     await manager.broadcast(
                         conversation_id=conversation_id,
-                        message=str({
+                        message=json.dumps({
                             "resp_type": "document",
                             "content": meta["response"]
                         })

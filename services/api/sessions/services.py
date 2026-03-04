@@ -153,9 +153,11 @@ def _session_version_to_response(db: Session, row: ProjectSessionVersion) -> Ses
         conversation_id=row.conversation_id,
         approval_status=row.approval_status,
         remark=row.remark,
+        output=row.output,
         approved_at=row.approved_at,
         approved_by=approved_by_email,
         created_at=row.created_at,
+        updated_at=row.updated_at,
     )
 
 
@@ -423,6 +425,31 @@ def create_new_session_version(
     )
     row = save_session_version(db, row)
     return _session_version_to_response(db, row)
+
+
+def rename_session_title(
+    db: Session,
+    project_id: str,
+    phase_id: str,
+    session_id: str,
+    session_title: str,
+    current_user: User,
+) -> SessionVersionResponse:
+    _assert_project_access(db, project_id, current_user)
+    _assert_phase_exists(project_id, phase_id)
+    _session_details_from_ids(project_id, phase_id, session_id)
+
+    rows = list_session_versions_for_session(db, project_id, phase_id, session_id)
+    if not rows:
+        raise ResourceNotFoundError("Session not found")
+
+    for row in rows:
+        row.session_title = session_title
+        row.updated_at = datetime.now(UTC)
+
+    db.commit()
+    db.refresh(rows[0])
+    return _session_version_to_response(db, rows[0])
 
 
 def get_session_version_history(

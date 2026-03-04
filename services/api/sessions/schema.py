@@ -80,6 +80,10 @@ class SessionVersionCreateRequest(BaseModel):
     remark: str | None = Field(default=None, max_length=2000)
 
 
+class SessionRenameRequest(BaseModel):
+    session_title: str = Field(..., min_length=1, max_length=240)
+
+
 class SessionVersionResponse(BaseModel):
     id: str
     project_id: str
@@ -90,9 +94,11 @@ class SessionVersionResponse(BaseModel):
     conversation_id: str
     approval_status: str
     remark: str | None
+    output: str | None
     approved_at: datetime | None
     approved_by: str | None
     created_at: datetime
+    updated_at: datetime
 
 
 class SessionVersionHistoryResponse(BaseModel):
