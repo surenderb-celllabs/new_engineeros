@@ -166,6 +166,8 @@ class ProductRequirement(BaseNode):
             convo_end = resp_json["convo_end"]
             resp_json.pop("convo_end")
 
+            self._write_message_on_writer_stream(resp_json["ba_message"])
+            
             return {
                 "messages": [AIMessage(content=json.dumps(resp_json["ba_message"]))],
                 "resp_type": ResponseType.MESSAGE.value,
@@ -175,7 +177,7 @@ class ProductRequirement(BaseNode):
         except Exception as e:
             self.node_logger.error(e)
             return {
-                "messages": "",
+                "messages": [AIMessage(content="")],
                 "resp_type": ResponseType.ERROR.value,
                 "convo_end": False,
             }
@@ -219,11 +221,9 @@ class ProblemDocument(BaseNode):
 
         except Exception as e:
             self.node_logger.error(e)
-
             return {
-                "messages": [],
+                "messages": [AIMessage(content="")],
                 "resp_type": ResponseType.ERROR.value,
                 "convo_end": False,
             }
-
  
